@@ -9,6 +9,7 @@ public class ViewModel {
 ```
 
 ```xml
+<!-- layout.xml -->
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
@@ -20,5 +21,20 @@ public class ViewModel {
       android:layout_height="match_parent"
       app:items="@{viewModel.items}"
       app:itemView="@{viewModel.itemView}"/>
+</layout>
+```
+
+```xml
+<!-- item.xml -->
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+      <variable name="item" type="String"/> 
+    </data>
+    
+    <TextView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="@{item}"/>
 </layout>
 ```
