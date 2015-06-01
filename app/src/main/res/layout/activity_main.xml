@@ -1,70 +1,22 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <data>
-
-        <variable
-            name="stuff"
-            type="me.tatarka.bindingcollectionadapter.sample.Stuff" />
-
-        <variable
-            name="listeners"
-            type="me.tatarka.bindingcollectionadapter.sample.Listeners" />
-
-        <import type="me.tatarka.bindingcollectionadapter.RecyclerItemView" />
-
-        <import type="me.tatarka.bindingcollectionadapter.LayoutManagers" />
-
-        <import type="android.view.View" />
-    </data>
-
-    <LinearLayout
+    <android.support.v4.widget.DrawerLayout
+        android:id="@+id/drawer_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        tools:context="me.tatarka.bindingcollectionadapter.sample.MainActivity">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:onClickListener="@{listeners.onAddThing}"
-                android:text="Add Thing" />
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:onClickListener="@{listeners.onRemoveThing}"
-                android:text="Remove Thing" />
-        </LinearLayout>
+        android:layout_height="match_parent">
 
         <FrameLayout
+            android:id="@+id/content"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
+            android:layout_height="match_parent" />
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/list"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:itemView="@{stuff.itemView}"
-                app:items="@{stuff.things}"
-                app:layoutManager="@{LayoutManagers.linear()}" />
-
-            <!--        <ListView
-                        android:id="@+id/list"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        app:itemView="@{stuff.itemView}"
-                        app:items="@{stuff.things}" />-->
-        </FrameLayout>
-    </LinearLayout>
+        <android.support.design.widget.NavigationView
+            android:id="@+id/nav_view"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:fitsSystemWindows="true"
+            app:menu="@menu/menu_drawer" />
+    </android.support.v4.widget.DrawerLayout>
 </layout>

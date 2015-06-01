@@ -2,15 +2,16 @@ package me.tatarka.bindingcollectionadapter.sample;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import me.tatarka.bindingcollectionadapter.sample.databinding.ActivityMainBinding;
 
-public class MainActivity extends AppCompatActivity implements Listeners {
-    private static final Stuff stuff = new Stuff();
+public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
 
     @Override
@@ -18,54 +19,39 @@ public class MainActivity extends AppCompatActivity implements Listeners {
         super.onCreate(savedInstanceState);
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-        binding.setStuff(stuff);
-        binding.setListeners(this);
-        binding.executePendingBindings();
-    }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
         }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public View.OnClickListener onAddThing() {
-        return new View.OnClickListener() {
+        
+        binding.drawerLayout.setDrawerListener(new ActionBarDrawerToggle(this, binding.drawerLayout, R.string.open_drawer, R.string.close_drawer));
+        
+        binding.navView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public void onClick(View v) {
-                stuff.addThing();
-                binding.list.smoothScrollToPosition(stuff.size() - 1);
-            }
-        };
-    }
-
-    @Override
-    public View.OnClickListener onRemoveThing() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                stuff.removeThing();
-                if (stuff.size() > 0) {
-                    binding.list.smoothScrollToPosition(stuff.size() - 1);
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
+                Fragment fragment;
+                switch (menuItem.getItemId()) {
+                    case R.id.action_listview:
+                        fragment = new FragmentListView();
+                        break;
+                    case R.id.action_recyclerview:
+                        fragment = new FragmentRecyclerView();
+                        break;
+                    case R.id.action_viewpager:
+                        fragment = new FragmentViewPagerView();
+                        break;
+                    default:
+                        binding.drawerLayout.closeDrawers();
+                        return false;
                 }
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.content, fragment)
+                        .commit();
+                menuItem.setChecked(true);
+                binding.drawerLayout.closeDrawers();
+                return true;
             }
-        };
+        });
     }
 }

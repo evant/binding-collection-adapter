@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/action_listview"
+        android:title="ListView" />
+
+    <item
+        android:id="@+id/action_recyclerview"
+        android:title="RecyclerView" />
+
+    <item
+        android:id="@+id/action_viewpager"
+        android:title="ViewPager" />
+
+    <item
+        android:id="@+id/action_listview_multiple"
+        android:title="ListView Multiple View Types" />
+
+    <item
+        android:id="@+id/action_recyclerview_multiple"
+        android:title="RecyclerView Multiple View Types" />
+
+    <item
+        android:id="@+id/action_viewpager"
+        android:title="ViewPager Multiple View Types" />
+</menu>

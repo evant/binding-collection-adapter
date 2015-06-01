@@ -4,7 +4,7 @@
     <data>
 
         <variable
-            name="thing"
+            name="item"
             type="String" />
     </data>
 
@@ -18,6 +18,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="16dp"
-            android:text="@{thing}" />
+            android:text="@{item}" />
     </LinearLayout>
 </layout>
