@@ -17,12 +17,26 @@ import java.lang.ref.WeakReference;
 import java.util.Collection;
 
 /**
- * Created by evan on 5/16/15.
+ * A {@link BaseAdapter} that binds items to layouts using the given {@link ItemView} or {@link
+ * ItemViewSelector}. If you give it an {@link ObservableList} it will also updated itself based on
+ * changes to that list.
  */
 public class BindingListViewAdapter<T> extends BaseAdapter {
+    /**
+     * Pass this constant to {@link ItemView#set(String, int)} to set an item id for the given
+     * item.
+     *
+     * @see #getItemId(int)
+     */
     public static final String ITEM_ID = "item_id";
+    /**
+     * Pass this constant to {@link ItemView#set(String, int)} to set a drop down layout res for the
+     * given item.
+     *
+     * @see #getDropDownView(int, View, ViewGroup)
+     */
     public static final String DROP_DOWN_LAYOUT = "drop_down_layout";
-    
+
     @NonNull
     private final ItemView itemView;
     @NonNull
@@ -32,17 +46,28 @@ public class BindingListViewAdapter<T> extends BaseAdapter {
     private int[] layouts;
     private int[] dropDownLayouts;
     private LayoutInflater inflater;
-    
+
+    /**
+     * Constructs a new instance with the given {@link ItemView}.
+     */
     public BindingListViewAdapter(@NonNull ItemView itemView) {
         this.itemView = itemView;
         this.selector = BaseItemViewSelector.empty();
     }
 
+    /**
+     * Constructs a new instance with the given {@link ItemViewSelector}.
+     */
     public BindingListViewAdapter(@NonNull ItemViewSelector<T> selector) {
         this.itemView = new ItemView();
         this.selector = selector;
     }
 
+    /**
+     * Sets the adapter's items. These items will be displayed based on the {@link ItemView} or
+     * {@link ItemViewSelector}. If you pass in an {@link ObservableList} the adapter will also
+     * update itself based on that list's changes.
+     */
     public void setItems(@Nullable Collection<T> items) {
         if (this.items == items) {
             return;
@@ -151,7 +176,7 @@ public class BindingListViewAdapter<T> extends BaseAdapter {
 
     @Override
     public int getViewTypeCount() {
-        int count = selector.count();
+        int count = selector.viewTypeCount();
         layouts = new int[count];
         dropDownLayouts = new int[count];
         return count;

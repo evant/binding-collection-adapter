@@ -6,7 +6,6 @@ import android.databinding.ObservableArrayList;
 import android.databinding.ObservableList;
 
 import me.tatarka.bindingcollectionadapter.ItemView;
-import me.tatarka.bindingcollectionadapter.ItemViewSelector;
 
 /**
  * Created by evan on 5/16/15.
@@ -49,7 +48,7 @@ public class Stuff extends BaseObservable {
     public ItemView getItemView() {
         return ItemView.of(BR.thing, R.layout.item_thing);
     }
-    
+
     public boolean getLoading() {
         return loading;
     }

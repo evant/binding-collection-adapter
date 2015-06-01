@@ -19,6 +19,9 @@ public final class ItemView {
 
     /**
      * Constructs a new {@code ItemView} with the given binding variable and layout res.
+     *
+     * @see #setBindingVariable(int)
+     * @see #setLayoutRes(int)
      */
     public static ItemView of(int bindingVariable, @LayoutRes int layoutRes) {
         return new ItemView()
@@ -26,17 +29,33 @@ public final class ItemView {
                 .setLayoutRes(layoutRes);
     }
 
+    /**
+     * Sets the binding variable. This is one of the {@code BR} constants that references the
+     * variable tag in the item layout file.
+     *
+     * @return the {@code ItemView} for chaining
+     */
     public ItemView setBindingVariable(int bindingVariable) {
         this.bindingVariable = bindingVariable;
         return this;
     }
 
-
+    /**
+     * Sets the layout resource of the item.
+     *
+     * @return the {@code ItemView} for chaining
+     */
     public ItemView setLayoutRes(@LayoutRes int layoutRes) {
         this.layoutRes = layoutRes;
         return this;
     }
 
+    /**
+     * Set an arbitrary int value, for example {@link BindingListViewAdapter#ITEM_ID} or {@link
+     * BindingListViewAdapter#DROP_DOWN_LAYOUT}.
+     *
+     * @return the {@code ItemView} for chaining
+     */
     public ItemView set(String key, int value) {
         if (extras == null) {
             extras = new ArrayMap<>();
@@ -45,6 +64,11 @@ public final class ItemView {
         return this;
     }
 
+    /**
+     * Set an arbitrary value, for example {@link BindingViewPagerAdapter#TITLE}.
+     *
+     * @return the {@code ItemView} for chaining
+     */
     public ItemView set(String key, Object value) {
         if (extras == null) {
             extras = new ArrayMap<>();
@@ -56,12 +80,15 @@ public final class ItemView {
     public int getBindingVariable() {
         return bindingVariable;
     }
-   
+
     @LayoutRes
     public int getLayoutRes() {
         return layoutRes;
     }
 
+    /**
+     * Get an int value set with {@link #set(String, int)}, or 0 if it does not exist.
+     */
     public int getInt(String key) {
         if (extras == null) {
             return 0;
@@ -73,6 +100,9 @@ public final class ItemView {
         return (int) value;
     }
 
+    /**
+     * Get a value set with {@link #set(String, Object)} or null if it does not exist.
+     */
     public Object get(String key) {
         if (extras == null) {
             return null;

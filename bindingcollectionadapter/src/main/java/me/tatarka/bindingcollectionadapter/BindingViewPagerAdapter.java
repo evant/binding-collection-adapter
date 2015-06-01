@@ -18,9 +18,17 @@ import java.lang.ref.WeakReference;
 import java.util.Collection;
 
 /**
- * Created by evantatarka on 5/26/15.
+ * A {@link PagerAdapter} that binds items to layouts using the given {@link ItemView} or {@link
+ * ItemViewSelector}. If you give it an {@link ObservableList} it will also updated itself based on
+ * changes to that list.
  */
 public class BindingViewPagerAdapter<T> extends PagerAdapter {
+    /**
+     * Pass this constant to {@link ItemView#set(String, Object)} to set a title for the given
+     * item.
+     *
+     * @see #getPageTitle(int)
+     */
     public static final String TITLE = "title";
 
     @NonNull
@@ -32,16 +40,27 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter {
     private LayoutInflater inflater;
     private SparseArrayCompat<CharSequence> titles = new SparseArrayCompat<>();
 
+    /**
+     * Constructs a new instance with the given {@link ItemView}.
+     */
     public BindingViewPagerAdapter(@NonNull ItemView itemView) {
         this.itemView = itemView;
         this.selector = BaseItemViewSelector.empty();
     }
 
+    /**
+     * Constructs a new instance with the given {@link ItemViewSelector}.
+     */
     public BindingViewPagerAdapter(@NonNull ItemViewSelector<T> selector) {
         this.itemView = new ItemView();
         this.selector = selector;
     }
 
+    /**
+     * Sets the adapter's items. These items will be displayed based on the {@link ItemView} or
+     * {@link ItemViewSelector}. If you pass in an {@link ObservableList} the adapter will also
+     * update itself based on that list's changes.
+     */
     public void setItems(@Nullable Collection<T> items) {
         if (this.items == items) {
             return;
@@ -67,7 +86,7 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter {
 
     @Override
     public int getCount() {
-        return selector.count();
+        return selector.viewTypeCount();
     }
 
     @Override

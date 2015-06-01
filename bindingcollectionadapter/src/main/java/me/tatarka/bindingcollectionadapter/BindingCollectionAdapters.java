@@ -8,7 +8,7 @@ import android.widget.ListView;
 import java.util.Collection;
 
 /**
- * Created by evantatarka on 5/20/15.
+ * All the BindingAdapters so that you can set your adapters and items directly in your layout.
  */
 public class BindingCollectionAdapters {
     @SuppressWarnings("unchecked")

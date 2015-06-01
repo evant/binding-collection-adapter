@@ -10,7 +10,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * Created by evan on 5/16/15.
+ * A collection of factories to create RecyclerView LayoutManagers so that you can easily set them
+ * in your layout.
  */
 public class LayoutManagers {
     protected LayoutManagers() {
@@ -20,6 +21,9 @@ public class LayoutManagers {
         RecyclerView.LayoutManager create(RecyclerView recyclerView);
     }
 
+    /**
+     * A {@link LinearLayoutManager}.
+     */
     public static LayoutManagerFactory linear() {
         return new LayoutManagerFactory() {
             @Override
@@ -29,6 +33,9 @@ public class LayoutManagers {
         };
     }
 
+    /**
+     * A {@link LinearLayoutManager} with the given orientation and reverseLayout.
+     */
     public static LayoutManagerFactory linear(@Orientation final int orientation, final boolean reverseLayout) {
         return new LayoutManagerFactory() {
             @Override
@@ -38,6 +45,9 @@ public class LayoutManagers {
         };
     }
 
+    /**
+     * A {@link GridLayoutManager} with the given spanCount.
+     */
     public static LayoutManagerFactory grid(final int spanCount) {
         return new LayoutManagerFactory() {
             @Override
@@ -47,6 +57,9 @@ public class LayoutManagers {
         };
     }
 
+    /**
+     * A {@link GridLayoutManager} with the given spanCount, orientation and reverseLayout.
+     **/
     public static LayoutManagerFactory grid(final int spanCount, @Orientation final int orientation, final boolean reverseLayout) {
         return new LayoutManagerFactory() {
             @Override
@@ -56,11 +69,14 @@ public class LayoutManagers {
         };
     }
 
-    public static LayoutManagerFactory staggeredGrid(final int spancount, @Orientation final int orientation) {
+    /**
+     * A {@link StaggeredGridLayoutManager} with the given spanCount and orientation.
+     */
+    public static LayoutManagerFactory staggeredGrid(final int spanCount, @Orientation final int orientation) {
         return new LayoutManagerFactory() {
             @Override
             public RecyclerView.LayoutManager create(RecyclerView recyclerView) {
-                return new StaggeredGridLayoutManager(spancount, orientation);
+                return new StaggeredGridLayoutManager(spanCount, orientation);
             }
         };
     }

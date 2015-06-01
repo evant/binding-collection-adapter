@@ -16,7 +16,9 @@ import java.lang.ref.WeakReference;
 import java.util.Collection;
 
 /**
- * Created by evan on 5/16/15.
+ * A {@link RecyclerView.Adapter} that binds items to layouts using the given {@link ItemView} or
+ * {@link ItemViewSelector}. If you give it an {@link ObservableList} it will also updated itself
+ * based on changes to that list.
  */
 public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingRecyclerViewAdapter.ViewHolder> {
     @NonNull
@@ -27,16 +29,27 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingR
     private ObservableList<T> items;
     private LayoutInflater inflater;
 
+    /**
+     * Constructs a new instance with the given {@link ItemView}.
+     */
     public BindingRecyclerViewAdapter(@NonNull ItemView itemView) {
         this.itemView = itemView;
         this.selector = BaseItemViewSelector.empty();
     }
 
+    /**
+     * Constructs a new instance with the given {@link ItemViewSelector}.
+     */
     public BindingRecyclerViewAdapter(@NonNull ItemViewSelector<T> selector) {
         this.itemView = new ItemView();
         this.selector = selector;
     }
 
+    /**
+     * Sets the adapter's items. These items will be displayed based on the {@link ItemView} or
+     * {@link ItemViewSelector}. If you pass in an {@link ObservableList} the adapter will also
+     * update itself based on that list's changes.
+     */
     public void setItems(@Nullable Collection<T> items) {
         if (this.items == items) {
             return;
