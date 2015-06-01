@@ -4,7 +4,7 @@ Easy way to bind collections to listviews and recyclerviews with the new [Androi
 ```java
 public class ViewModel {
   public final ObservableList<String> items = new ObservableArrayList<>();
-  public final ItemViewSelector<ListItemView, String> itemView = ListItemView.of(BR.item, R.layout.item);
+  public final ItemView itemView = ItemView.of(BR.item, R.layout.item);
 }
 ```
 
