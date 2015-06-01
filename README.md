@@ -77,6 +77,12 @@ public final ItemViewSelector<String> itemView = new BaseItemViewSelector<String
         itemView.setBindingVariable(BR.item)
                 .setLayoutRes(position == 0 ? R.layout.item_header : R.layout.item);
     }
+    
+    // This is only needed if you are using a BindingListViewAdapter
+    @Override
+    public int viewTypeCount() {
+      return 2;
+    }
 };
 ```
 
