@@ -6,6 +6,7 @@ import android.databinding.ObservableList;
 import android.databinding.ViewDataBinding;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,18 +19,22 @@ import java.util.Collection;
  * Created by evan on 5/16/15.
  */
 public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingRecyclerViewAdapter.ViewHolder> {
-    private final WeakReferenceOnListChangedListener callback = new WeakReferenceOnListChangedListener(this);
-    private final ItemViewSelector<RecyclerItemView, T> selector;
-    private final RecyclerItemView itemView = new RecyclerItemView();
+    @NonNull
+    private final ItemView itemView;
+    @NonNull
+    private final ItemViewSelector<T> selector;
+    private final WeakReferenceOnListChangedCallback<T> callback = new WeakReferenceOnListChangedCallback<>(this);
     private ObservableList<T> items;
     private LayoutInflater inflater;
 
-    public BindingRecyclerViewAdapter(ItemViewSelector<RecyclerItemView, T> selector, @Nullable Collection<T> items) {
-        if (selector == null) {
-            throw new IllegalArgumentException("ListItemViewSelector must not be null");
-        }
+    public BindingRecyclerViewAdapter(@NonNull ItemView itemView) {
+        this.itemView = itemView;
+        this.selector = BaseItemViewSelector.empty();
+    }
+
+    public BindingRecyclerViewAdapter(@NonNull ItemViewSelector<T> selector) {
+        this.itemView = new ItemView();
         this.selector = selector;
-        setItems(items);
     }
 
     public void setItems(@Nullable Collection<T> items) {
@@ -103,11 +108,11 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingR
         }
     }
 
-    private static class WeakReferenceOnListChangedListener extends ObservableList.OnListChangedCallback {
+    private static class WeakReferenceOnListChangedCallback<T> extends ObservableList.OnListChangedCallback<ObservableList<T>> {
         final WeakReference<RecyclerView.Adapter> adapterRef;
         final Handler handler = new Handler(Looper.getMainLooper());
 
-        WeakReferenceOnListChangedListener(RecyclerView.Adapter adapter) {
+        WeakReferenceOnListChangedCallback(RecyclerView.Adapter adapter) {
             this.adapterRef = new WeakReference<>(adapter);
         }
 

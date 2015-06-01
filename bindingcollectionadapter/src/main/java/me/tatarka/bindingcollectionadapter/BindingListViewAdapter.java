@@ -20,20 +20,27 @@ import java.util.Collection;
  * Created by evan on 5/16/15.
  */
 public class BindingListViewAdapter<T> extends BaseAdapter {
-    private final WeakReferenceOnListChangedCallback callback = new WeakReferenceOnListChangedCallback(this);
-    private final ListItemView itemView = new ListItemView();
-    private final ItemViewSelector<ListItemView, T> selector;
+    public static final String ITEM_ID = "item_id";
+    public static final String DROP_DOWN_LAYOUT = "drop_down_layout";
+    
+    @NonNull
+    private final ItemView itemView;
+    @NonNull
+    private final ItemViewSelector<T> selector;
+    private final WeakReferenceOnListChangedCallback<T> callback = new WeakReferenceOnListChangedCallback<>(this);
     private ObservableList<T> items;
-    private LayoutInflater inflater;
     private int[] layouts;
     private int[] dropDownLayouts;
+    private LayoutInflater inflater;
+    
+    public BindingListViewAdapter(@NonNull ItemView itemView) {
+        this.itemView = itemView;
+        this.selector = BaseItemViewSelector.empty();
+    }
 
-    public BindingListViewAdapter(ItemViewSelector<ListItemView, T> selector, @Nullable Collection<T> items) {
-        if (selector == null) {
-            throw new IllegalArgumentException("ListItemViewSelector must not be null");
-        }
+    public BindingListViewAdapter(@NonNull ItemViewSelector<T> selector) {
+        this.itemView = new ItemView();
         this.selector = selector;
-        setItems(items);
     }
 
     public void setItems(@Nullable Collection<T> items) {
@@ -75,7 +82,8 @@ public class BindingListViewAdapter<T> extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        return position;
+        selector.select(itemView, position, items.get(position));
+        return itemView.getInt(ITEM_ID);
     }
 
     @Override
@@ -137,7 +145,7 @@ public class BindingListViewAdapter<T> extends BaseAdapter {
             }
         }
         layouts[firstEmpty] = itemView.layoutRes;
-        dropDownLayouts[firstEmpty] = itemView.dropDownLayoutRes;
+        dropDownLayouts[firstEmpty] = itemView.getInt(DROP_DOWN_LAYOUT);
         return firstEmpty;
     }
 
@@ -146,11 +154,10 @@ public class BindingListViewAdapter<T> extends BaseAdapter {
         int count = selector.count();
         layouts = new int[count];
         dropDownLayouts = new int[count];
-
         return count;
     }
 
-    private static class WeakReferenceOnListChangedCallback<T> extends ObservableList.OnListChangedCallback {
+    private static class WeakReferenceOnListChangedCallback<T> extends ObservableList.OnListChangedCallback<ObservableList<T>> {
         final WeakReference<BaseAdapter> adapterRef;
         final Handler handler = new Handler(Looper.getMainLooper());
 
