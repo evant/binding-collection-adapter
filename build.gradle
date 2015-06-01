@@ -2,18 +2,16 @@
 
 buildscript {
     repositories {
-        mavenLocal()
         jcenter()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:1.2.3'
-        classpath 'com.android.databinding:dataBinder:0.9.1'
+        classpath 'com.android.databinding:dataBinder:1.0-rc0'
     }
 }
 
 allprojects {
     repositories {
-        mavenLocal()
         jcenter()
     }
 }

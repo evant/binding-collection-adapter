@@ -3,7 +3,6 @@ package me.tatarka.bindingcollectionadapter;
 import android.databinding.DataBindingUtil;
 import android.databinding.ObservableArrayList;
 import android.databinding.ObservableList;
-import android.databinding.OnListChangedListener;
 import android.databinding.ViewDataBinding;
 import android.os.Handler;
 import android.os.Looper;
@@ -21,7 +20,7 @@ import java.util.Collection;
  * Created by evantatarka on 5/26/15.
  */
 public class BindingViewPagerAdapter<T> extends PagerAdapter {
-    private final WeakReferenceOnListChangedListener listener = new WeakReferenceOnListChangedListener(this);
+    private final WeakReferenceOnListChangedListener callback = new WeakReferenceOnListChangedListener(this);
     private final PagerItemView itemView = new PagerItemView();
     private final ItemViewSelector<PagerItemView, T> selector;
     private ObservableList<T> items;
@@ -42,17 +41,17 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter {
         }
 
         if (this.items != null) {
-            this.items.removeOnListChangedListener(listener);
+            this.items.removeOnListChangedCallback(callback);
             notifyDataSetChanged();
         }
 
         if (items instanceof ObservableList) {
             this.items = (ObservableList<T>) items;
             notifyDataSetChanged();
-            this.items.addOnListChangedListener(listener);
+            this.items.addOnListChangedCallback(callback);
         } else if (items != null) {
             this.items = new ObservableArrayList<>();
-            this.items.addOnListChangedListener(listener);
+            this.items.addOnListChangedCallback(callback);
             this.items.addAll(items);
         } else {
             this.items = null;
@@ -101,7 +100,7 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter {
         return POSITION_NONE;
     }
 
-    private static class WeakReferenceOnListChangedListener implements OnListChangedListener {
+    private static class WeakReferenceOnListChangedListener extends ObservableList.OnListChangedCallback {
         final WeakReference<PagerAdapter> adapterRef;
         final Handler handler = new Handler(Looper.getMainLooper());
 
@@ -110,7 +109,7 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter {
         }
 
         @Override
-        public void onChanged() {
+        public void onChanged(ObservableList sender) {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -123,23 +122,23 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter {
         }
 
         @Override
-        public void onItemRangeChanged(final int positionStart, final int itemCount) {
-            onChanged();
+        public void onItemRangeChanged(ObservableList sender, int positionStart, int itemCount) {
+            onChanged(sender);
         }
 
         @Override
-        public void onItemRangeInserted(final int positionStart, final int itemCount) {
-            onChanged();
+        public void onItemRangeInserted(ObservableList sender, int positionStart, int itemCount) {
+            onChanged(sender);
         }
 
         @Override
-        public void onItemRangeMoved(final int fromPosition, final int toPosition, final int itemCount) {
-            onChanged();
+        public void onItemRangeMoved(ObservableList sender, int fromPosition, int toPosition, int itemCount) {
+            onChanged(sender);
         }
 
         @Override
-        public void onItemRangeRemoved(final int positionStart, final int itemCount) {
-            onChanged();
+        public void onItemRangeRemoved(ObservableList sender, int positionStart, int itemCount) {
+            onChanged(sender);
         }
     }
 }

@@ -3,7 +3,6 @@ package me.tatarka.bindingcollectionadapter;
 import android.databinding.DataBindingUtil;
 import android.databinding.ObservableArrayList;
 import android.databinding.ObservableList;
-import android.databinding.OnListChangedListener;
 import android.databinding.ViewDataBinding;
 import android.os.Handler;
 import android.os.Looper;
@@ -19,7 +18,7 @@ import java.util.Collection;
  * Created by evan on 5/16/15.
  */
 public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingRecyclerViewAdapter.ViewHolder> {
-    private final WeakReferenceOnListChangedListener listener = new WeakReferenceOnListChangedListener(this);
+    private final WeakReferenceOnListChangedListener callback = new WeakReferenceOnListChangedListener(this);
     private final ItemViewSelector<RecyclerItemView, T> selector;
     private final RecyclerItemView itemView = new RecyclerItemView();
     private ObservableList<T> items;
@@ -39,17 +38,17 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingR
         }
 
         if (this.items != null) {
-            this.items.removeOnListChangedListener(listener);
+            this.items.removeOnListChangedCallback(callback);
             notifyItemRangeRemoved(0, this.items.size());
         }
 
         if (items instanceof ObservableList) {
             this.items = (ObservableList<T>) items;
             notifyItemRangeInserted(0, this.items.size());
-            this.items.addOnListChangedListener(listener);
+            this.items.addOnListChangedCallback(callback);
         } else if (items != null) {
             this.items = new ObservableArrayList<>();
-            this.items.addOnListChangedListener(listener);
+            this.items.addOnListChangedCallback(callback);
             this.items.addAll(items);
         } else {
             this.items = null;
@@ -62,9 +61,9 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingR
 
     @Override
     public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
-        listener.cancel();
+        callback.cancel();
         if (items != null) {
-            items.removeOnListChangedListener(listener);
+            items.removeOnListChangedCallback(callback);
         }
     }
 
@@ -104,7 +103,7 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingR
         }
     }
 
-    private static class WeakReferenceOnListChangedListener implements OnListChangedListener {
+    private static class WeakReferenceOnListChangedListener extends ObservableList.OnListChangedCallback {
         final WeakReference<RecyclerView.Adapter> adapterRef;
         final Handler handler = new Handler(Looper.getMainLooper());
 
@@ -112,8 +111,12 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingR
             this.adapterRef = new WeakReference<>(adapter);
         }
 
+        public void cancel() {
+            handler.removeCallbacksAndMessages(null);
+        }
+
         @Override
-        public void onChanged() {
+        public void onChanged(ObservableList sender) {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -126,7 +129,7 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingR
         }
 
         @Override
-        public void onItemRangeChanged(final int positionStart, final int itemCount) {
+        public void onItemRangeChanged(ObservableList sender, final int positionStart, final int itemCount) {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -139,7 +142,7 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingR
         }
 
         @Override
-        public void onItemRangeInserted(final int positionStart, final int itemCount) {
+        public void onItemRangeInserted(ObservableList sender, final int positionStart, final int itemCount) {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -152,7 +155,7 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingR
         }
 
         @Override
-        public void onItemRangeMoved(final int fromPosition, final int toPosition, final int itemCount) {
+        public void onItemRangeMoved(ObservableList sender, final int fromPosition, final int toPosition, final int itemCount) {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -167,7 +170,7 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingR
         }
 
         @Override
-        public void onItemRangeRemoved(final int positionStart, final int itemCount) {
+        public void onItemRangeRemoved(ObservableList sender, final int positionStart, final int itemCount) {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -177,10 +180,6 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingR
                     }
                 }
             });
-        }
-
-        public void cancel() {
-            handler.removeCallbacksAndMessages(null);
         }
     }
 }

@@ -3,7 +3,6 @@ package me.tatarka.bindingcollectionadapter;
 import android.databinding.DataBindingUtil;
 import android.databinding.ObservableArrayList;
 import android.databinding.ObservableList;
-import android.databinding.OnListChangedListener;
 import android.databinding.ViewDataBinding;
 import android.os.Handler;
 import android.os.Looper;
@@ -21,7 +20,7 @@ import java.util.Collection;
  * Created by evan on 5/16/15.
  */
 public class BindingListViewAdapter<T> extends BaseAdapter {
-    private final WeakReferenceOnListChangedListener listener = new WeakReferenceOnListChangedListener(this);
+    private final WeakReferenceOnListChangedCallback callback = new WeakReferenceOnListChangedCallback(this);
     private final ListItemView itemView = new ListItemView();
     private final ItemViewSelector<ListItemView, T> selector;
     private ObservableList<T> items;
@@ -43,17 +42,17 @@ public class BindingListViewAdapter<T> extends BaseAdapter {
         }
 
         if (this.items != null) {
-            this.items.removeOnListChangedListener(listener);
+            this.items.removeOnListChangedCallback(callback);
             notifyDataSetChanged();
         }
 
         if (items instanceof ObservableList) {
             this.items = (ObservableList<T>) items;
             notifyDataSetChanged();
-            this.items.addOnListChangedListener(listener);
+            this.items.addOnListChangedCallback(callback);
         } else if (items != null) {
             this.items = new ObservableArrayList<>();
-            this.items.addOnListChangedListener(listener);
+            this.items.addOnListChangedCallback(callback);
             this.items.addAll(items);
         } else {
             this.items = null;
@@ -151,16 +150,16 @@ public class BindingListViewAdapter<T> extends BaseAdapter {
         return count;
     }
 
-    private static class WeakReferenceOnListChangedListener implements OnListChangedListener {
+    private static class WeakReferenceOnListChangedCallback<T> extends ObservableList.OnListChangedCallback {
         final WeakReference<BaseAdapter> adapterRef;
         final Handler handler = new Handler(Looper.getMainLooper());
 
-        WeakReferenceOnListChangedListener(BaseAdapter adapter) {
+        WeakReferenceOnListChangedCallback(BaseAdapter adapter) {
             this.adapterRef = new WeakReference<>(adapter);
         }
 
         @Override
-        public void onChanged() {
+        public void onChanged(ObservableList sender) {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -173,23 +172,23 @@ public class BindingListViewAdapter<T> extends BaseAdapter {
         }
 
         @Override
-        public void onItemRangeChanged(final int positionStart, final int itemCount) {
-            onChanged();
+        public void onItemRangeChanged(ObservableList sender, int positionStart, int itemCount) {
+            onChanged(sender);
         }
 
         @Override
-        public void onItemRangeInserted(final int positionStart, final int itemCount) {
-            onChanged();
+        public void onItemRangeInserted(ObservableList sender, int positionStart, int itemCount) {
+            onChanged(sender);
         }
 
         @Override
-        public void onItemRangeMoved(final int fromPosition, final int toPosition, final int itemCount) {
-            onChanged();
+        public void onItemRangeMoved(ObservableList sender, int fromPosition, int toPosition, int itemCount) {
+            onChanged(sender);
         }
 
         @Override
-        public void onItemRangeRemoved(final int positionStart, final int itemCount) {
-            onChanged();
+        public void onItemRangeRemoved(ObservableList sender, int positionStart, int itemCount) {
+            onChanged(sender);
         }
     }
 }
