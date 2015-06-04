@@ -88,15 +88,127 @@ public final ItemViewSelector<String> itemView = new BaseItemViewSelector<String
 
 Note that `select` is called many times so you should not do any complex processing in there.
 
-## Additonal ItemView Params
+## Additonal Adapter Configuration
 
-Some collection views may optionally take addiditonal params to control how an item is displayed.
-For example, you can set a drop down layout res on the `BindingListViewAdapter`.
+### BindingListViewAdapter
+
+You can set a callback to give an id for each item in the list with
 
 ```java
-  public final ItemView itemView = ItemView.of(BR.item, R.layout.item)
-                                      .set(BindingListAdapter.DROP_DOWN_LAYOUT, R.layout.item_drop_down);
+adapter.setItemIds(new BindingListViewAdapter.ItemIds<T>() {
+    @Override
+    public long getItemId(int position, T item) {
+        return // Calculate item id.
+    }
+});
+```
+or by defining `app:itemIds="@{itemIds}"` in the `ListView` in your layout file.
+
+Setting this will make `hasStableIds` return true which can increase performace of data changes.
+
+You can also define a different dropdown view layout by setting
+
+```java
+itemView.setLayoutRes(BindingListViewAdapter.DROP_DOWN_LAYOUT, R.layout.item_dropdown);
 ```
 
-Currently, there are `BindingListAdpater.DROP_DOWN_LAYOUT`, `BindingListAdapter.ITEM_ID` and 
-`BindingViewPagerAdapter.TITLE`. See the javadoc for more information.
+### BindingViewPagerAdapter
+
+You can set a callback to give a page title for each item in the list with
+
+```java
+adapter.setPageTitles(new PageTitles<T>() {
+    @Override
+    public CharSequence getPageTitle(int position, T item) {
+        return "Page Title";
+    }
+});
+```
+or by defining `app:pageTitles="@{pageTitles}"` in the `ViewPager` in your layout file.
+
+## Known Issues
+
+### Cannot Resolve the libraries `@BindingAdapter`'s
+
+This is likely because you are using the [android-apt](https://bitbucket.org/hvisser/android-apt) plugin which breaks this for some reason. To workaround, you can define all the adapters in a class in your project and delegate to the library ones.
+
+```java
+import android.databinding.BindingAdapter;
+import android.support.v4.view.ViewPager;
+import android.support.v7.widget.RecyclerView;
+import android.widget.ListView;
+
+import java.util.Collection;
+
+import me.tatarka.bindingcollectionadapter.BindingCollectionAdapters;
+import me.tatarka.bindingcollectionadapter.BindingListViewAdapter;
+import me.tatarka.bindingcollectionadapter.BindingViewPagerAdapter;
+import me.tatarka.bindingcollectionadapter.ItemView;
+import me.tatarka.bindingcollectionadapter.ItemViewSelector;
+import me.tatarka.bindingcollectionadapter.LayoutManagers;
+
+/**
+ * BindingAdapters from BindingCollectionAdapter, used to work around android-apt issue.
+ */
+public class CopiedBindingCollectionAdapters {
+    @BindingAdapter("items")
+    public static <T> void setItems(RecyclerView recyclerView, Collection<T> items) {
+        BindingCollectionAdapters.setItems(recyclerView, items);
+    }
+
+    @BindingAdapter("itemView")
+    public static <T> void setItemView(RecyclerView recyclerView, ItemView itemView) {
+        BindingCollectionAdapters.setItemView(recyclerView, itemView);
+    }
+
+    @BindingAdapter("itemView")
+    public static <T> void setItemViewSelector(RecyclerView recyclerView, ItemViewSelector<T> selector) {
+        BindingCollectionAdapters.setItemViewSelector(recyclerView, selector);
+    }
+
+    @BindingAdapter("layoutManager")
+    public static void setLayoutManager(RecyclerView recyclerView, LayoutManagers.LayoutManagerFactory layoutManagerFactory) {
+        BindingCollectionAdapters.setLayoutManager(recyclerView, layoutManagerFactory);
+    }
+
+    @BindingAdapter("items")
+    public static <T> void setItems(ListView listView, Collection<T> items) {
+        BindingCollectionAdapters.setItems(listView, items);
+    }
+
+    @BindingAdapter("itemIds")
+    public static <T> void setItemIds(ListView listView, BindingListViewAdapter.ItemIds<T> itemIds) {
+        BindingCollectionAdapters.setItemIds(listView, itemIds);
+    }
+
+    @BindingAdapter("itemView")
+    public static <T> void setItemView(ListView listView, ItemView itemView) {
+        BindingCollectionAdapters.setItemView(listView, itemView);
+    }
+
+    @BindingAdapter("itemView")
+    public static <T> void setItemViewSelector(ListView listView, ItemViewSelector<T> selector) {
+        BindingCollectionAdapters.setItemViewSelector(listView, selector);
+    }
+
+    @BindingAdapter("items")
+    public static <T> void setItems(ViewPager viewPager, Collection<T> items) {
+        BindingCollectionAdapters.setItems(viewPager, items);
+    }
+
+    @BindingAdapter("pageTitles")
+    public static <T> void setPageTitles(ViewPager viewPager, BindingViewPagerAdapter.PageTitles<T> pageTitles) {
+        BindingCollectionAdapters.setPageTitles(viewPager, pageTitles);
+    }
+
+    @BindingAdapter("itemView")
+    public static <T> void setItemView(ViewPager viewPager, ItemView itemView) {
+        BindingCollectionAdapters.setItemView(viewPager, itemView);
+    }
+
+    @BindingAdapter("itemView")
+    public static <T> void setItemViewSelector(ViewPager viewPager, ItemViewSelector<T> selector) {
+        BindingCollectionAdapters.setItemViewSelector(viewPager, selector);
+    }
+}
+```
