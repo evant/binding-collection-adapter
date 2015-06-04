@@ -5,6 +5,7 @@ import android.databinding.ObservableList;
 import android.view.View;
 
 import me.tatarka.bindingcollectionadapter.BaseItemViewSelector;
+import me.tatarka.bindingcollectionadapter.BindingListViewAdapter;
 import me.tatarka.bindingcollectionadapter.BindingViewPagerAdapter;
 import me.tatarka.bindingcollectionadapter.ItemView;
 import me.tatarka.bindingcollectionadapter.ItemViewSelector;
@@ -22,15 +23,6 @@ public class ViewModel {
         }
     }
 
-    public final ItemViewSelector<String> pagerItemView = new BaseItemViewSelector<String>() {
-        @Override
-        public void select(ItemView itemView, int position, String item) {
-            itemView.setBindingVariable(BR.item)
-                    .setLayoutRes(R.layout.item)
-                    .set(BindingViewPagerAdapter.TITLE, item);
-        }
-    };
-    
     public final ItemViewSelector<String> multipleItemViews = new ItemViewSelector<String>() {
         @Override
         public void select(ItemView itemView, int position, String item) {
@@ -43,20 +35,28 @@ public class ViewModel {
             return 2;
         }
     };
-
-    public final View.OnClickListener addItem = new View.OnClickListener() {
+    
+    public final BindingListViewAdapter.ItemIds<String> itemIds = new BindingListViewAdapter.ItemIds<String>() {
         @Override
-        public void onClick(View v) {
-            items.add("Item " + (items.size() + 1));
+        public int getItemId(int position, String item) {
+            return position;
         }
     };
 
-    public final View.OnClickListener removeItem = new View.OnClickListener() {
+    public final BindingViewPagerAdapter.PageTitles<String> pageTitles = new BindingViewPagerAdapter.PageTitles<String>() {
         @Override
-        public void onClick(View v) {
-            if (items.size() > 1) {
-                items.remove(items.size() - 1);
-            }
+        public CharSequence getPageTitle(int position, String item) {
+            return item;
         }
     };
+    
+    public void addItem() {
+        items.add("Item " + (items.size() + 1));
+    }
+    
+    public void removeItem() {
+        if (items.size() > 1) {
+            items.remove(items.size() - 1);
+        }
+    }
 }

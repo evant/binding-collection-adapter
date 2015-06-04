@@ -20,6 +20,7 @@ public class FragmentListView extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ListViewBinding binding = ListViewBinding.inflate(inflater, container, false);
         binding.setViewModel(viewModel);
+        binding.setListeners(new Listeners(viewModel));
         binding.executePendingBindings();
         return binding.getRoot();
     }

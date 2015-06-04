@@ -7,6 +7,10 @@
         <variable
             name="viewModel"
             type="me.tatarka.bindingcollectionadapter.sample.ViewModel" />
+
+        <variable
+            name="listeners"
+            type="me.tatarka.bindingcollectionadapter.sample.Listeners" />
     </data>
 
     <LinearLayout
@@ -20,7 +24,8 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             app:itemView="@{viewModel.singleItemView}"
-            app:items="@{viewModel.items}" />
+            app:items="@{viewModel.items}"
+            app:itemIds="@{viewModel.itemIds}"/>
 
         <LinearLayout
             style="?buttonBarStyle"
@@ -34,7 +39,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Add Item"
-                android:onClickListener="@{viewModel.addItem}"/>
+                android:onClickListener="@{listeners.addItem}"/>
 
             <Button
                 android:id="@+id/remove"
@@ -43,7 +48,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Remove Item"
-                android:onClickListener="@{viewModel.removeItem}"/>
+                android:onClickListener="@{listeners.removeItem}"/>
         </LinearLayout>
     </LinearLayout>
 </layout>

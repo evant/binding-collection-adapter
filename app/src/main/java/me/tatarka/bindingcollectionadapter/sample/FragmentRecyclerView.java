@@ -21,6 +21,7 @@ public class FragmentRecyclerView extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         RecyclerViewBinding binding = RecyclerViewBinding.inflate(inflater, container, false);
         binding.setViewModel(viewModel);
+        binding.setListeners(new Listeners(viewModel));
         binding.executePendingBindings();
         return binding.getRoot();
     }

@@ -121,9 +121,8 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingR
         }
     }
 
-    private static class WeakReferenceOnListChangedCallback<T> extends ObservableList.OnListChangedCallback<ObservableList<T>> {
+    private static class WeakReferenceOnListChangedCallback<T> extends BaseOnListChangedCallback<T> {
         final WeakReference<RecyclerView.Adapter> adapterRef;
-        final Handler handler = new Handler(Looper.getMainLooper());
 
         WeakReferenceOnListChangedCallback(RecyclerView.Adapter adapter) {
             this.adapterRef = new WeakReference<>(adapter);
@@ -135,9 +134,9 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingR
 
         @Override
         public void onChanged(ObservableList sender) {
-            handler.post(new Runnable() {
+            onMainThread(new OnMainThread() {
                 @Override
-                public void run() {
+                public void onMainThread() {
                     RecyclerView.Adapter adapter = adapterRef.get();
                     if (adapter != null) {
                         adapter.notifyDataSetChanged();
@@ -148,9 +147,9 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingR
 
         @Override
         public void onItemRangeChanged(ObservableList sender, final int positionStart, final int itemCount) {
-            handler.post(new Runnable() {
+            onMainThread(new OnMainThread() {
                 @Override
-                public void run() {
+                public void onMainThread() {
                     RecyclerView.Adapter adapter = adapterRef.get();
                     if (adapter != null) {
                         adapter.notifyItemRangeChanged(positionStart, itemCount);
@@ -161,9 +160,9 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingR
 
         @Override
         public void onItemRangeInserted(ObservableList sender, final int positionStart, final int itemCount) {
-            handler.post(new Runnable() {
+            onMainThread(new OnMainThread() {
                 @Override
-                public void run() {
+                public void onMainThread() {
                     RecyclerView.Adapter adapter = adapterRef.get();
                     if (adapter != null) {
                         adapter.notifyItemRangeInserted(positionStart, itemCount);
@@ -174,9 +173,9 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingR
 
         @Override
         public void onItemRangeMoved(ObservableList sender, final int fromPosition, final int toPosition, final int itemCount) {
-            handler.post(new Runnable() {
+            onMainThread(new OnMainThread() {
                 @Override
-                public void run() {
+                public void onMainThread() {
                     RecyclerView.Adapter adapter = adapterRef.get();
                     if (adapter != null) {
                         for (int i = 0; i < itemCount; i++) {
@@ -189,9 +188,9 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingR
 
         @Override
         public void onItemRangeRemoved(ObservableList sender, final int positionStart, final int itemCount) {
-            handler.post(new Runnable() {
+            onMainThread(new OnMainThread() {
                 @Override
-                public void run() {
+                public void onMainThread() {
                     RecyclerView.Adapter adapter = adapterRef.get();
                     if (adapter != null) {
                         adapter.notifyItemRangeRemoved(positionStart, itemCount);

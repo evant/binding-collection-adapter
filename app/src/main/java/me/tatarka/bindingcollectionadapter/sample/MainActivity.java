@@ -1,7 +1,9 @@
 package me.tatarka.bindingcollectionadapter.sample;
 
+import android.content.res.Configuration;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
@@ -13,6 +15,7 @@ import me.tatarka.bindingcollectionadapter.sample.databinding.ActivityMainBindin
 
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
+    private ActionBarDrawerToggle toggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,14 +23,15 @@ public class MainActivity extends AppCompatActivity {
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
+        setSupportActionBar(binding.toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
         
-        binding.drawerLayout.setDrawerListener(new ActionBarDrawerToggle(this, binding.drawerLayout, R.string.open_drawer, R.string.close_drawer));
+        binding.drawerLayout.setDrawerListener(toggle = new ActionBarDrawerToggle(this, binding.drawerLayout, R.string.open_drawer, R.string.close_drawer));
         
-        binding.navView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+        NavigationView.OnNavigationItemSelectedListener listener = new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
                 Fragment fragment;
@@ -52,6 +56,28 @@ public class MainActivity extends AppCompatActivity {
                 binding.drawerLayout.closeDrawers();
                 return true;
             }
-        });
+        };
+        binding.navView.setNavigationItemSelectedListener(listener);
+        
+        if (savedInstanceState == null) {
+            listener.onNavigationItemSelected(binding.navView.getMenu().getItem(0));
+        }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        toggle.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return toggle.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        toggle.syncState();
     }
 }

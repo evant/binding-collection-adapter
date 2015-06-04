@@ -8,7 +8,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.util.SparseArrayCompat;
 import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,14 +22,6 @@ import java.util.Collection;
  * changes to that list.
  */
 public class BindingViewPagerAdapter<T> extends PagerAdapter {
-    /**
-     * Pass this constant to {@link ItemView#set(String, Object)} to set a title for the given
-     * item.
-     *
-     * @see #getPageTitle(int)
-     */
-    public static final String TITLE = "title";
-
     @NonNull
     private final ItemView itemView;
     @NonNull
@@ -38,7 +29,7 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter {
     private final WeakReferenceOnListChangedCallback<T> callback = new WeakReferenceOnListChangedCallback<>(this);
     private ObservableList<T> items;
     private LayoutInflater inflater;
-    private SparseArrayCompat<CharSequence> titles = new SparseArrayCompat<>();
+    private PageTitles<T> pageTitles;
 
     /**
      * Constructs a new instance with the given {@link ItemView}.
@@ -84,14 +75,21 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter {
         }
     }
 
+    /**
+     * Sets the page titles for the adapter.
+     */
+    public void setPageTitles(@Nullable PageTitles<T> pageTitles) {
+        this.pageTitles = pageTitles;
+    }
+
     @Override
     public int getCount() {
-        return selector.viewTypeCount();
+        return items == null ? 0 : items.size();
     }
 
     @Override
     public CharSequence getPageTitle(int position) {
-        return titles.get(position);
+        return pageTitles == null ? null : pageTitles.getPageTitle(position, items.get(position));
     }
 
     @Override
@@ -102,18 +100,19 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter {
 
         T item = items.get(position);
         selector.select(itemView, position, item);
-        titles.put(position, (CharSequence) itemView.get(TITLE));
 
         ViewDataBinding binding = DataBindingUtil.inflate(inflater, itemView.getLayoutRes(), container, false);
         binding.setVariable(itemView.getBindingVariable(), item);
         binding.executePendingBindings();
+        container.addView(binding.getRoot());
+        binding.getRoot().setTag(item);
 
         return binding.getRoot();
     }
 
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
-        container.removeAllViews();
+        container.removeView((View) object);
     }
 
     @Override
@@ -123,12 +122,17 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter {
 
     @Override
     public int getItemPosition(Object object) {
+        T item = (T) ((View) object).getTag();
+        for (int i = 0 ; i < items.size(); i++) {
+            if (item == items.get(i)) {
+                return i;
+            }
+        }
         return POSITION_NONE;
     }
 
-    private static class WeakReferenceOnListChangedCallback<T> extends ObservableList.OnListChangedCallback<ObservableList<T>> {
+    private static class WeakReferenceOnListChangedCallback<T> extends BaseOnListChangedCallback<T> {
         final WeakReference<PagerAdapter> adapterRef;
-        final Handler handler = new Handler(Looper.getMainLooper());
 
         WeakReferenceOnListChangedCallback(PagerAdapter adapter) {
             this.adapterRef = new WeakReference<>(adapter);
@@ -136,9 +140,9 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter {
 
         @Override
         public void onChanged(ObservableList sender) {
-            handler.post(new Runnable() {
+            onMainThread(new OnMainThread() {
                 @Override
-                public void run() {
+                public void onMainThread() {
                     PagerAdapter adapter = adapterRef.get();
                     if (adapter != null) {
                         adapter.notifyDataSetChanged();
@@ -166,5 +170,9 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter {
         public void onItemRangeRemoved(ObservableList sender, int positionStart, int itemCount) {
             onChanged(sender);
         }
+    }
+
+    public interface PageTitles<T> {
+        CharSequence getPageTitle(int position, T item);
     }
 }

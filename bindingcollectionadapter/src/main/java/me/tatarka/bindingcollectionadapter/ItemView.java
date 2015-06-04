@@ -15,7 +15,7 @@ public final class ItemView {
     @LayoutRes
     int layoutRes;
 
-    private ArrayMap<String, Object> extras;
+    private ArrayMap<String, Integer> extraLayouts;
 
     /**
      * Constructs a new {@code ItemView} with the given binding variable and layout res.
@@ -27,6 +27,17 @@ public final class ItemView {
         return new ItemView()
                 .setBindingVariable(bindingVariable)
                 .setLayoutRes(layoutRes);
+    }
+
+    /**
+     * A convenience method for {@code ItemView.setBindingVariable(int).setLayoutRes(int)}.
+     *
+     * @return the {@code ItemView} for chaining
+     */
+    public ItemView set(int bindingVariable, @LayoutRes int layoutRes) {
+        this.bindingVariable = bindingVariable;
+        this.layoutRes = layoutRes;
+        return this;
     }
 
     /**
@@ -51,29 +62,17 @@ public final class ItemView {
     }
 
     /**
-     * Set an arbitrary int value, for example {@link BindingListViewAdapter#ITEM_ID} or {@link
-     * BindingListViewAdapter#DROP_DOWN_LAYOUT}.
+     * Set an additional layout res value with the given key. This is used for adapters that want to
+     * show the same content in multiple ways.
      *
      * @return the {@code ItemView} for chaining
+     * @see BindingListViewAdapter#DROP_DOWN_LAYOUT
      */
-    public ItemView set(String key, int value) {
-        if (extras == null) {
-            extras = new ArrayMap<>();
+    public ItemView setLayoutRes(String key, @LayoutRes int layoutRes) {
+        if (extraLayouts == null) {
+            extraLayouts = new ArrayMap<>();
         }
-        extras.put(key, value);
-        return this;
-    }
-
-    /**
-     * Set an arbitrary value, for example {@link BindingViewPagerAdapter#TITLE}.
-     *
-     * @return the {@code ItemView} for chaining
-     */
-    public ItemView set(String key, Object value) {
-        if (extras == null) {
-            extras = new ArrayMap<>();
-        }
-        extras.put(key, value);
+        extraLayouts.put(key, layoutRes);
         return this;
     }
 
@@ -87,26 +86,18 @@ public final class ItemView {
     }
 
     /**
-     * Get an int value set with {@link #set(String, int)}, or 0 if it does not exist.
+     * Get an additional layout res set with {@link #setLayoutRes(String, int)}, or 0 if it doesn't
+     * exist.
      */
-    public int getInt(String key) {
-        if (extras == null) {
+    @LayoutRes
+    public int getLayoutRes(String key) {
+        if (extraLayouts == null) {
             return 0;
         }
-        Object value = extras.get(key);
+        Integer value = extraLayouts.get(key);
         if (value == null) {
             return 0;
         }
-        return (int) value;
-    }
-
-    /**
-     * Get a value set with {@link #set(String, Object)} or null if it does not exist.
-     */
-    public Object get(String key) {
-        if (extras == null) {
-            return null;
-        }
-        return extras.get(key);
+        return value;
     }
 }
