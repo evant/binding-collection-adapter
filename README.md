@@ -1,5 +1,5 @@
 # BindingCollectionAdapter
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/me.tatarka/binding-collection-adapter/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/me.tatarka/binding-collection-adapter)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/me.tatarka/bindingcollectionadapter/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/me.tatarka/bindingcollectionadapter)
 
 Easy way to bind collections to listviews and recyclerviews with the new [Android Data Binding framework](https://developer.android.com/tools/data-binding/guide.html).
 
