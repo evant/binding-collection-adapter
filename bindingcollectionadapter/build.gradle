@@ -1,5 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.android.databinding'
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'signing'
 
 android {
     compileSdkVersion 22
@@ -25,5 +27,78 @@ android {
 
 dependencies {
     compile 'com.android.support:support-v4:22.2.0'
-    compile 'com.android.support:recyclerview-v7:22.0.0'
+    compile 'com.android.support:recyclerview-v7:22.2.0'
+}
+
+task androidJavadocs(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+}
+
+task androidJavadocsJar(type: Jar) {
+    classifier = 'javadoc'
+    from androidJavadocs.destinationDir
+}
+task androidSourcesJar(type: Jar) {
+    classifier = 'sources'
+    from android.sourceSets.main.java.srcDirs
+}
+
+artifacts {
+    archives androidSourcesJar
+    archives androidJavadocsJar
+}
+
+if (project.hasProperty('sonatype.username') && project.hasProperty('sonatype.password')) {
+    signing {
+        sign configurations.archives
+    }
+    
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                beforeDeployment { deployment -> signing.signPom(deployment) }
+
+                def repoUrl
+                if (project.version.endsWith("SNAPSHOT")) {
+                    repoUrl = "https://oss.sonatype.org/content/repositories/snapshots"
+                } else {
+                    repoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+                }
+
+                repository(url: repoUrl) {
+                    authentication(
+                            userName: project.getProperty('sonatype.username'),
+                            password: project.getProperty('sonatype.password'))
+                }
+
+                pom.project {
+                    name 'BindingCollectionAdapter'
+                    packaging 'aar'
+                    description 'Easy way to bind collections to listviews and recyclerviews with the new Android Data Binding framework'
+                    url 'https://github.com/evant/binding-collection-adapter'
+
+                    scm {
+                        url 'git@github.com:evant/binding-collection-adapter.git'
+                        connection 'scm:git:git@github.com:evant/binding-collection-adapter.git'
+                        developerConnection 'scm:git:git@github.com:evant/binding-collection-adapter.git'
+                    }
+
+                    licenses {
+                        license {
+                            name 'The Apache Software License, Version 2.0'
+                            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                            distribution 'repo'
+                        }
+                    }
+
+                    developers {
+                        developer {
+                            id 'evant'
+                            name 'Evan Tatarka'
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

@@ -1,6 +1,12 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.android.databinding'
 
+repositories {
+    maven {
+        url 'https://oss.sonatype.org/content/repositories/snapshots'
+    }
+}
+
 android {
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
