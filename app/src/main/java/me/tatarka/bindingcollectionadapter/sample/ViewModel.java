@@ -38,7 +38,7 @@ public class ViewModel {
     
     public final BindingListViewAdapter.ItemIds<String> itemIds = new BindingListViewAdapter.ItemIds<String>() {
         @Override
-        public int getItemId(int position, String item) {
+        public long getItemId(int position, String item) {
             return position;
         }
     };

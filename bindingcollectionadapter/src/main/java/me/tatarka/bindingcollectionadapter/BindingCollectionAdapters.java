@@ -66,6 +66,8 @@ public class BindingCollectionAdapters {
         BindingListViewAdapter<T> adapter = (BindingListViewAdapter<T>) listView.getAdapter();
         if (adapter != null) {
             adapter.setItemIds(itemIds);
+            // We need to set the adapter again to force hasStableIds to be rechecked.
+            listView.setAdapter(adapter);
         } else {
             ListViewState<T> state = (ListViewState<T>) listView.getTag();
             if (state == null) state = new ListViewState<>();

@@ -141,20 +141,23 @@ public class BindingListViewAdapter<T> extends BaseAdapter {
         }
 
         int viewType = getItemViewType(position);
-
-        ViewDataBinding binding;
-        if (convertView == null) {
-            int layoutRes = dropDownLayouts[viewType];
-            binding = DataBindingUtil.inflate(inflater, layoutRes, parent, false);
-            binding.getRoot().setTag(binding);
+        int layoutRes = dropDownLayouts[viewType];
+        if (layoutRes == 0) {
+            return super.getDropDownView(position, convertView, parent);
         } else {
-            binding = (ViewDataBinding) convertView.getTag();
+            ViewDataBinding binding;
+            if (convertView == null) {
+                binding = DataBindingUtil.inflate(inflater, layoutRes, parent, false);
+                binding.getRoot().setTag(binding);
+            } else {
+                binding = (ViewDataBinding) convertView.getTag();
+            }
+
+            T item = items.get(position);
+            binding.setVariable(itemView.getBindingVariable(), item);
+
+            return binding.getRoot();
         }
-
-        T item = items.get(position);
-        binding.setVariable(itemView.getBindingVariable(), item);
-
-        return binding.getRoot();
     }
 
     @Override
@@ -172,6 +175,11 @@ public class BindingListViewAdapter<T> extends BaseAdapter {
         layouts[firstEmpty] = itemView.layoutRes;
         dropDownLayouts[firstEmpty] = itemView.getLayoutRes(DROP_DOWN_LAYOUT);
         return firstEmpty;
+    }
+
+    @Override
+    public boolean hasStableIds() {
+        return itemIds != null;
     }
 
     @Override
@@ -224,6 +232,6 @@ public class BindingListViewAdapter<T> extends BaseAdapter {
     }
 
     public interface ItemIds<T> {
-        int getItemId(int position, T item);
+        long getItemId(int position, T item);
     }
 }
