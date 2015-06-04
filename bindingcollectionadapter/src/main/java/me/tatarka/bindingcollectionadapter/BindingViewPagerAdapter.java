@@ -106,14 +106,6 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter {
         binding.executePendingBindings();
         container.addView(binding.getRoot());
         binding.getRoot().setTag(item);
-        
-        setPageTitles(new PageTitles<T>() {
-            @Override
-            public CharSequence getPageTitle(int position, T item) {
-                return "Page Title";
-            }
-        });
-
         return binding.getRoot();
     }
 
