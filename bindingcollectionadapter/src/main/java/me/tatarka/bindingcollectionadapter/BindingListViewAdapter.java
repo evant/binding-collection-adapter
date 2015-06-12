@@ -14,7 +14,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * A {@link BaseAdapter} that binds items to layouts using the given {@link ItemView} or {@link
@@ -35,6 +37,8 @@ public class BindingListViewAdapter<T> extends BaseAdapter {
     @NonNull
     private final ItemViewSelector<T> selector;
     private final WeakReferenceOnListChangedCallback<T> callback = new WeakReferenceOnListChangedCallback<>(this);
+    // This is what the listview sees. It will only be modified on the main thread.
+    private final List<T> boundItems = new ArrayList<>();
     private ObservableList<T> items;
     private int[] layouts;
     private int[] dropDownLayouts;
@@ -69,11 +73,13 @@ public class BindingListViewAdapter<T> extends BaseAdapter {
 
         if (this.items != null) {
             this.items.removeOnListChangedCallback(callback);
+            this.boundItems.clear();
             notifyDataSetChanged();
         }
 
         if (items instanceof ObservableList) {
             this.items = (ObservableList<T>) items;
+            this.boundItems.addAll(items);
             notifyDataSetChanged();
             this.items.addOnListChangedCallback(callback);
         } else if (items != null) {
@@ -98,17 +104,17 @@ public class BindingListViewAdapter<T> extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return items == null ? 0 : items.size();
+        return boundItems.size();
     }
 
     @Override
     public T getItem(int position) {
-        return items.get(position);
+        return boundItems.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return itemIds == null ? position : itemIds.getItemId(position, items.get(position));
+        return itemIds == null ? position : itemIds.getItemId(position, boundItems.get(position));
     }
 
     @Override
@@ -128,7 +134,7 @@ public class BindingListViewAdapter<T> extends BaseAdapter {
             binding = (ViewDataBinding) convertView.getTag();
         }
 
-        T item = items.get(position);
+        T item = boundItems.get(position);
         binding.setVariable(itemView.getBindingVariable(), item);
 
         return binding.getRoot();
@@ -153,7 +159,7 @@ public class BindingListViewAdapter<T> extends BaseAdapter {
                 binding = (ViewDataBinding) convertView.getTag();
             }
 
-            T item = items.get(position);
+            T item = boundItems.get(position);
             binding.setVariable(itemView.getBindingVariable(), item);
 
             return binding.getRoot();
@@ -162,7 +168,7 @@ public class BindingListViewAdapter<T> extends BaseAdapter {
 
     @Override
     public int getItemViewType(int position) {
-        selector.select(itemView, position, items.get(position));
+        selector.select(itemView, position, boundItems.get(position));
         int firstEmpty = 0;
         for (int i = 0; i < layouts.length; i++) {
             if (itemView.layoutRes == layouts[i]) {
@@ -191,19 +197,26 @@ public class BindingListViewAdapter<T> extends BaseAdapter {
     }
 
     private static class WeakReferenceOnListChangedCallback<T> extends BaseOnListChangedCallback<T> {
-        final WeakReference<BaseAdapter> adapterRef;
+        final WeakReference<BindingListViewAdapter<T>> adapterRef;
 
-        WeakReferenceOnListChangedCallback(BaseAdapter adapter) {
+        WeakReferenceOnListChangedCallback(BindingListViewAdapter<T> adapter) {
             this.adapterRef = new WeakReference<>(adapter);
         }
 
         @Override
         public void onChanged(ObservableList sender) {
+            BindingListViewAdapter<T> adapter = adapterRef.get();
+            if (adapter == null) {
+                return;
+            }
+            final List<T> changedItems = new ArrayList<>(adapter.items);
             onMainThread(new OnMainThread() {
                 @Override
                 public void onMainThread() {
-                    BaseAdapter adapter = adapterRef.get();
+                    BindingListViewAdapter<T> adapter = adapterRef.get();
                     if (adapter != null) {
+                        adapter.boundItems.clear();
+                        adapter.boundItems.addAll(changedItems);
                         adapter.notifyDataSetChanged();
                     }
                 }

@@ -14,7 +14,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * A {@link PagerAdapter} that binds items to layouts using the given {@link ItemView} or {@link
@@ -27,6 +29,8 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter {
     @NonNull
     private final ItemViewSelector<T> selector;
     private final WeakReferenceOnListChangedCallback<T> callback = new WeakReferenceOnListChangedCallback<>(this);
+    // This is what the viewpager sees. It will only be modified on the main thread.
+    private final List<T> boundItems = new ArrayList<>();
     private ObservableList<T> items;
     private LayoutInflater inflater;
     private PageTitles<T> pageTitles;
@@ -59,11 +63,13 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter {
 
         if (this.items != null) {
             this.items.removeOnListChangedCallback(callback);
+            this.boundItems.clear();
             notifyDataSetChanged();
         }
 
         if (items instanceof ObservableList) {
             this.items = (ObservableList<T>) items;
+            this.boundItems.addAll(items);
             notifyDataSetChanged();
             this.items.addOnListChangedCallback(callback);
         } else if (items != null) {
@@ -84,12 +90,12 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter {
 
     @Override
     public int getCount() {
-        return items == null ? 0 : items.size();
+        return boundItems.size();
     }
 
     @Override
     public CharSequence getPageTitle(int position) {
-        return pageTitles == null ? null : pageTitles.getPageTitle(position, items.get(position));
+        return pageTitles == null ? null : pageTitles.getPageTitle(position, boundItems.get(position));
     }
 
     @Override
@@ -98,7 +104,7 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter {
             inflater = LayoutInflater.from(container.getContext());
         }
 
-        T item = items.get(position);
+        T item = boundItems.get(position);
         selector.select(itemView, position, item);
 
         ViewDataBinding binding = DataBindingUtil.inflate(inflater, itemView.getLayoutRes(), container, false);
@@ -122,8 +128,8 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter {
     @Override
     public int getItemPosition(Object object) {
         T item = (T) ((View) object).getTag();
-        for (int i = 0 ; i < items.size(); i++) {
-            if (item == items.get(i)) {
+        for (int i = 0 ; i < boundItems.size(); i++) {
+            if (item == boundItems.get(i)) {
                 return i;
             }
         }
@@ -131,19 +137,26 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter {
     }
 
     private static class WeakReferenceOnListChangedCallback<T> extends BaseOnListChangedCallback<T> {
-        final WeakReference<PagerAdapter> adapterRef;
+        final WeakReference<BindingViewPagerAdapter<T>> adapterRef;
 
-        WeakReferenceOnListChangedCallback(PagerAdapter adapter) {
+        WeakReferenceOnListChangedCallback(BindingViewPagerAdapter<T> adapter) {
             this.adapterRef = new WeakReference<>(adapter);
         }
 
         @Override
         public void onChanged(ObservableList sender) {
+            BindingViewPagerAdapter<T> adapter = adapterRef.get();
+            if (adapter == null) {
+                return;
+            }
+            final List<T> changedItems = new ArrayList<>(adapter.items);
             onMainThread(new OnMainThread() {
                 @Override
                 public void onMainThread() {
-                    PagerAdapter adapter = adapterRef.get();
+                    BindingViewPagerAdapter<T> adapter = adapterRef.get();
                     if (adapter != null) {
+                        adapter.boundItems.clear();
+                        adapter.boundItems.addAll(changedItems);
                         adapter.notifyDataSetChanged();
                     }
                 }
