@@ -101,8 +101,15 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingR
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
-        T item = boundItems.get(position);
-        viewHolder.binding.setVariable(itemView.getBindingVariable(), item);
+        if (itemView.getBindingVariable() != ItemView.BINDING_VARIABLE_NONE) {
+            T item = boundItems.get(position);
+            boolean result = viewHolder.binding.setVariable(itemView.getBindingVariable(), item);
+            if (!result) {
+                String layoutName = viewHolder.itemView.getResources().getResourceName(itemView.getLayoutRes());
+                throw new IllegalStateException("Could not bind variable on layout '" + layoutName + "'");
+            }
+            viewHolder.binding.executePendingBindings();
+        }
     }
 
     @Override

@@ -12,11 +12,11 @@ import me.tatarka.bindingcollectionadapter.ItemViewSelector;
  * Created by evan on 5/31/15.
  */
 public class ViewModel {
-    public final ObservableList<String> items = new ObservableArrayList<>();
+    public final ObservableList<ItemViewModel> items = new ObservableArrayList<>();
 
     {
         for (int i = 0; i < 3; i++) {
-            items.add("Item " + (i + 1));
+            items.add(new ItemViewModel(i));
         }
     }
 
@@ -28,9 +28,9 @@ public class ViewModel {
     /**
      * ItemView of multiple types based on the data.
      */
-    public final ItemViewSelector<String> multipleItemViews = new ItemViewSelector<String>() {
+    public final ItemViewSelector<ItemViewModel> multipleItemViews = new ItemViewSelector<ItemViewModel>() {
         @Override
-        public void select(ItemView itemView, int position, String item) {
+        public void select(ItemView itemView, int position, ItemViewModel item) {
             itemView.setBindingVariable(BR.item)
                     .setLayoutRes(position == 0 ? R.layout.item_header : R.layout.item);
         }
@@ -45,9 +45,9 @@ public class ViewModel {
     /**
      * Define stable item ids
      */
-    public final BindingListViewAdapter.ItemIds<String> itemIds = new BindingListViewAdapter.ItemIds<String>() {
+    public final BindingListViewAdapter.ItemIds<ItemViewModel> itemIds = new BindingListViewAdapter.ItemIds<ItemViewModel>() {
         @Override
-        public long getItemId(int position, String item) {
+        public long getItemId(int position, ItemViewModel item) {
             return position;
         }
     };
@@ -55,15 +55,15 @@ public class ViewModel {
     /**
      * Define page titles for a ViewPager
      */
-    public final BindingViewPagerAdapter.PageTitles<String> pageTitles = new BindingViewPagerAdapter.PageTitles<String>() {
+    public final BindingViewPagerAdapter.PageTitles<ItemViewModel> pageTitles = new BindingViewPagerAdapter.PageTitles<ItemViewModel>() {
         @Override
-        public CharSequence getPageTitle(int position, String item) {
-            return item;
+        public CharSequence getPageTitle(int position, ItemViewModel item) {
+            return "Item " + (item.getIndex() + 1);
         }
     };
 
     public void addItem() {
-        items.add("Item " + (items.size() + 1));
+        items.add(new ItemViewModel(items.size()));
     }
 
     public void removeItem() {

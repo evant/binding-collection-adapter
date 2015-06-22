@@ -11,6 +11,13 @@ import android.support.v4.util.ArrayMap;
  * item types are needed.
  */
 public final class ItemView {
+    /**
+     * Use this constant as the {@code bindingVariable} to not bind any variable to the layout. This
+     * is useful if no data is needed for that layout, like a static footer or loading indicator for
+     * example.
+     */
+    public static final int BINDING_VARIABLE_NONE = 0;
+
     int bindingVariable;
     @LayoutRes
     int layoutRes;

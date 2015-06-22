@@ -4,8 +4,6 @@ import android.databinding.DataBindingUtil;
 import android.databinding.ObservableArrayList;
 import android.databinding.ObservableList;
 import android.databinding.ViewDataBinding;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
@@ -108,8 +106,16 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter {
         selector.select(itemView, position, item);
 
         ViewDataBinding binding = DataBindingUtil.inflate(inflater, itemView.getLayoutRes(), container, false);
-        binding.setVariable(itemView.getBindingVariable(), item);
-        binding.executePendingBindings();
+
+        if (itemView.getBindingVariable() != ItemView.BINDING_VARIABLE_NONE) {
+            boolean result = binding.setVariable(itemView.getBindingVariable(), item);
+            if (!result) {
+                String layoutName = container.getResources().getResourceName(itemView.getLayoutRes());
+                throw new IllegalStateException("Could not bind variable on layout '" + layoutName + "'");
+            }
+            binding.executePendingBindings();
+        }
+
         container.addView(binding.getRoot());
         binding.getRoot().setTag(item);
         return binding.getRoot();
@@ -128,7 +134,7 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter {
     @Override
     public int getItemPosition(Object object) {
         T item = (T) ((View) object).getTag();
-        for (int i = 0 ; i < boundItems.size(); i++) {
+        for (int i = 0; i < boundItems.size(); i++) {
             if (item == boundItems.get(i)) {
                 return i;
             }
