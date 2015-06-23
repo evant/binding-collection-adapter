@@ -20,7 +20,7 @@ import java.util.List;
  * {@link ItemViewSelector}. If you give it an {@link ObservableList} it will also updated itself
  * based on changes to that list.
  */
-public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingRecyclerViewAdapter.ViewHolder> {
+public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingRecyclerViewAdapter.ViewHolder> implements BindingCollectionAdapter<T> {
     @NonNull
     private final ItemView itemView;
     @NonNull
@@ -30,6 +30,7 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingR
     private final List<T> boundItems = new ArrayList<>();
     private ObservableList<T> items;
     private LayoutInflater inflater;
+    private BindingCollectionListener<T> bindingCollectionListener;
 
     /**
      * Constructs a new instance with the given {@link ItemView}.
@@ -47,11 +48,7 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingR
         this.selector = selector;
     }
 
-    /**
-     * Sets the adapter's items. These items will be displayed based on the {@link ItemView} or
-     * {@link ItemViewSelector}. If you pass in an {@link ObservableList} the adapter will also
-     * update itself based on that list's changes.
-     */
+    @Override
     public void setItems(@Nullable Collection<T> items) {
         if (this.items == items) {
             return;
@@ -77,8 +74,14 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingR
         }
     }
 
+    @Override
     public ObservableList<T> getItems() {
         return items;
+    }
+    
+    @Override
+    public void setBindingCollectionListener(@Nullable BindingCollectionListener<T> listener) {
+        this.bindingCollectionListener = listener;
     }
 
     @Override
@@ -96,6 +99,9 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingR
         }
 
         ViewDataBinding binding = DataBindingUtil.inflate(inflater, layoutId, viewGroup, false);
+        if (bindingCollectionListener != null) {
+            bindingCollectionListener.onBindingCreated(binding);
+        }
         return new ViewHolder(binding);
     }
 
@@ -109,6 +115,9 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingR
                 throw new IllegalStateException("Could not bind variable on layout '" + layoutName + "'");
             }
             viewHolder.binding.executePendingBindings();
+            if (bindingCollectionListener != null) {
+                bindingCollectionListener.onBindingBound(viewHolder.binding, position, item);
+            }
         }
     }
 

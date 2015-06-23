@@ -21,7 +21,7 @@ import java.util.List;
  * ItemViewSelector}. If you give it an {@link ObservableList} it will also updated itself based on
  * changes to that list.
  */
-public class BindingViewPagerAdapter<T> extends PagerAdapter {
+public class BindingViewPagerAdapter<T> extends PagerAdapter implements BindingCollectionAdapter<T> {
     @NonNull
     private final ItemView itemView;
     @NonNull
@@ -32,6 +32,7 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter {
     private ObservableList<T> items;
     private LayoutInflater inflater;
     private PageTitles<T> pageTitles;
+    private BindingCollectionListener<T> bindingCollectionListener;
 
     /**
      * Constructs a new instance with the given {@link ItemView}.
@@ -49,11 +50,7 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter {
         this.selector = selector;
     }
 
-    /**
-     * Sets the adapter's items. These items will be displayed based on the {@link ItemView} or
-     * {@link ItemViewSelector}. If you pass in an {@link ObservableList} the adapter will also
-     * update itself based on that list's changes.
-     */
+    @Override
     public void setItems(@Nullable Collection<T> items) {
         if (this.items == items) {
             return;
@@ -77,6 +74,16 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter {
         } else {
             this.items = null;
         }
+    }
+
+    @Override
+    public ObservableList<T> getItems() {
+        return items;
+    }
+
+    @Override
+    public void setBindingCollectionListener(BindingCollectionListener<T> listener) {
+        this.bindingCollectionListener = listener;
     }
 
     /**
@@ -106,7 +113,10 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter {
         selector.select(itemView, position, item);
 
         ViewDataBinding binding = DataBindingUtil.inflate(inflater, itemView.getLayoutRes(), container, false);
-
+        if (bindingCollectionListener != null) {
+            bindingCollectionListener.onBindingCreated(binding);
+        }
+        
         if (itemView.getBindingVariable() != ItemView.BINDING_VARIABLE_NONE) {
             boolean result = binding.setVariable(itemView.getBindingVariable(), item);
             if (!result) {
@@ -114,6 +124,9 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter {
                 throw new IllegalStateException("Could not bind variable on layout '" + layoutName + "'");
             }
             binding.executePendingBindings();
+            if (bindingCollectionListener != null) {
+                bindingCollectionListener.onBindingBound(binding, position, item);
+            }
         }
 
         container.addView(binding.getRoot());

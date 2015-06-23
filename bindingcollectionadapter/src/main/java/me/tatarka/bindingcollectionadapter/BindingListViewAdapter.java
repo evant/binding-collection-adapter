@@ -21,7 +21,7 @@ import java.util.List;
  * ItemViewSelector}. If you give it an {@link ObservableList} it will also updated itself based on
  * changes to that list.
  */
-public class BindingListViewAdapter<T> extends BaseAdapter {
+public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCollectionAdapter<T> {
     /**
      * Pass this constant to {@link ItemView#setLayoutRes(String, int)} to set a drop down layout
      * res for the given item.
@@ -42,6 +42,7 @@ public class BindingListViewAdapter<T> extends BaseAdapter {
     private int[] dropDownLayouts;
     private LayoutInflater inflater;
     private ItemIds<T> itemIds;
+    private BindingCollectionListener<T> bindingCollectionListener;
 
     /**
      * Constructs a new instance with the given {@link ItemView}.
@@ -59,11 +60,7 @@ public class BindingListViewAdapter<T> extends BaseAdapter {
         this.selector = selector;
     }
 
-    /**
-     * Sets the adapter's items. These items will be displayed based on the {@link ItemView} or
-     * {@link ItemViewSelector}. If you pass in an {@link ObservableList} the adapter will also
-     * update itself based on that list's changes.
-     */
+    @Override
     public void setItems(@Nullable Collection<T> items) {
         if (this.items == items) {
             return;
@@ -88,16 +85,22 @@ public class BindingListViewAdapter<T> extends BaseAdapter {
             this.items = null;
         }
     }
+    
+    @Override
+    public void setBindingCollectionListener(@Nullable BindingCollectionListener<T> listener) {
+        this.bindingCollectionListener = listener;
+    }
+    
+    @Override
+    public ObservableList<T> getItems() {
+        return items;
+    }
 
     /**
      * Set the item id's for the items.
      */
     public void setItemIds(@Nullable ItemIds<T> itemIds) {
         this.itemIds = itemIds;
-    }
-
-    public ObservableList<T> getItems() {
-        return items;
     }
 
     @Override
@@ -128,6 +131,9 @@ public class BindingListViewAdapter<T> extends BaseAdapter {
             int layoutRes = layouts[viewType];
             binding = DataBindingUtil.inflate(inflater, layoutRes, parent, false);
             binding.getRoot().setTag(binding);
+            if (bindingCollectionListener != null) {
+                bindingCollectionListener.onBindingCreated(binding);
+            }
         } else {
             binding = (ViewDataBinding) convertView.getTag();
         }
@@ -140,6 +146,9 @@ public class BindingListViewAdapter<T> extends BaseAdapter {
                 throw new IllegalStateException("Could not bind variable on layout '" + layoutName + "'");
             }
             binding.executePendingBindings();
+            if (bindingCollectionListener != null) {
+                bindingCollectionListener.onBindingBound(binding, position, item);
+            }
         }
 
         return binding.getRoot();
