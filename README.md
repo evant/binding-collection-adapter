@@ -6,7 +6,7 @@ Easy way to bind collections to listviews and recyclerviews with the new [Androi
 ## Download
 
 ```groovy
-compile 'me.tatarka:bindingcollectionadapter:0.2'
+compile 'me.tatarka:bindingcollectionadapter:0.3'
 ```
 
 ## Usage
@@ -67,6 +67,7 @@ name you passed into the `ItemView`
     </data>
     
     <TextView
+      android:id="@+id/text"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:text="@{item}"/>
@@ -82,8 +83,7 @@ it to the view with `app:itemView`.
 public final ItemViewSelector<String> itemView = new BaseItemViewSelector<String>() {
     @Override
     public void select(ItemView itemView, int position, String item) {
-        itemView.setBindingVariable(BR.item)
-                .setLayoutRes(position == 0 ? R.layout.item_header : R.layout.item);
+        itemView.set(BR.item, position == 0 ? R.layout.item_header : R.layout.item);
     }
     
     // This is only needed if you are using a BindingListViewAdapter
@@ -94,7 +94,7 @@ public final ItemViewSelector<String> itemView = new BaseItemViewSelector<String
 };
 ```
 
-Note that `select` is called many times so you should not do any complex processing in there.
+Note that `select` is called many times so you should not do any complex processing in there. If you don't need to bind an item at a specific position (a static footer for example) you can use `ItemView.BINDING_VARIABLE_NONE` as the binding varibale.
 
 ## Additonal Adapter Configuration
 
@@ -133,6 +133,25 @@ adapter.setPageTitles(new PageTitles<T>() {
 });
 ```
 or by defining `app:pageTitles="@{pageTitles}"` in the `ViewPager` in your layout file.
+
+## Directly manipulationg views
+
+Data binding is awesome and all, but you may run into a case where you simply need to manipulate the views directly. You can do this without throwing away the whole of databinding by setting a `BindingCollectionListener` on any of the adapters above. It will be called with the `ViewDataBinding` when it's created or bound. You can then cast it to the specific subclass based on the layout and directly access all the view fields.
+
+```java
+((BindingCollectionAdapter<String>) binding.list.getAdapter()).setBindingCollectionListener(new BaseBindingCollectionListener<String>() {
+    @Override
+    public void onBindingCreated(ViewDataBinding binding) {
+        ItemBinding itemBinding = (ItemBinding) binding;
+        TextView text = itemBinding.text;
+        // Do whatever you need
+    }
+
+    @Override
+    public void onBindingBound(ViewDataBinding binding, int position, String item) {
+    }
+});
+```
 
 ## Known Issues
 
