@@ -6,7 +6,7 @@ Easy way to bind collections to listviews and recyclerviews with the new [Androi
 ## Download
 
 ```groovy
-compile 'me.tatarka:bindingcollectionadapter:0.3'
+compile 'me.tatarka:bindingcollectionadapter:0.4'
 ```
 
 ## Usage
@@ -151,6 +151,55 @@ Data binding is awesome and all, but you may run into a case where you simply ne
     public void onBindingBound(ViewDataBinding binding, int position, String item) {
     }
 });
+```
+
+## Adding Bindings for a custom view
+
+If you have a custom view that takes an existing adapter type, you can cosntruct your binding adpaters, relying on the lib to do the heavy lifting. There is a little boilerplate as you have to handle various orderings of state getting set.
+
+```java
+public class MyBindingAdapters {
+    @SuppressWarnings("unchecked")
+    @BindingAdapter("items")
+    public static <T> void setItems(VerticalViewPager viewPager, Collection<T> items) {
+        BindingViewPagerAdapter<T> adapter = (BindingViewPagerAdapter<T>) viewPager.getAdapter();
+        if (adapter != null) {
+            adapter.setItems(items);
+        } else {
+            VerticalViewPagerState<T> viewState = (VerticalViewPagerState<T>) BindingCollectionAdapters.getViewState(viewPager, verticalViewPagerStateFactory);
+            viewState.items = items;
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    @BindingAdapter("itemView")
+    public static <T> void setItemView(VerticalViewPager viewPager, ItemView itemView) {
+        VerticalViewPagerState<T> viewState = (VerticalViewPagerState<T>) BindingCollectionAdapters.getViewState(viewPager, verticalViewPagerStateFactory);
+        BindingViewPagerAdapter<T> adapter = new BindingViewPagerAdapter<>(itemView);
+        adapter.setItems(viewState.items);
+        viewPager.setAdapter(adapter);
+    }
+
+    @SuppressWarnings("unchecked")
+    @BindingAdapter("itemView")
+    public static <T> void setItemViewSelector(VerticalViewPager viewPager, ItemViewSelector<T> selector) {
+        VerticalViewPagerState<T> viewState = (VerticalViewPagerState<T>) BindingCollectionAdapters.getViewState(viewPager, verticalViewPagerStateFactory);
+        BindingViewPagerAdapter<T> adapter = new BindingViewPagerAdapter<>(selector);
+        adapter.setItems(viewState.items);
+        viewPager.setAdapter(adapter);
+    }
+
+    private static ViewStateFactory<VerticalViewPagerState> verticalViewPagerStateFactory = new ViewStateFactory<VerticalViewPagerState>() {
+        @Override
+        public VerticalViewPagerState newViewState() {
+            return new VerticalViewPagerState<>();
+        }
+    };
+
+    private static class VerticalViewPagerState<T> extends ViewState<T> {
+      // You can add extra state for additional bindings here if you need.
+    }
+}
 ```
 
 ## Known Issues
