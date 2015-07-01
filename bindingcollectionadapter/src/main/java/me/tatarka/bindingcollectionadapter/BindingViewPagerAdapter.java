@@ -32,7 +32,6 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter implements BindingC
     private ObservableList<T> items;
     private LayoutInflater inflater;
     private PageTitles<T> pageTitles;
-    private BindingCollectionListener<T> bindingCollectionListener;
 
     /**
      * Constructs a new instance with the given {@link ItemView}.
@@ -82,8 +81,13 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter implements BindingC
     }
 
     @Override
-    public void setBindingCollectionListener(BindingCollectionListener<T> listener) {
-        this.bindingCollectionListener = listener;
+    public void onBindingCreated(ViewDataBinding binding) {
+        
+    }
+
+    @Override
+    public void onBindingBound(ViewDataBinding binding, int position, T item) {
+
     }
 
     /**
@@ -113,9 +117,7 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter implements BindingC
         selector.select(itemView, position, item);
 
         ViewDataBinding binding = DataBindingUtil.inflate(inflater, itemView.getLayoutRes(), container, false);
-        if (bindingCollectionListener != null) {
-            bindingCollectionListener.onBindingCreated(binding);
-        }
+        onBindingCreated(binding);
         
         if (itemView.getBindingVariable() != ItemView.BINDING_VARIABLE_NONE) {
             boolean result = binding.setVariable(itemView.getBindingVariable(), item);
@@ -124,9 +126,7 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter implements BindingC
                 throw new IllegalStateException("Could not bind variable on layout '" + layoutName + "'");
             }
             binding.executePendingBindings();
-            if (bindingCollectionListener != null) {
-                bindingCollectionListener.onBindingBound(binding, position, item);
-            }
+            onBindingBound(binding, position, item);
         }
 
         container.addView(binding.getRoot());

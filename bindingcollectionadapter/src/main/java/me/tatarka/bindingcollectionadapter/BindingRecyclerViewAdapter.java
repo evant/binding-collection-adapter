@@ -30,7 +30,6 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingR
     private final List<T> boundItems = new ArrayList<>();
     private ObservableList<T> items;
     private LayoutInflater inflater;
-    private BindingCollectionListener<T> bindingCollectionListener;
 
     /**
      * Constructs a new instance with the given {@link ItemView}.
@@ -78,10 +77,13 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingR
     public ObservableList<T> getItems() {
         return items;
     }
-    
+
     @Override
-    public void setBindingCollectionListener(@Nullable BindingCollectionListener<T> listener) {
-        this.bindingCollectionListener = listener;
+    public void onBindingCreated(ViewDataBinding binding) {
+    }
+
+    @Override
+    public void onBindingBound(ViewDataBinding binding, int position, T item) {
     }
 
     @Override
@@ -93,20 +95,17 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingR
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int layoutId) {
+    public final ViewHolder onCreateViewHolder(ViewGroup viewGroup, int layoutId) {
         if (inflater == null) {
             inflater = LayoutInflater.from(viewGroup.getContext());
         }
-
         ViewDataBinding binding = DataBindingUtil.inflate(inflater, layoutId, viewGroup, false);
-        if (bindingCollectionListener != null) {
-            bindingCollectionListener.onBindingCreated(binding);
-        }
+        onBindingCreated(binding);
         return new ViewHolder(binding);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, int position) {
+    public final void onBindViewHolder(ViewHolder viewHolder, int position) {
         if (itemView.getBindingVariable() != ItemView.BINDING_VARIABLE_NONE) {
             T item = boundItems.get(position);
             boolean result = viewHolder.binding.setVariable(itemView.getBindingVariable(), item);
@@ -115,9 +114,7 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingR
                 throw new IllegalStateException("Could not bind variable on layout '" + layoutName + "'");
             }
             viewHolder.binding.executePendingBindings();
-            if (bindingCollectionListener != null) {
-                bindingCollectionListener.onBindingBound(viewHolder.binding, position, item);
-            }
+            onBindingBound(viewHolder.binding, position, item);
         }
     }
 

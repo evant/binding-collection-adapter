@@ -1,6 +1,7 @@
 package me.tatarka.bindingcollectionadapter;
 
 import android.databinding.ObservableList;
+import android.databinding.ViewDataBinding;
 import android.support.annotation.Nullable;
 
 import java.util.Collection;
@@ -32,9 +33,15 @@ public interface BindingCollectionAdapter<T> {
     ObservableList<T> getItems();
 
     /**
-     * Sets a listener to listen when an binding is created or bound.
-     *
-     * @see BindingCollectionListener
+     * Called when the binding is created. You may cast the binding to the implementation specific
+     * to it's layout to get at the generated view fields.
      */
-    void setBindingCollectionListener(@Nullable BindingCollectionListener<T> listener);
+    void onBindingCreated(ViewDataBinding binding);
+
+    /**
+     * Called when the binding is bound to an item in in the collection. You may cast the binding to
+     * the implementation specific to it's layout to get at the generated view fields. This is
+     * called <em>after</em> the item is bound.
+     */
+    void onBindingBound(ViewDataBinding binding, int position, T item);
 }

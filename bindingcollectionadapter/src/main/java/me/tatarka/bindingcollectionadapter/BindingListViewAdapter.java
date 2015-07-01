@@ -42,7 +42,6 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
     private int[] dropDownLayouts;
     private LayoutInflater inflater;
     private ItemIds<T> itemIds;
-    private BindingCollectionListener<T> bindingCollectionListener;
 
     /**
      * Constructs a new instance with the given {@link ItemView}.
@@ -85,15 +84,20 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
             this.items = null;
         }
     }
-    
-    @Override
-    public void setBindingCollectionListener(@Nullable BindingCollectionListener<T> listener) {
-        this.bindingCollectionListener = listener;
-    }
-    
+
     @Override
     public ObservableList<T> getItems() {
         return items;
+    }
+
+    @Override
+    public void onBindingCreated(ViewDataBinding binding) {
+
+    }
+
+    @Override
+    public void onBindingBound(ViewDataBinding binding, int position, T item) {
+
     }
 
     /**
@@ -119,7 +123,7 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
     }
 
     @Override
-    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
+    public final View getView(int position, View convertView, @NonNull ViewGroup parent) {
         if (inflater == null) {
             inflater = LayoutInflater.from(parent.getContext());
         }
@@ -131,9 +135,7 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
             int layoutRes = layouts[viewType];
             binding = DataBindingUtil.inflate(inflater, layoutRes, parent, false);
             binding.getRoot().setTag(binding);
-            if (bindingCollectionListener != null) {
-                bindingCollectionListener.onBindingCreated(binding);
-            }
+            onBindingCreated(binding);
         } else {
             binding = (ViewDataBinding) convertView.getTag();
         }
@@ -146,16 +148,14 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
                 throw new IllegalStateException("Could not bind variable on layout '" + layoutName + "'");
             }
             binding.executePendingBindings();
-            if (bindingCollectionListener != null) {
-                bindingCollectionListener.onBindingBound(binding, position, item);
-            }
+            onBindingBound(binding, position, item);
         }
 
         return binding.getRoot();
     }
 
     @Override
-    public View getDropDownView(int position, View convertView, ViewGroup parent) {
+    public final View getDropDownView(int position, View convertView, ViewGroup parent) {
         if (inflater == null) {
             inflater = LayoutInflater.from(parent.getContext());
         }
