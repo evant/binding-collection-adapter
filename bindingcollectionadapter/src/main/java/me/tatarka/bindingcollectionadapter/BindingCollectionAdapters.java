@@ -14,6 +14,7 @@ import java.util.Collection;
  * All the BindingAdapters so that you can set your adapters and items directly in your layout.
  */
 public class BindingCollectionAdapters {
+
     @SuppressWarnings("unchecked")
     @BindingAdapter({"itemView", "items"})
     public static <T> void setAdapter(RecyclerView recyclerView, ItemView itemView, Collection<T> items) {
@@ -211,7 +212,7 @@ public class BindingCollectionAdapters {
     @SuppressWarnings("unchecked")
     public static <T extends BindingCollectionAdapter> T createAdapter(String className, ItemViewSelector<?> selector) {
         try {
-            return (T) Class.forName(className).getConstructor(ItemView.class).newInstance(selector);
+            return (T) Class.forName(className).getConstructor(ItemViewSelector.class).newInstance(selector);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
