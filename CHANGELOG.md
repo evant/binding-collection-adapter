@@ -1,3 +1,7 @@
+### 0.6
+- Changed the adapter subclass callback methods to `onCreateBinding()` and `onBindBinding()` to
+give you more control over the superclass implementations.
+
 ### 0.5
 - You now need to subclass the adapters to access the views, this simpilifes things as you don't 
 have to worry about setting the listener after it's been called. There is an additional binding 
