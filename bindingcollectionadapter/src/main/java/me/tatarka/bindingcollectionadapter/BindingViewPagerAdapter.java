@@ -88,11 +88,13 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter implements BindingC
 
     @Override
     public void onBindBinding(ViewDataBinding binding, int bindingVariable, @LayoutRes int layoutRes, int position, T item) {
-        boolean result = binding.setVariable(bindingVariable, item);
-        if (!result) {
-            BindingCollectionAdapters.throwMissingVariable(binding, bindingVariable, layoutRes);
+        if (itemView.getBindingVariable() != ItemView.BINDING_VARIABLE_NONE) {
+            boolean result = binding.setVariable(bindingVariable, item);
+            if (!result) {
+                BindingCollectionAdapters.throwMissingVariable(binding, bindingVariable, layoutRes);
+            }
+            binding.executePendingBindings();
         }
-        binding.executePendingBindings();
     }
 
     /**
@@ -122,10 +124,7 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter implements BindingC
         selector.select(itemView, position, item);
 
         ViewDataBinding binding = onCreateBinding(inflater, itemView.getLayoutRes(), container);
-
-        if (itemView.getBindingVariable() != ItemView.BINDING_VARIABLE_NONE) {
-            onBindBinding(binding, itemView.getBindingVariable(), itemView.getLayoutRes(), position, item);
-        }
+        onBindBinding(binding, itemView.getBindingVariable(), itemView.getLayoutRes(), position, item);
 
         container.addView(binding.getRoot());
         binding.getRoot().setTag(item);

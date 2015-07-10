@@ -98,11 +98,13 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
 
     @Override
     public void onBindBinding(ViewDataBinding binding, int bindingVariable, @LayoutRes int layoutRes, int position, T item) {
-        boolean result = binding.setVariable(bindingVariable, item);
-        if (!result) {
-            BindingCollectionAdapters.throwMissingVariable(binding, bindingVariable, layoutRes);
+        if (bindingVariable != ItemView.BINDING_VARIABLE_NONE) {
+            boolean result = binding.setVariable(bindingVariable, item);
+            if (!result) {
+                BindingCollectionAdapters.throwMissingVariable(binding, bindingVariable, layoutRes);
+            }
+            binding.executePendingBindings();
         }
-        binding.executePendingBindings();
     }
 
     /**
@@ -135,7 +137,7 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
 
         int viewType = getItemViewType(position);
         int layoutRes = layouts[viewType];
-        
+
         ViewDataBinding binding;
         if (convertView == null) {
             binding = onCreateBinding(inflater, layoutRes, parent);
@@ -144,10 +146,8 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
             binding = (ViewDataBinding) convertView.getTag();
         }
 
-        if (itemView.getBindingVariable() != ItemView.BINDING_VARIABLE_NONE) {
-            T item = boundItems.get(position);
-            onBindBinding(binding, itemView.getBindingVariable(), layoutRes, position, item);
-        }
+        T item = boundItems.get(position);
+        onBindBinding(binding, itemView.getBindingVariable(), layoutRes, position, item);
 
         return binding.getRoot();
     }
@@ -171,10 +171,8 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
                 binding = (ViewDataBinding) convertView.getTag();
             }
 
-            if (itemView.getBindingVariable() != ItemView.BINDING_VARIABLE_NONE) {
-                T item = boundItems.get(position);
-                onBindBinding(binding, itemView.getBindingVariable(), layoutRes, position, item);
-            }
+            T item = boundItems.get(position);
+            onBindBinding(binding, itemView.getBindingVariable(), layoutRes, position, item);
 
             return binding.getRoot();
         }

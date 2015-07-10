@@ -86,11 +86,13 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingR
 
     @Override
     public void onBindBinding(ViewDataBinding binding, int bindingVariable, @LayoutRes int layoutRes, int position, T item) {
-        boolean result = binding.setVariable(bindingVariable, item);
-        if (!result) {
-            BindingCollectionAdapters.throwMissingVariable(binding, bindingVariable, layoutRes);
+        if (bindingVariable != ItemView.BINDING_VARIABLE_NONE) {
+            boolean result = binding.setVariable(bindingVariable, item);
+            if (!result) {
+                BindingCollectionAdapters.throwMissingVariable(binding, bindingVariable, layoutRes);
+            }
+            binding.executePendingBindings();
         }
-        binding.executePendingBindings();
     }
 
     @Override
@@ -112,10 +114,8 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingR
 
     @Override
     public final void onBindViewHolder(ViewHolder viewHolder, int position) {
-        if (itemView.getBindingVariable() != ItemView.BINDING_VARIABLE_NONE) {
-            T item = boundItems.get(position);
-            onBindBinding(viewHolder.binding, itemView.getBindingVariable(), itemView.getLayoutRes(), position, item);
-        }
+        T item = boundItems.get(position);
+        onBindBinding(viewHolder.binding, itemView.getBindingVariable(), itemView.getLayoutRes(), position, item);
     }
 
     @Override
