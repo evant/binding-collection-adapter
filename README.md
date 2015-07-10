@@ -6,7 +6,7 @@ Easy way to bind collections to listviews and recyclerviews with the new [Androi
 ## Download
 
 ```groovy
-compile 'me.tatarka:bindingcollectionadapter:0.5'
+compile 'me.tatarka:bindingcollectionadapter:0.6'
 ```
 
 ## Usage
@@ -136,7 +136,7 @@ or by defining `app:pageTitles="@{pageTitles}"` in the `ViewPager` in your layou
 
 ## Directly manipulationg views
 
-Data binding is awesome and all, but you may run into a case where you simply need to manipulate the views directly. You can do this without throwing away the whole of databinding by subclassing an exisiting `BindingCollectionAdapter`. You can then bind `adapter` in your layout to your subclass's class name to have it use that instead. Instead of overriding the nomral adapter methods, you should override `onBindingCreated()` or `onBindingBound()` which will give you the item's binding when it's created or bound respectivly.
+Data binding is awesome and all, but you may run into a case where you simply need to manipulate the views directly. You can do this without throwing away the whole of databinding by subclassing an exisiting `BindingCollectionAdapter`. You can then bind `adapter` in your layout to your subclass's class name to have it use that instead. Instead of overriding the nomral adapter methods, you should override `onCreateBinding()` or `onBindBinding()` and call `super` allowing you to run code before and after those events and get access to the item view's binding.
 
 ```java
 public class MyRecyclerViewAdapter<T> extends BindingRecyclerViewAdapter<T> {
@@ -149,12 +149,15 @@ public class MyRecyclerViewAdapter<T> extends BindingRecyclerViewAdapter<T> {
     }
 
     @Override
-    public void onBindingCreated(ViewDataBinding binding) {
+    public ViewDataBinding onCreateBinding(LayoutInflater inflater, @LayoutRes int layoutId, ViewGroup viewGroup) {
+        ViewDataBinding binding = super.onCreateBinding(inflater, layoutId, viewGroup);
         Log.d(TAG, "created binding: " + binding);
+        return binding;
     }
 
     @Override
-    public void onBindingBound(ViewDataBinding binding, int position, T item) {
+    public void onBindBinding(ViewDataBinding binding, int bindingVariable, @LayoutRes int layoutRes, int position, T item) {
+        super.onBindBinding(binding, bindingVariable, layoutRes, position, item);
         Log.d(TAG, "bound binding: " + binding + " at position: " + position);
     }
 }
