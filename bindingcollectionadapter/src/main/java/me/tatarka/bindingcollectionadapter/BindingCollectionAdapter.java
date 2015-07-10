@@ -2,7 +2,10 @@ package me.tatarka.bindingcollectionadapter;
 
 import android.databinding.ObservableList;
 import android.databinding.ViewDataBinding;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
 
 import java.util.Collection;
 
@@ -33,15 +36,16 @@ public interface BindingCollectionAdapter<T> {
     ObservableList<T> getItems();
 
     /**
-     * Called when the binding is created. You may cast the binding to the implementation specific
-     * to it's layout to get at the generated view fields.
+     * Called to create a binding. An implementation should create a binding inflated with the given
+     * {@code layoutId} and {@code viewGroup}. A subclass may override this and cast the result to a
+     * specific layout binding to get at the generated view fields.
      */
-    void onBindingCreated(ViewDataBinding binding);
+    ViewDataBinding onCreateBinding(LayoutInflater inflater, @LayoutRes int layoutRes, ViewGroup viewGroup);
 
     /**
-     * Called when the binding is bound to an item in in the collection. You may cast the binding to
-     * the implementation specific to it's layout to get at the generated view fields. This is
-     * called <em>after</em> the item is bound.
+     * Called to bind the given item to the binding. An implementation should simply set the item as
+     * a variable on the binding. A subclass may override this and cast the binding to an
+     * implementation specific layout binding to get at the generated view fields.
      */
-    void onBindingBound(ViewDataBinding binding, int position, T item);
+    void onBindBinding(ViewDataBinding binding, int bindingVariable, @LayoutRes int layoutRes, int position, T item);
 }

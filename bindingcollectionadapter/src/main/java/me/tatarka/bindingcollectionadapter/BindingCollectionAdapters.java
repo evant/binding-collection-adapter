@@ -1,6 +1,9 @@
 package me.tatarka.bindingcollectionadapter;
 
+import android.content.res.Resources;
 import android.databinding.BindingAdapter;
+import android.databinding.ViewDataBinding;
+import android.support.annotation.LayoutRes;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.ListView;
@@ -212,5 +215,15 @@ public class BindingCollectionAdapters {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Helper to throw an exception when {@link android.databinding.ViewDataBinding#setVariable(int,
+     * Object)} returns false.
+     */
+    public static void throwMissingVariable(ViewDataBinding binding, int bindingVariable, @LayoutRes int layoutRes) {
+        Resources resources = binding.getRoot().getResources();
+        String layoutName = resources.getResourceName(layoutRes);
+        throw new IllegalStateException("Could not bind variable '" + bindingVariable + "' in layout '" + layoutName + "'");
     }
 }

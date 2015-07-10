@@ -4,6 +4,7 @@ import android.databinding.DataBindingUtil;
 import android.databinding.ObservableArrayList;
 import android.databinding.ObservableList;
 import android.databinding.ViewDataBinding;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
@@ -79,11 +80,17 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingR
     }
 
     @Override
-    public void onBindingCreated(ViewDataBinding binding) {
+    public ViewDataBinding onCreateBinding(LayoutInflater inflater, @LayoutRes int layoutId, ViewGroup viewGroup) {
+        return DataBindingUtil.inflate(inflater, layoutId, viewGroup, false);
     }
 
     @Override
-    public void onBindingBound(ViewDataBinding binding, int position, T item) {
+    public void onBindBinding(ViewDataBinding binding, int bindingVariable, @LayoutRes int layoutRes, int position, T item) {
+        boolean result = binding.setVariable(bindingVariable, item);
+        if (!result) {
+            BindingCollectionAdapters.throwMissingVariable(binding, bindingVariable, layoutRes);
+        }
+        binding.executePendingBindings();
     }
 
     @Override
@@ -99,8 +106,7 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingR
         if (inflater == null) {
             inflater = LayoutInflater.from(viewGroup.getContext());
         }
-        ViewDataBinding binding = DataBindingUtil.inflate(inflater, layoutId, viewGroup, false);
-        onBindingCreated(binding);
+        ViewDataBinding binding = onCreateBinding(inflater, layoutId, viewGroup);
         return new ViewHolder(binding);
     }
 
@@ -108,13 +114,7 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingR
     public final void onBindViewHolder(ViewHolder viewHolder, int position) {
         if (itemView.getBindingVariable() != ItemView.BINDING_VARIABLE_NONE) {
             T item = boundItems.get(position);
-            boolean result = viewHolder.binding.setVariable(itemView.getBindingVariable(), item);
-            if (!result) {
-                String layoutName = viewHolder.itemView.getResources().getResourceName(itemView.getLayoutRes());
-                throw new IllegalStateException("Could not bind variable on layout '" + layoutName + "'");
-            }
-            viewHolder.binding.executePendingBindings();
-            onBindingBound(viewHolder.binding, position, item);
+            onBindBinding(viewHolder.binding, itemView.getBindingVariable(), itemView.getLayoutRes(), position, item);
         }
     }
 

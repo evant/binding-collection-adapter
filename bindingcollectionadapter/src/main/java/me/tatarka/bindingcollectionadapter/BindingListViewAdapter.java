@@ -4,6 +4,7 @@ import android.databinding.DataBindingUtil;
 import android.databinding.ObservableArrayList;
 import android.databinding.ObservableList;
 import android.databinding.ViewDataBinding;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -91,13 +92,17 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
     }
 
     @Override
-    public void onBindingCreated(ViewDataBinding binding) {
-
+    public ViewDataBinding onCreateBinding(LayoutInflater inflater, @LayoutRes int layoutRes, ViewGroup viewGroup) {
+        return DataBindingUtil.inflate(inflater, layoutRes, viewGroup, false);
     }
 
     @Override
-    public void onBindingBound(ViewDataBinding binding, int position, T item) {
-
+    public void onBindBinding(ViewDataBinding binding, int bindingVariable, @LayoutRes int layoutRes, int position, T item) {
+        boolean result = binding.setVariable(bindingVariable, item);
+        if (!result) {
+            BindingCollectionAdapters.throwMissingVariable(binding, bindingVariable, layoutRes);
+        }
+        binding.executePendingBindings();
     }
 
     /**
@@ -129,26 +134,19 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
         }
 
         int viewType = getItemViewType(position);
-
+        int layoutRes = layouts[viewType];
+        
         ViewDataBinding binding;
         if (convertView == null) {
-            int layoutRes = layouts[viewType];
-            binding = DataBindingUtil.inflate(inflater, layoutRes, parent, false);
+            binding = onCreateBinding(inflater, layoutRes, parent);
             binding.getRoot().setTag(binding);
-            onBindingCreated(binding);
         } else {
             binding = (ViewDataBinding) convertView.getTag();
         }
 
         if (itemView.getBindingVariable() != ItemView.BINDING_VARIABLE_NONE) {
             T item = boundItems.get(position);
-            boolean result = binding.setVariable(itemView.getBindingVariable(), item);
-            if (!result) {
-                String layoutName = parent.getResources().getResourceName(itemView.getLayoutRes());
-                throw new IllegalStateException("Could not bind variable on layout '" + layoutName + "'");
-            }
-            binding.executePendingBindings();
-            onBindingBound(binding, position, item);
+            onBindBinding(binding, itemView.getBindingVariable(), layoutRes, position, item);
         }
 
         return binding.getRoot();
@@ -167,7 +165,7 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
         } else {
             ViewDataBinding binding;
             if (convertView == null) {
-                binding = DataBindingUtil.inflate(inflater, layoutRes, parent, false);
+                binding = onCreateBinding(inflater, layoutRes, parent);
                 binding.getRoot().setTag(binding);
             } else {
                 binding = (ViewDataBinding) convertView.getTag();
@@ -175,12 +173,7 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
 
             if (itemView.getBindingVariable() != ItemView.BINDING_VARIABLE_NONE) {
                 T item = boundItems.get(position);
-                boolean result = binding.setVariable(itemView.getBindingVariable(), item);
-                if (!result) {
-                    String layoutName = parent.getResources().getResourceName(layoutRes);
-                    throw new IllegalStateException("Could not bind variable on layout '" + layoutName + "'");
-                }
-                binding.executePendingBindings();
+                onBindBinding(binding, itemView.getBindingVariable(), layoutRes, position, item);
             }
 
             return binding.getRoot();

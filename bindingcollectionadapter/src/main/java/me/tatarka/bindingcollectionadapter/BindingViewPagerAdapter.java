@@ -4,6 +4,7 @@ import android.databinding.DataBindingUtil;
 import android.databinding.ObservableArrayList;
 import android.databinding.ObservableList;
 import android.databinding.ViewDataBinding;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
@@ -81,13 +82,17 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter implements BindingC
     }
 
     @Override
-    public void onBindingCreated(ViewDataBinding binding) {
-        
+    public ViewDataBinding onCreateBinding(LayoutInflater inflater, @LayoutRes int layoutRes, ViewGroup viewGroup) {
+        return DataBindingUtil.inflate(inflater, layoutRes, viewGroup, false);
     }
 
     @Override
-    public void onBindingBound(ViewDataBinding binding, int position, T item) {
-
+    public void onBindBinding(ViewDataBinding binding, int bindingVariable, @LayoutRes int layoutRes, int position, T item) {
+        boolean result = binding.setVariable(bindingVariable, item);
+        if (!result) {
+            BindingCollectionAdapters.throwMissingVariable(binding, bindingVariable, layoutRes);
+        }
+        binding.executePendingBindings();
     }
 
     /**
@@ -116,17 +121,10 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter implements BindingC
         T item = boundItems.get(position);
         selector.select(itemView, position, item);
 
-        ViewDataBinding binding = DataBindingUtil.inflate(inflater, itemView.getLayoutRes(), container, false);
-        onBindingCreated(binding);
-        
+        ViewDataBinding binding = onCreateBinding(inflater, itemView.getLayoutRes(), container);
+
         if (itemView.getBindingVariable() != ItemView.BINDING_VARIABLE_NONE) {
-            boolean result = binding.setVariable(itemView.getBindingVariable(), item);
-            if (!result) {
-                String layoutName = container.getResources().getResourceName(itemView.getLayoutRes());
-                throw new IllegalStateException("Could not bind variable on layout '" + layoutName + "'");
-            }
-            binding.executePendingBindings();
-            onBindingBound(binding, position, item);
+            onBindBinding(binding, itemView.getBindingVariable(), itemView.getLayoutRes(), position, item);
         }
 
         container.addView(binding.getRoot());
