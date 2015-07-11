@@ -1,3 +1,7 @@
+### 0.7
+- Fixed bug when creating a custom adapter with an `ItemViewSelector`
+- Changed `BindingRecyclerViewAdapter.getItemViewType()` to be safer to override.
+
 ### 0.6
 - Changed the adapter subclass callback methods to `onCreateBinding()` and `onBindBinding()` to
 give you more control over the superclass implementations.
