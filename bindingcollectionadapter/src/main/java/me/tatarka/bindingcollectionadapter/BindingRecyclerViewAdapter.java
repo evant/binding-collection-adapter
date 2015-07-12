@@ -115,12 +115,12 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingR
     @Override
     public final void onBindViewHolder(ViewHolder viewHolder, int position) {
         T item = boundItems.get(position);
-        selector.select(itemView, position, item);
         onBindBinding(viewHolder.binding, itemView.getBindingVariable(), itemView.getLayoutRes(), position, item);
     }
 
     @Override
     public int getItemViewType(int position) {
+        selector.select(itemView, position, boundItems.get(position));
         return itemView.getLayoutRes();
     }
 
