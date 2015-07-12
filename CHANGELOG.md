@@ -1,3 +1,7 @@
+### 0.8
+- Reverted changes to 'BindingRecyclerViewAdapter.getItemViewType()` because it actually causes it
+to work incorrectly.
+
 ### 0.7
 - Fixed bug when creating a custom adapter with an `ItemViewSelector`
 - Changed `BindingRecyclerViewAdapter.getItemViewType()` to be safer to override.
