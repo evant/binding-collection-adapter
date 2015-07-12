@@ -177,7 +177,11 @@ public class MyRecyclerViewAdapter<T> extends BindingRecyclerViewAdapter<T> {
 
 ### Cannot Resolve the libraries `@BindingAdapter`'s
 
-This is likely because you are using the [android-apt](https://bitbucket.org/hvisser/android-apt) plugin which breaks this for some reason. To workaround, you can define all the adapters in a class in your project and delegate to the library ones.
+This is likely because you are using the [android-apt](https://bitbucket.org/hvisser/android-apt) plugin which breaks this. 
+
+Update to version `1.6-SNAPSHOT` which fixes this.
+
+Alternativly, to workaround, you can define all the adapters in a class in your project and delegate to the library ones.
 
 ```java
 import android.databinding.BindingAdapter;
