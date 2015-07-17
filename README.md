@@ -43,7 +43,7 @@ convience factories to attach a `LayoutManager` to a `RecyclerView` with `app:la
     <android.support.v7.widget.RecyclerView
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      app:layoutManager="{@LayoutManagers.linear()}"
+      app:layoutManager="@{LayoutManagers.linear()}"
       app:items="@{viewModel.items}"
       app:itemView="@{viewModel.itemView}"/>
       
