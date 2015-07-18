@@ -1,3 +1,6 @@
+### 0.9
+- Bumped data-binding dep to `1.0-rc1`.
+
 ### 0.8
 - Reverted changes to 'BindingRecyclerViewAdapter.getItemViewType()` because it actually causes it
 to work incorrectly.
