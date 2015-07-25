@@ -75,8 +75,14 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingR
     }
 
     @Override
+    @Deprecated
     public ObservableList<T> getItems() {
         return items;
+    }
+
+    @Override
+    public T getAdapterItem(int position) {
+        return boundItems.get(position);
     }
 
     @Override

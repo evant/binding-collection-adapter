@@ -1,8 +1,13 @@
+### 0.10
+- Deprecated `BindingCollectionAdapter.getItems()` and added
+`BindingCollectionAdapter.getAdapterItem(int)`. See javadoc for reasoning.
+- Show the binding variable name instead of int value when it fails to bind an item. 
+
 ### 0.9
 - Bumped data-binding dep to `1.0-rc1`.
 
 ### 0.8
-- Reverted changes to 'BindingRecyclerViewAdapter.getItemViewType()` because it actually causes it
+- Reverted changes to `BindingRecyclerViewAdapter.getItemViewType()` because it actually causes it
 to work incorrectly.
 
 ### 0.7

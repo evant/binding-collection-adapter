@@ -32,8 +32,25 @@ public interface BindingCollectionAdapter<T> {
      * {@link ObservableList} that you can still modify directly to update the adapter. If {@link
      * #setItems(Collection)} was never called or was called with {@code null}, this will return
      * null.
+     *
+     * @deprecated This method had 2 uses which could either be done an alternative way or were
+     * wrong. <ol> <li>If you want to access the backing collection, just use that collection
+     * directly. It should be your responsibility to hold a reference to it and determine if it's
+     * observable or not.</li> <li>If you want to get an item at a certain position for a custom
+     * adapter implementation, this won't always be correct. The adapter keeps a separate copy of
+     * the collection that is only modified on the main thread. If you add items to the backing
+     * collection on a separate thread they may get out of sync. Instead, you should use {@link
+     * #getAdapterItem(int)} instead.</li></ol>
      */
+    @Deprecated
     ObservableList<T> getItems();
+
+    /**
+     * Returns the item in the adapter given position. If you need access to this in a custom
+     * adapter subclass you should use this instead of accessing the collection directly because the
+     * adapter keeps a second copy of the list that is only updated on the main thread.
+     */
+    T getAdapterItem(int position);
 
     /**
      * Called to create a binding. An implementation should create a binding inflated with the given

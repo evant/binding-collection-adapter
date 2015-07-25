@@ -77,8 +77,14 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter implements BindingC
     }
 
     @Override
+    @Deprecated
     public ObservableList<T> getItems() {
         return items;
+    }
+
+    @Override
+    public T getAdapterItem(int position) {
+        return boundItems.get(position);
     }
 
     @Override

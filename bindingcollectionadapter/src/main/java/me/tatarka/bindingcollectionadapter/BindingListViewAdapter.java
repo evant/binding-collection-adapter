@@ -87,8 +87,14 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
     }
 
     @Override
+    @Deprecated
     public ObservableList<T> getItems() {
         return items;
+    }
+
+    @Override
+    public T getAdapterItem(int position) {
+        return boundItems.get(position);
     }
 
     @Override
