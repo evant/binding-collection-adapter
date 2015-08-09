@@ -7,7 +7,7 @@ import android.databinding.ViewDataBinding;
 import android.support.annotation.LayoutRes;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
-import android.widget.ListView;
+import android.widget.AdapterView;
 
 import java.lang.reflect.Field;
 import java.util.Collection;
@@ -67,22 +67,22 @@ public class BindingCollectionAdapters {
     }
 
     @BindingAdapter({"itemView", "items"})
-    public static <T> void setAdapter(ListView listView, ItemView itemView, Collection<T> items) {
-        setAdapter(listView, itemView, items, null);
+    public static <T> void setAdapter(AdapterView adapterView, ItemView itemView, Collection<T> items) {
+        setAdapter(adapterView, itemView, items, null);
     }
 
     @BindingAdapter({"itemView", "items"})
-    public static <T> void setAdapter(ListView listView, ItemViewSelector<T> selector, Collection<T> items) {
-        setAdapter(listView, selector, items, null);
+    public static <T> void setAdapter(AdapterView adapterView, ItemViewSelector<T> selector, Collection<T> items) {
+        setAdapter(adapterView, selector, items, null);
     }
 
     @SuppressWarnings("unchecked")
     @BindingAdapter({"itemView", "items", "itemIds"})
-    public static <T> void setAdapter(ListView listView, ItemView itemView, Collection<T> items, BindingListViewAdapter.ItemIds<T> itemIds) {
-        BindingListViewAdapter<T> adapter = (BindingListViewAdapter<T>) listView.getAdapter();
+    public static <T> void setAdapter(AdapterView adapterView, ItemView itemView, Collection<T> items, BindingListViewAdapter.ItemIds<T> itemIds) {
+        BindingListViewAdapter<T> adapter = (BindingListViewAdapter<T>) adapterView.getAdapter();
         if (adapter == null) {
             adapter = new BindingListViewAdapter<T>(itemView);
-            listView.setAdapter(adapter);
+            adapterView.setAdapter(adapter);
         }
         adapter.setItems(items);
         adapter.setItemIds(itemIds);
@@ -90,33 +90,33 @@ public class BindingCollectionAdapters {
 
     @SuppressWarnings("unchecked")
     @BindingAdapter({"itemView", "items", "itemIds"})
-    public static <T> void setAdapter(ListView listView, ItemViewSelector<T> selector, Collection<T> items, BindingListViewAdapter.ItemIds<T> itemIds) {
-        BindingListViewAdapter<T> adapter = (BindingListViewAdapter<T>) listView.getAdapter();
+    public static <T> void setAdapter(AdapterView adapterView, ItemViewSelector<T> selector, Collection<T> items, BindingListViewAdapter.ItemIds<T> itemIds) {
+        BindingListViewAdapter<T> adapter = (BindingListViewAdapter<T>) adapterView.getAdapter();
         if (adapter == null) {
             adapter = new BindingListViewAdapter<T>(selector);
-            listView.setAdapter(adapter);
+            adapterView.setAdapter(adapter);
         }
         adapter.setItems(items);
         adapter.setItemIds(itemIds);
     }
 
     @BindingAdapter({"adapter", "itemView", "items"})
-    public static <T> void setAdapter(ListView listView, String adapterClassName, ItemView itemView, Collection<T> items) {
-        setAdapter(listView, adapterClassName, itemView, items, null);
+    public static <T> void setAdapter(AdapterView adapterView, String adapterClassName, ItemView itemView, Collection<T> items) {
+        setAdapter(adapterView, adapterClassName, itemView, items, null);
     }
 
     @BindingAdapter({"adapter", "itemView", "items"})
-    public static <T> void setAdapter(ListView listView, String adapterClassName, ItemViewSelector<T> selector, Collection<T> items) {
-        setAdapter(listView, adapterClassName, selector, items, null);
+    public static <T> void setAdapter(AdapterView adapterView, String adapterClassName, ItemViewSelector<T> selector, Collection<T> items) {
+        setAdapter(adapterView, adapterClassName, selector, items, null);
     }
 
     @SuppressWarnings("unchecked")
     @BindingAdapter({"adapter", "itemView", "items", "itemIds"})
-    public static <T> void setAdapter(ListView listView, String adapterClassName, ItemView itemView, Collection<T> items, BindingListViewAdapter.ItemIds<T> itemIds) {
-        BindingListViewAdapter<T> adapter = (BindingListViewAdapter<T>) listView.getAdapter();
+    public static <T> void setAdapter(AdapterView adapterView, String adapterClassName, ItemView itemView, Collection<T> items, BindingListViewAdapter.ItemIds<T> itemIds) {
+        BindingListViewAdapter<T> adapter = (BindingListViewAdapter<T>) adapterView.getAdapter();
         if (adapter == null) {
             adapter = createAdapter(adapterClassName, itemView);
-            listView.setAdapter(adapter);
+            adapterView.setAdapter(adapter);
         }
         adapter.setItems(items);
         adapter.setItemIds(itemIds);
@@ -124,11 +124,11 @@ public class BindingCollectionAdapters {
 
     @SuppressWarnings("unchecked")
     @BindingAdapter({"adapter", "itemView", "items", "itemIds"})
-    public static <T> void setAdapter(ListView listView, String adapterClassName, ItemViewSelector<T> selector, Collection<T> items, BindingListViewAdapter.ItemIds<T> itemIds) {
-        BindingListViewAdapter<T> adapter = (BindingListViewAdapter<T>) listView.getAdapter();
+    public static <T> void setAdapter(AdapterView adapterView, String adapterClassName, ItemViewSelector<T> selector, Collection<T> items, BindingListViewAdapter.ItemIds<T> itemIds) {
+        BindingListViewAdapter<T> adapter = (BindingListViewAdapter<T>) adapterView.getAdapter();
         if (adapter == null) {
             adapter = createAdapter(adapterClassName, selector);
-            listView.setAdapter(adapter);
+            adapterView.setAdapter(adapter);
         }
         adapter.setItems(items);
         adapter.setItemIds(itemIds);
