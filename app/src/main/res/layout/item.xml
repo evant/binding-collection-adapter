@@ -15,9 +15,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?selectableItemBackground"
-        android:clickable="true"
-        android:focusable="true"
-        android:onClickListener="@{item.onToggleChecked}"
+        android:onLongClickListener="@{item.onToggleChecked}"
+        android:longClickable="@{item.checkable}"
         android:orientation="horizontal">
 
         <TextView

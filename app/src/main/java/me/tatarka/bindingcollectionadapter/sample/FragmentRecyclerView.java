@@ -14,7 +14,14 @@ import me.tatarka.bindingcollectionadapter.sample.databinding.RecyclerViewBindin
  */
 public class FragmentRecyclerView extends Fragment {
     private static final String TAG = "BindingRecyclerView";
-    private static final ViewModel viewModel = new ViewModel();
+    private ViewModel viewModel;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+        viewModel = new ViewModel(true);
+    }
 
     @Nullable
     @Override

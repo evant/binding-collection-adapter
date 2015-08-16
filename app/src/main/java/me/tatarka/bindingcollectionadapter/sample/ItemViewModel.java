@@ -8,13 +8,15 @@ import android.view.View;
  * Created by evan on 6/14/15.
  */
 public class ItemViewModel extends BaseObservable {
+    public final boolean checkable;
     @Bindable
     private int index;
     @Bindable
     private boolean checked;
 
-    public ItemViewModel(int index) {
+    public ItemViewModel(int index, boolean checkable) {
         this.index = index;
+        this.checkable = checkable;
     }
 
     public int getIndex() {
@@ -25,11 +27,15 @@ public class ItemViewModel extends BaseObservable {
         return checked;
     }
 
-    public final View.OnClickListener onToggleChecked = new View.OnClickListener() {
+    public final View.OnLongClickListener onToggleChecked = new View.OnLongClickListener() {
         @Override
-        public void onClick(View v) {
+        public boolean onLongClick(View v) {
+            if (!checkable) {
+                return false;
+            }
             checked = !checked;
             notifyPropertyChanged(BR.checked);
+            return true;
         }
     };
 }

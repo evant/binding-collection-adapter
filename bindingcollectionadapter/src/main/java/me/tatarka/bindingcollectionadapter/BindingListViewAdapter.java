@@ -186,6 +186,7 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
 
     @Override
     public int getItemViewType(int position) {
+        ensureLayoutsInit();
         selector.select(itemView, position, boundItems.get(position));
         int firstEmpty = 0;
         for (int i = 0; i < layouts.length; i++) {
@@ -208,9 +209,15 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
 
     @Override
     public int getViewTypeCount() {
+        return ensureLayoutsInit();
+    }
+    
+    private int ensureLayoutsInit() {
         int count = selector.viewTypeCount();
-        layouts = new int[count];
-        dropDownLayouts = new int[count];
+        if (layouts == null) {
+            layouts = new int[count];
+            dropDownLayouts = new int[count];
+        }
         return count;
     }
 

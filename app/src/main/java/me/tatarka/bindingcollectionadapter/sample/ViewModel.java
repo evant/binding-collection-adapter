@@ -12,11 +12,13 @@ import me.tatarka.bindingcollectionadapter.ItemViewSelector;
  * Created by evan on 5/31/15.
  */
 public class ViewModel {
+    private final boolean checkable;
     public final ObservableList<ItemViewModel> items = new ObservableArrayList<>();
 
-    {
+    public ViewModel(boolean checkable) {
+        this.checkable = checkable;
         for (int i = 0; i < 3; i++) {
-            items.add(new ItemViewModel(i));
+            items.add(new ItemViewModel(i, checkable));
         }
     }
 
@@ -63,7 +65,7 @@ public class ViewModel {
     };
 
     public void addItem() {
-        items.add(new ItemViewModel(items.size()));
+        items.add(new ItemViewModel(items.size(), checkable));
     }
 
     public void removeItem() {

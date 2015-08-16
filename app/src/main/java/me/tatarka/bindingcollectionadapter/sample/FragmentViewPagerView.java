@@ -16,9 +16,15 @@ import me.tatarka.bindingcollectionadapter.sample.databinding.ViewpagerViewBindi
  */
 public class FragmentViewPagerView extends Fragment {
     private static final String TAG = "BindingViewPager";
-    private static final ViewModel viewModel = new ViewModel();
-
+    private ViewModel viewModel;
     private ViewpagerViewBinding binding;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+        viewModel = new ViewModel(false);
+    }
 
     @Nullable
     @Override

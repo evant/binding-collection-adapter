@@ -1,3 +1,7 @@
+### 0.11
+- Change ListView BindingAdapters to AdapterView to directly support spinners.
+- Fixed crash when `getViewTypeCount()` is not called before `getItemViewType()`.
+
 ### 0.10
 - Deprecated `BindingCollectionAdapter.getItems()` and added
 `BindingCollectionAdapter.getAdapterItem(int)`. See javadoc for reasoning.
