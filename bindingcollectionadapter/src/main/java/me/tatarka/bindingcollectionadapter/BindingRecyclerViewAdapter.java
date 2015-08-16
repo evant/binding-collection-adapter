@@ -48,6 +48,14 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingR
         this.selector = selector;
     }
 
+    /**
+     * Constructs a new instance with the given {@link ItemViewArg}.
+     */
+    public BindingRecyclerViewAdapter(@NonNull ItemViewArg<T> arg) {
+        this.itemView = arg.itemView;
+        this.selector = arg.selector;
+    }
+
     @Override
     public void setItems(@Nullable Collection<T> items) {
         if (this.items == items) {

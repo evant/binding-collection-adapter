@@ -74,7 +74,11 @@ public final class ItemView {
      *
      * @return the {@code ItemView} for chaining
      * @see BindingListViewAdapter#DROP_DOWN_LAYOUT
+     * @deprecated Instead of setting multiple layouts on one ItemView, you should set multiple item
+     * views on the adapter. For example, for a dropdown layout use {@code app:dropdownItemView} or
+     * pass the additional ItemView into the adapter constructor.
      */
+    @Deprecated
     public ItemView setLayoutRes(String key, @LayoutRes int layoutRes) {
         if (extraLayouts == null) {
             extraLayouts = new ArrayMap<>();
@@ -95,7 +99,10 @@ public final class ItemView {
     /**
      * Get an additional layout res set with {@link #setLayoutRes(String, int)}, or 0 if it doesn't
      * exist.
+     *
+     * @deprecated See {@link #setLayoutRes(String, int)}
      */
+    @Deprecated
     @LayoutRes
     public int getLayoutRes(String key) {
         if (extraLayouts == null) {

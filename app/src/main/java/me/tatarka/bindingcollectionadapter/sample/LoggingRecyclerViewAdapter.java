@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 
 import me.tatarka.bindingcollectionadapter.BindingRecyclerViewAdapter;
 import me.tatarka.bindingcollectionadapter.ItemView;
+import me.tatarka.bindingcollectionadapter.ItemViewArg;
 import me.tatarka.bindingcollectionadapter.ItemViewSelector;
 
 /**
@@ -16,6 +17,10 @@ import me.tatarka.bindingcollectionadapter.ItemViewSelector;
  */
 public class LoggingRecyclerViewAdapter<T> extends BindingRecyclerViewAdapter<T> {
     public static final String TAG = "RecyclerView";
+
+    public LoggingRecyclerViewAdapter(@NonNull ItemViewArg<T> arg) {
+        super(arg);
+    }
 
     public LoggingRecyclerViewAdapter(@NonNull ItemView itemView) {
         super(itemView);

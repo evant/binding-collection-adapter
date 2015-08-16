@@ -1,6 +1,16 @@
 ### 0.11
 - Change ListView BindingAdapters to AdapterView to directly support spinners.
 - Fixed crash when `getViewTypeCount()` is not called before `getItemViewType()`.
+- Unified ItemView and ItemViewSelector
+A new constructor that takes an ItemViewArg simplifies databinding since
+you don't need two seperate methods for ItemView and ItemViewSelector.
+a couple of BindingConversions keeps this backwards-compatible.
+
+Note: If you are using a custom BindingCollectionAdapter, you should add
+a cosntructor to create it with an ItemViewArg (the common case would
+just be to call super). There is currently a fallback so that this
+change is backwards-compatible but it will be removed in a future
+update.
 
 ### 0.10
 - Deprecated `BindingCollectionAdapter.getItems()` and added

@@ -35,6 +35,7 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
     private final ItemView itemView;
     @NonNull
     private final ItemViewSelector<T> selector;
+    @NonNull
     private final WeakReferenceOnListChangedCallback<T> callback = new WeakReferenceOnListChangedCallback<>(this);
     // This is what the listview sees. It will only be modified on the main thread.
     private final List<T> boundItems = new ArrayList<>();
@@ -58,6 +59,14 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
     public BindingListViewAdapter(@NonNull ItemViewSelector<T> selector) {
         this.itemView = new ItemView();
         this.selector = selector;
+    }
+
+    /**
+     * Constructs a new instance with the given {@link ItemViewArg}.
+     */
+    public BindingListViewAdapter(@NonNull ItemViewArg<T> arg) {
+        this.itemView = arg.itemView;
+        this.selector = arg.selector;
     }
 
     @Override
@@ -211,7 +220,7 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
     public int getViewTypeCount() {
         return ensureLayoutsInit();
     }
-    
+
     private int ensureLayoutsInit() {
         int count = selector.viewTypeCount();
         if (layouts == null) {

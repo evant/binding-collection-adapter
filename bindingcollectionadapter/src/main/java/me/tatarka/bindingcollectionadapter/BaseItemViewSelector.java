@@ -21,7 +21,6 @@ public abstract class BaseItemViewSelector<T> implements ItemViewSelector<T> {
         return EMPTY;
     }
 
-
     @Override
     public int viewTypeCount() {
         return 1;

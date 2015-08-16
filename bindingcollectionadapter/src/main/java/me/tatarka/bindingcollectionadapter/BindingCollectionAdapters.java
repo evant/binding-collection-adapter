@@ -3,10 +3,12 @@ package me.tatarka.bindingcollectionadapter;
 import android.content.Context;
 import android.content.res.Resources;
 import android.databinding.BindingAdapter;
+import android.databinding.BindingConversion;
 import android.databinding.ViewDataBinding;
 import android.support.annotation.LayoutRes;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.widget.AdapterView;
 
 import java.lang.reflect.Field;
@@ -16,24 +18,14 @@ import java.util.Collection;
  * All the BindingAdapters so that you can set your adapters and items directly in your layout.
  */
 public class BindingCollectionAdapters {
+    private static final String TAG = "BCAdapters";
 
     @SuppressWarnings("unchecked")
     @BindingAdapter({"itemView", "items"})
-    public static <T> void setAdapter(RecyclerView recyclerView, ItemView itemView, Collection<T> items) {
+    public static <T> void setAdapter(RecyclerView recyclerView, ItemViewArg<T> arg, Collection<T> items) {
         BindingRecyclerViewAdapter<T> adapter = (BindingRecyclerViewAdapter<T>) recyclerView.getAdapter();
         if (adapter == null) {
-            adapter = new BindingRecyclerViewAdapter<>(itemView);
-            recyclerView.setAdapter(adapter);
-        }
-        adapter.setItems(items);
-    }
-
-    @SuppressWarnings("unchecked")
-    @BindingAdapter({"itemView", "items"})
-    public static <T> void setAdapter(RecyclerView recyclerView, ItemViewSelector<T> selector, Collection<T> items) {
-        BindingRecyclerViewAdapter<T> adapter = (BindingRecyclerViewAdapter<T>) recyclerView.getAdapter();
-        if (adapter == null) {
-            adapter = new BindingRecyclerViewAdapter<>(selector);
+            adapter = new BindingRecyclerViewAdapter<>(arg);
             recyclerView.setAdapter(adapter);
         }
         adapter.setItems(items);
@@ -41,21 +33,10 @@ public class BindingCollectionAdapters {
 
     @SuppressWarnings("unchecked")
     @BindingAdapter({"adapter", "itemView", "items"})
-    public static <T> void setAdapter(RecyclerView recyclerView, String adapterClassName, ItemView itemView, Collection<T> items) {
+    public static <T> void setAdapter(RecyclerView recyclerView, String adapterClassName, ItemViewArg<T> arg, Collection<T> items) {
         BindingRecyclerViewAdapter<T> adapter = (BindingRecyclerViewAdapter<T>) recyclerView.getAdapter();
         if (adapter == null) {
-            adapter = createAdapter(adapterClassName, itemView);
-            recyclerView.setAdapter(adapter);
-        }
-        adapter.setItems(items);
-    }
-
-    @SuppressWarnings("unchecked")
-    @BindingAdapter({"adapter", "itemView", "items"})
-    public static <T> void setAdapter(RecyclerView recyclerView, String adapterClassName, ItemViewSelector<T> selector, Collection<T> items) {
-        BindingRecyclerViewAdapter<T> adapter = (BindingRecyclerViewAdapter<T>) recyclerView.getAdapter();
-        if (adapter == null) {
-            adapter = createAdapter(adapterClassName, selector);
+            adapter = createAdapter(adapterClassName, arg);
             recyclerView.setAdapter(adapter);
         }
         adapter.setItems(items);
@@ -67,33 +48,16 @@ public class BindingCollectionAdapters {
     }
 
     @BindingAdapter({"itemView", "items"})
-    public static <T> void setAdapter(AdapterView adapterView, ItemView itemView, Collection<T> items) {
-        setAdapter(adapterView, itemView, items, null);
-    }
-
-    @BindingAdapter({"itemView", "items"})
-    public static <T> void setAdapter(AdapterView adapterView, ItemViewSelector<T> selector, Collection<T> items) {
-        setAdapter(adapterView, selector, items, null);
+    public static <T> void setAdapter(AdapterView adapterView, ItemViewArg<T> arg, Collection<T> items) {
+        setAdapter(adapterView, arg, items, null);
     }
 
     @SuppressWarnings("unchecked")
     @BindingAdapter({"itemView", "items", "itemIds"})
-    public static <T> void setAdapter(AdapterView adapterView, ItemView itemView, Collection<T> items, BindingListViewAdapter.ItemIds<T> itemIds) {
+    public static <T> void setAdapter(AdapterView adapterView, ItemViewArg<T> arg, Collection<T> items, BindingListViewAdapter.ItemIds<T> itemIds) {
         BindingListViewAdapter<T> adapter = (BindingListViewAdapter<T>) adapterView.getAdapter();
         if (adapter == null) {
-            adapter = new BindingListViewAdapter<T>(itemView);
-            adapterView.setAdapter(adapter);
-        }
-        adapter.setItems(items);
-        adapter.setItemIds(itemIds);
-    }
-
-    @SuppressWarnings("unchecked")
-    @BindingAdapter({"itemView", "items", "itemIds"})
-    public static <T> void setAdapter(AdapterView adapterView, ItemViewSelector<T> selector, Collection<T> items, BindingListViewAdapter.ItemIds<T> itemIds) {
-        BindingListViewAdapter<T> adapter = (BindingListViewAdapter<T>) adapterView.getAdapter();
-        if (adapter == null) {
-            adapter = new BindingListViewAdapter<T>(selector);
+            adapter = new BindingListViewAdapter<T>(arg);
             adapterView.setAdapter(adapter);
         }
         adapter.setItems(items);
@@ -101,33 +65,16 @@ public class BindingCollectionAdapters {
     }
 
     @BindingAdapter({"adapter", "itemView", "items"})
-    public static <T> void setAdapter(AdapterView adapterView, String adapterClassName, ItemView itemView, Collection<T> items) {
-        setAdapter(adapterView, adapterClassName, itemView, items, null);
-    }
-
-    @BindingAdapter({"adapter", "itemView", "items"})
-    public static <T> void setAdapter(AdapterView adapterView, String adapterClassName, ItemViewSelector<T> selector, Collection<T> items) {
-        setAdapter(adapterView, adapterClassName, selector, items, null);
+    public static <T> void setAdapter(AdapterView adapterView, String adapterClassName, ItemViewArg<T> arg, Collection<T> items) {
+        setAdapter(adapterView, adapterClassName, arg, items, null);
     }
 
     @SuppressWarnings("unchecked")
     @BindingAdapter({"adapter", "itemView", "items", "itemIds"})
-    public static <T> void setAdapter(AdapterView adapterView, String adapterClassName, ItemView itemView, Collection<T> items, BindingListViewAdapter.ItemIds<T> itemIds) {
+    public static <T> void setAdapter(AdapterView adapterView, String adapterClassName, ItemViewArg<T> arg, Collection<T> items, BindingListViewAdapter.ItemIds<T> itemIds) {
         BindingListViewAdapter<T> adapter = (BindingListViewAdapter<T>) adapterView.getAdapter();
         if (adapter == null) {
-            adapter = createAdapter(adapterClassName, itemView);
-            adapterView.setAdapter(adapter);
-        }
-        adapter.setItems(items);
-        adapter.setItemIds(itemIds);
-    }
-
-    @SuppressWarnings("unchecked")
-    @BindingAdapter({"adapter", "itemView", "items", "itemIds"})
-    public static <T> void setAdapter(AdapterView adapterView, String adapterClassName, ItemViewSelector<T> selector, Collection<T> items, BindingListViewAdapter.ItemIds<T> itemIds) {
-        BindingListViewAdapter<T> adapter = (BindingListViewAdapter<T>) adapterView.getAdapter();
-        if (adapter == null) {
-            adapter = createAdapter(adapterClassName, selector);
+            adapter = createAdapter(adapterClassName, arg);
             adapterView.setAdapter(adapter);
         }
         adapter.setItems(items);
@@ -135,33 +82,16 @@ public class BindingCollectionAdapters {
     }
 
     @BindingAdapter({"itemView", "items"})
-    public static <T> void setAdapter(ViewPager viewPager, ItemView itemView, Collection<T> items) {
-        setAdapter(viewPager, itemView, items, null);
-    }
-
-    @BindingAdapter({"itemView", "items"})
-    public static <T> void setAdapter(ViewPager viewPager, ItemViewSelector<T> selector, Collection<T> items) {
-        setAdapter(viewPager, selector, items, null);
+    public static <T> void setAdapter(ViewPager viewPager, ItemViewArg<T> arg, Collection<T> items) {
+        setAdapter(viewPager, arg, items, null);
     }
 
     @SuppressWarnings("unchecked")
     @BindingAdapter({"itemView", "items", "pageTitles"})
-    public static <T> void setAdapter(ViewPager viewPager, ItemView itemView, Collection<T> items, BindingViewPagerAdapter.PageTitles<T> pageTitles) {
+    public static <T> void setAdapter(ViewPager viewPager, ItemViewArg<T> arg, Collection<T> items, BindingViewPagerAdapter.PageTitles<T> pageTitles) {
         BindingViewPagerAdapter<T> adapter = (BindingViewPagerAdapter<T>) viewPager.getAdapter();
         if (adapter == null) {
-            adapter = new BindingViewPagerAdapter<T>(itemView);
-            viewPager.setAdapter(adapter);
-        }
-        adapter.setItems(items);
-        adapter.setPageTitles(pageTitles);
-    }
-
-    @SuppressWarnings("unchecked")
-    @BindingAdapter({"itemView", "items", "pageTitles"})
-    public static <T> void setAdapter(ViewPager viewPager, ItemViewSelector<T> selector, Collection<T> items, BindingViewPagerAdapter.PageTitles<T> pageTitles) {
-        BindingViewPagerAdapter<T> adapter = (BindingViewPagerAdapter<T>) viewPager.getAdapter();
-        if (adapter == null) {
-            adapter = new BindingViewPagerAdapter<T>(selector);
+            adapter = new BindingViewPagerAdapter<>(arg);
             viewPager.setAdapter(adapter);
         }
         adapter.setItems(items);
@@ -169,40 +99,55 @@ public class BindingCollectionAdapters {
     }
 
     @BindingAdapter({"adapter", "itemView", "items"})
-    public static <T> void setAdapter(ViewPager viewPager, String adapterClassName, ItemView itemView, Collection<T> items) {
-        setAdapter(viewPager, adapterClassName, itemView, items, null);
-    }
-
-    @BindingAdapter({"adapter", "itemView", "items"})
-    public static <T> void setAdapter(ViewPager viewPager, String adapterClassName, ItemViewSelector<T> selector, Collection<T> items) {
-        setAdapter(viewPager, adapterClassName, selector, items, null);
+    public static <T> void setAdapter(ViewPager viewPager, String adapterClassName, ItemViewArg<T> arg, Collection<T> items) {
+        setAdapter(viewPager, adapterClassName, arg, items, null);
     }
 
     @SuppressWarnings("unchecked")
     @BindingAdapter({"adapter", "itemView", "items", "pageTitles"})
-    public static <T> void setAdapter(ViewPager viewPager, String adapterClassName, ItemView itemView, Collection<T> items, BindingViewPagerAdapter.PageTitles<T> pageTitles) {
+    public static <T> void setAdapter(ViewPager viewPager, String adapterClassName, ItemViewArg<T> arg, Collection<T> items, BindingViewPagerAdapter.PageTitles<T> pageTitles) {
         BindingViewPagerAdapter<T> adapter = (BindingViewPagerAdapter<T>) viewPager.getAdapter();
         if (adapter == null) {
-            adapter = createAdapter(adapterClassName, itemView);
+            adapter = createAdapter(adapterClassName, arg);
             viewPager.setAdapter(adapter);
         }
         adapter.setItems(items);
         adapter.setPageTitles(pageTitles);
     }
 
-    @SuppressWarnings("unchecked")
-    @BindingAdapter({"adapter", "itemView", "items", "pageTitles"})
-    public static <T> void setAdapter(ViewPager viewPager, String adapterClassName, ItemViewSelector<T> selector, Collection<T> items, BindingViewPagerAdapter.PageTitles<T> pageTitles) {
-        BindingViewPagerAdapter<T> adapter = (BindingViewPagerAdapter<T>) viewPager.getAdapter();
-        if (adapter == null) {
-            adapter = createAdapter(adapterClassName, selector);
-            viewPager.setAdapter(adapter);
-        }
-        adapter.setItems(items);
-        adapter.setPageTitles(pageTitles);
+    @BindingConversion
+    public static ItemViewArg toItemViewArg(ItemView itemView) {
+        return ItemViewArg.of(itemView);
     }
 
+    @BindingConversion
+    public static ItemViewArg toItemViewArg(ItemViewSelector<?> selector) {
+        return ItemViewArg.of(selector);
+    }
+
+    public static <T extends BindingCollectionAdapter> T createAdapter(String className, ItemViewArg<?> arg) {
+        try {
+            return (T) Class.forName(className).getConstructor(ItemViewArg.class).newInstance(arg);
+        } catch (Exception e) {
+            // Fallback to either an ItemView or ItemViewSelector constructor.
+            Log.w(TAG, "Could not find constructor " + className + "(ItemViewArg), falling back to either ItemView or ItemViewSelector constructor. You should create this single unified constructor as this fallback will be removed in a later version.");
+            try {
+                if (arg.selector == BaseItemViewSelector.empty()) {
+                    return (T) Class.forName(className).getConstructor(ItemView.class).newInstance(arg.itemView);
+                } else {
+                    return (T) Class.forName(className).getConstructor(ItemViewSelector.class).newInstance(arg.selector);
+                }
+            } catch (Exception e2) {
+                throw new RuntimeException(e2);
+            }
+        }
+    }
+
+    /**
+     * @deprecated Use {@link #createAdapter(String, ItemViewArg)} instead.
+     */
     @SuppressWarnings("unchecked")
+    @Deprecated
     public static <T extends BindingCollectionAdapter> T createAdapter(String className, ItemView itemView) {
         try {
             return (T) Class.forName(className).getConstructor(ItemView.class).newInstance(itemView);
@@ -211,7 +156,11 @@ public class BindingCollectionAdapters {
         }
     }
 
+    /**
+     * @deprecated Use {@link #createAdapter(String, ItemViewArg)} instead.
+     */
     @SuppressWarnings("unchecked")
+    @Deprecated
     public static <T extends BindingCollectionAdapter> T createAdapter(String className, ItemViewSelector<?> selector) {
         try {
             return (T) Class.forName(className).getConstructor(ItemViewSelector.class).newInstance(selector);
