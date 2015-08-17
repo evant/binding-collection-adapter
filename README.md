@@ -6,7 +6,7 @@ Easy way to bind collections to listviews and recyclerviews with the new [Androi
 ## Download
 
 ```groovy
-compile 'me.tatarka:bindingcollectionadapter:0.10'
+compile 'me.tatarka:bindingcollectionadapter:0.11'
 ```
 
 ## Usage
@@ -52,6 +52,13 @@ convience factories to attach a `LayoutManager` to a `RecyclerView` with `app:la
       android:layout_height="match_parent"
       app:items="@{viewModel.items}"
       app:itemView="@{viewModel.itemView}"/>
+      
+    <Spinner
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      app:items="@{viewModel.items}"
+      app:itemView="@{viewModel.itemView}"
+      app:dropDownItemView="@{viewModel.dropDownItemView}"/>
 </layout>
 ```
 
@@ -113,11 +120,6 @@ adapter.setItemIds(new BindingListViewAdapter.ItemIds<T>() {
 or by defining `app:itemIds="@{itemIds}"` in the `ListView` in your layout file.
 
 Setting this will make `hasStableIds` return true which can increase performace of data changes.
-
-You can also define a different dropdown view layout by setting
-
-```java
-itemView.setLayoutRes(BindingListViewAdapter.DROP_DOWN_LAYOUT, R.layout.item_dropdown);
 ```
 
 ### BindingViewPagerAdapter
@@ -140,6 +142,10 @@ Data binding is awesome and all, but you may run into a case where you simply ne
 
 ```java
 public class MyRecyclerViewAdapter<T> extends BindingRecyclerViewAdapter<T> {
+    public LoggingRecyclerViewAdapter(@NonNull ItemViewArg<T> arg) {
+      super(arg);
+    }
+    
     public LoggingRecyclerViewAdapter(@NonNull ItemView itemView) {
         super(itemView);
     }
