@@ -11,6 +11,9 @@ a cosntructor to create it with an ItemViewArg (the common case would
 just be to call super). There is currently a fallback so that this
 change is backwards-compatible but it will be removed in a future
 update.
+- Deprecated `itemView.setLayoutRes(DROP_DOWN_LAYOUT, int)` in favor of `app:dropDownItemView` or
+`adapter.setDropDownItemView(itemViw)`. Original functionality is completely removed but that 
+shouldn't matter since you couldn't bind the adapter to the spinner anyway.
 
 ### 0.10
 - Deprecated `BindingCollectionAdapter.getItems()` and added

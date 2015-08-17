@@ -28,6 +28,11 @@ public class ViewModel {
     public final ItemView singleItemView = ItemView.of(BR.item, R.layout.item);
 
     /**
+     * ItemView of drop down type
+     */
+    public final ItemView dropDownItemView = ItemView.of(BR.item, R.layout.item_dropdown);
+
+    /**
      * ItemView of multiple types based on the data.
      */
     public final ItemViewSelector<ItemViewModel> multipleItemViews = new ItemViewSelector<ItemViewModel>() {

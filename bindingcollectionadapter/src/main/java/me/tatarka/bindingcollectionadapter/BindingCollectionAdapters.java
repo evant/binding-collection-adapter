@@ -52,14 +52,26 @@ public class BindingCollectionAdapters {
         setAdapter(adapterView, arg, items, null);
     }
 
+    @BindingAdapter({"itemView", "dropDownItemView", "items"})
+    public static <T> void setAdapter(AdapterView adapterView, ItemViewArg<T> arg, ItemView dropDownItemView, Collection<T> items) {
+        setAdapter(adapterView, arg, dropDownItemView, items, null);
+    }
+
     @SuppressWarnings("unchecked")
     @BindingAdapter({"itemView", "items", "itemIds"})
     public static <T> void setAdapter(AdapterView adapterView, ItemViewArg<T> arg, Collection<T> items, BindingListViewAdapter.ItemIds<T> itemIds) {
+        setAdapter(adapterView, arg, null, items, itemIds);
+    }
+
+    @SuppressWarnings("unchecked")
+    @BindingAdapter({"itemView", "dropDownItemView", "items", "itemIds"})
+    public static <T> void setAdapter(AdapterView adapterView, ItemViewArg<T> arg, ItemView dropDownItemView, Collection<T> items, BindingListViewAdapter.ItemIds<T> itemIds) {
         BindingListViewAdapter<T> adapter = (BindingListViewAdapter<T>) adapterView.getAdapter();
         if (adapter == null) {
-            adapter = new BindingListViewAdapter<T>(arg);
+            adapter = new BindingListViewAdapter<>(arg);
             adapterView.setAdapter(adapter);
         }
+        adapter.setDropDownItemView(dropDownItemView);
         adapter.setItems(items);
         adapter.setItemIds(itemIds);
     }
@@ -69,14 +81,26 @@ public class BindingCollectionAdapters {
         setAdapter(adapterView, adapterClassName, arg, items, null);
     }
 
+    @BindingAdapter({"adapter", "itemView", "dropDownItemView", "items"})
+    public static <T> void setAdapter(AdapterView adapterView, String adapterClassName, ItemViewArg<T> arg, ItemView dropDownItemView, Collection<T> items) {
+        setAdapter(adapterView, adapterClassName, arg, dropDownItemView, items, null);
+    }
+
     @SuppressWarnings("unchecked")
     @BindingAdapter({"adapter", "itemView", "items", "itemIds"})
     public static <T> void setAdapter(AdapterView adapterView, String adapterClassName, ItemViewArg<T> arg, Collection<T> items, BindingListViewAdapter.ItemIds<T> itemIds) {
+        setAdapter(adapterView, adapterClassName, arg, null, items, itemIds);
+    }
+
+    @SuppressWarnings("unchecked")
+    @BindingAdapter({"adapter", "itemView", "dropDownItemView", "items", "itemIds"})
+    public static <T> void setAdapter(AdapterView adapterView, String adapterClassName, ItemViewArg<T> arg, ItemView dropDownItemView, Collection<T> items, BindingListViewAdapter.ItemIds<T> itemIds) {
         BindingListViewAdapter<T> adapter = (BindingListViewAdapter<T>) adapterView.getAdapter();
         if (adapter == null) {
             adapter = createAdapter(adapterClassName, arg);
             adapterView.setAdapter(adapter);
         }
+        adapter.setDropDownItemView(dropDownItemView);
         adapter.setItems(items);
         adapter.setItemIds(itemIds);
     }
