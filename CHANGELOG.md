@@ -14,6 +14,8 @@ update.
 - Deprecated `itemView.setLayoutRes(DROP_DOWN_LAYOUT, int)` in favor of `app:dropDownItemView` or
 `adapter.setDropDownItemView(itemViw)`. Original functionality is completely removed but that 
 shouldn't matter since you couldn't bind the adapter to the spinner anyway.
+- Added warning for changing list off the main thread. This future doesn't carry it's weight and 
+will be removed from a future version.
 
 ### 0.10
 - Deprecated `BindingCollectionAdapter.getItems()` and added
