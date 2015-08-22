@@ -12,7 +12,7 @@ public class TestHelpers {
     public static class ViewModel {
         public final List<String> items;
         public final ItemView itemView;
-        public final ItemViewSelector itemViewSelector;
+        public final ItemViewSelector<String> itemViewSelector;
         public final BindingListViewAdapter.ItemIds<String> itemIds;
 
         public ViewModel(List<String> items, ItemView itemView) {

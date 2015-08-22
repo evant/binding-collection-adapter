@@ -31,6 +31,11 @@ public class BindingCollectionAdapters {
         adapter.setItems(items);
     }
 
+    @BindingAdapter({"itemView", "items"})
+    public static <T> void setAdapter(RecyclerView recyclerView, ItemViewSelector<T> arg, Collection<T> items) {
+        setAdapter(recyclerView, ItemViewArg.of(arg), items);
+    }
+
     @SuppressWarnings("unchecked")
     @BindingAdapter({"adapter", "itemView", "items"})
     public static <T> void setAdapter(RecyclerView recyclerView, String adapterClassName, ItemViewArg<T> arg, Collection<T> items) {
@@ -40,6 +45,11 @@ public class BindingCollectionAdapters {
             recyclerView.setAdapter(adapter);
         }
         adapter.setItems(items);
+    }
+
+    @BindingAdapter({"adapter", "itemView", "items"})
+    public static <T> void setAdapter(RecyclerView recyclerView, String adapterClassName, ItemViewSelector<T> arg, Collection<T> items) {
+        setAdapter(recyclerView, adapterClassName, ItemViewArg.of(arg), items);
     }
 
     @BindingAdapter("layoutManager")
@@ -52,15 +62,30 @@ public class BindingCollectionAdapters {
         setAdapter(adapterView, arg, items, null);
     }
 
+    @BindingAdapter({"itemView", "items"})
+    public static <T> void setAdapter(AdapterView adapterView, ItemViewSelector<T> arg, Collection<T> items) {
+        setAdapter(adapterView, ItemViewArg.of(arg), items, null);
+    }
+
     @BindingAdapter({"itemView", "dropDownItemView", "items"})
     public static <T> void setAdapter(AdapterView adapterView, ItemViewArg<T> arg, ItemView dropDownItemView, Collection<T> items) {
         setAdapter(adapterView, arg, dropDownItemView, items, null);
+    }
+
+    @BindingAdapter({"itemView", "dropDownItemView", "items"})
+    public static <T> void setAdapter(AdapterView adapterView, ItemViewSelector<T> arg, ItemView dropDownItemView, Collection<T> items) {
+        setAdapter(adapterView, ItemViewArg.of(arg), dropDownItemView, items, null);
     }
 
     @SuppressWarnings("unchecked")
     @BindingAdapter({"itemView", "items", "itemIds"})
     public static <T> void setAdapter(AdapterView adapterView, ItemViewArg<T> arg, Collection<T> items, BindingListViewAdapter.ItemIds<T> itemIds) {
         setAdapter(adapterView, arg, null, items, itemIds);
+    }
+
+    @BindingAdapter({"itemView", "items", "itemIds"})
+    public static <T> void setAdapter(AdapterView adapterView, ItemViewSelector<T> arg, Collection<T> items, BindingListViewAdapter.ItemIds<T> itemIds) {
+        setAdapter(adapterView, ItemViewArg.of(arg), null, items, itemIds);
     }
 
     @SuppressWarnings("unchecked")
@@ -76,9 +101,19 @@ public class BindingCollectionAdapters {
         adapter.setItemIds(itemIds);
     }
 
+    @BindingAdapter({"itemView", "dropDownItemView", "items", "itemIds"})
+    public static <T> void setAdapter(AdapterView adapterView, ItemViewSelector<T> arg, ItemView dropDownItemView, Collection<T> items, BindingListViewAdapter.ItemIds<T> itemIds) {
+        setAdapter(adapterView, ItemViewArg.of(arg), dropDownItemView, items, itemIds);
+    }
+
     @BindingAdapter({"adapter", "itemView", "items"})
     public static <T> void setAdapter(AdapterView adapterView, String adapterClassName, ItemViewArg<T> arg, Collection<T> items) {
         setAdapter(adapterView, adapterClassName, arg, items, null);
+    }
+
+    @BindingAdapter({"adapter", "itemView", "items"})
+    public static <T> void setAdapter(AdapterView adapterView, String adapterClassName, ItemViewSelector<T> arg, Collection<T> items) {
+        setAdapter(adapterView, adapterClassName, ItemViewArg.of(arg), items, null);
     }
 
     @BindingAdapter({"adapter", "itemView", "dropDownItemView", "items"})
@@ -86,10 +121,20 @@ public class BindingCollectionAdapters {
         setAdapter(adapterView, adapterClassName, arg, dropDownItemView, items, null);
     }
 
+    @BindingAdapter({"adapter", "itemView", "dropDownItemView", "items"})
+    public static <T> void setAdapter(AdapterView adapterView, String adapterClassName, ItemViewSelector<T> arg, ItemView dropDownItemView, Collection<T> items) {
+        setAdapter(adapterView, adapterClassName, ItemViewArg.of(arg), dropDownItemView, items, null);
+    }
+
     @SuppressWarnings("unchecked")
     @BindingAdapter({"adapter", "itemView", "items", "itemIds"})
     public static <T> void setAdapter(AdapterView adapterView, String adapterClassName, ItemViewArg<T> arg, Collection<T> items, BindingListViewAdapter.ItemIds<T> itemIds) {
         setAdapter(adapterView, adapterClassName, arg, null, items, itemIds);
+    }
+
+    @BindingAdapter({"adapter", "itemView", "items", "itemIds"})
+    public static <T> void setAdapter(AdapterView adapterView, String adapterClassName, ItemViewSelector<T> arg, Collection<T> items, BindingListViewAdapter.ItemIds<T> itemIds) {
+        setAdapter(adapterView, adapterClassName, ItemViewArg.of(arg), null, items, itemIds);
     }
 
     @SuppressWarnings("unchecked")
@@ -105,9 +150,19 @@ public class BindingCollectionAdapters {
         adapter.setItemIds(itemIds);
     }
 
+    @BindingAdapter({"adapter", "itemView", "dropDownItemView", "items", "itemIds"})
+    public static <T> void setAdapter(AdapterView adapterView, String adapterClassName, ItemViewSelector<T> arg, ItemView dropDownItemView, Collection<T> items, BindingListViewAdapter.ItemIds<T> itemIds) {
+        setAdapter(adapterView, adapterClassName, ItemViewArg.of(arg), dropDownItemView, items, itemIds);
+    }
+
     @BindingAdapter({"itemView", "items"})
     public static <T> void setAdapter(ViewPager viewPager, ItemViewArg<T> arg, Collection<T> items) {
         setAdapter(viewPager, arg, items, null);
+    }
+
+    @BindingAdapter({"itemView", "items"})
+    public static <T> void setAdapter(ViewPager viewPager, ItemViewSelector<T> arg, Collection<T> items) {
+        setAdapter(viewPager, ItemViewArg.of(arg), items, null);
     }
 
     @SuppressWarnings("unchecked")
@@ -122,9 +177,19 @@ public class BindingCollectionAdapters {
         adapter.setPageTitles(pageTitles);
     }
 
+    @BindingAdapter({"itemView", "items", "pageTitles"})
+    public static <T> void setAdapter(ViewPager viewPager, ItemViewSelector<T> arg, Collection<T> items, BindingViewPagerAdapter.PageTitles<T> pageTitles) {
+        setAdapter(viewPager, ItemViewArg.of(arg), items, pageTitles);
+    }
+
     @BindingAdapter({"adapter", "itemView", "items"})
     public static <T> void setAdapter(ViewPager viewPager, String adapterClassName, ItemViewArg<T> arg, Collection<T> items) {
         setAdapter(viewPager, adapterClassName, arg, items, null);
+    }
+
+    @BindingAdapter({"adapter", "itemView", "items"})
+    public static <T> void setAdapter(ViewPager viewPager, String adapterClassName, ItemViewSelector<T> arg, Collection<T> items) {
+        setAdapter(viewPager, adapterClassName, ItemViewArg.of(arg), items, null);
     }
 
     @SuppressWarnings("unchecked")
@@ -139,13 +204,20 @@ public class BindingCollectionAdapters {
         adapter.setPageTitles(pageTitles);
     }
 
+    @BindingAdapter({"adapter", "itemView", "items", "pageTitles"})
+    public static <T> void setAdapter(ViewPager viewPager, String adapterClassName, ItemViewSelector<T> arg, Collection<T> items, BindingViewPagerAdapter.PageTitles<T> pageTitles) {
+        setAdapter(viewPager, adapterClassName, ItemViewArg.of(arg), items, pageTitles);
+    }
+
     @BindingConversion
     public static ItemViewArg toItemViewArg(ItemView itemView) {
         return ItemViewArg.of(itemView);
     }
 
-    @BindingConversion
-    public static ItemViewArg toItemViewArg(ItemViewSelector selector) {
+    //This conversion does not work due to https://code.google.com/p/android/issues/detail?id=183651
+    //Instead, we will have to create more @BindingAdapter overloads for ItemViewSelector
+    //@BindingConversion
+    public static ItemViewArg toItemViewArg(ItemViewSelector<?> selector) {
         return ItemViewArg.of(selector);
     }
 
