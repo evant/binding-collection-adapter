@@ -4,14 +4,15 @@ apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'signing'
 
 android {
-    compileSdkVersion 22
-    buildToolsVersion "22.0.1"
+    compileSdkVersion 23
+    buildToolsVersion "23.0.0"
 
     defaultConfig {
         minSdkVersion 10
-        targetSdkVersion 22
+        targetSdkVersion 23
         versionCode 1
         versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -23,11 +24,23 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
     }
+    sourceSets {
+        androidTest {
+            res {
+                srcDirs = ['src/androidTest/res']
+            }
+        }
+    }
 }
 
 dependencies {
     compile 'com.android.support:support-v4:22.2.1'
     compile 'com.android.support:recyclerview-v7:22.2.1'
+
+    androidTestCompile 'com.android.support.test:runner:0.3'
+    androidTestCompile 'com.android.support.test:rules:0.3'
+    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2'
+    androidTestCompile 'com.squareup.assertj:assertj-android:1.1.0'
 }
 
 task androidJavadocs(type: Javadoc) {
@@ -52,7 +65,7 @@ if (project.hasProperty('sonatype.username') && project.hasProperty('sonatype.pa
     signing {
         sign configurations.archives
     }
-    
+
     uploadArchives {
         repositories {
             mavenDeployer {

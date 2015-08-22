@@ -145,7 +145,7 @@ public class BindingCollectionAdapters {
     }
 
     @BindingConversion
-    public static ItemViewArg toItemViewArg(ItemViewSelector<?> selector) {
+    public static ItemViewArg toItemViewArg(ItemViewSelector selector) {
         return ItemViewArg.of(selector);
     }
 
