@@ -1,3 +1,7 @@
+### 0.12
+- Work around for `@BindingConversion` generics issue, fixes ItemViewSelector.
+- Added support for specifying adapters with factories instead of a class name.
+
 ### 0.11
 - Change ListView BindingAdapters to AdapterView to directly support spinners.
 - Fixed crash when `getViewTypeCount()` is not called before `getItemViewType()`.
