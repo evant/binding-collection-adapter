@@ -89,6 +89,21 @@ public class ListViewInflationTest extends InstrumentationTestCase {
     }
 
     @UiThreadTest
+    public void testListViewAdapterFactory() {
+        List<String> items = Arrays.asList("one", "two", "three");
+        TestHelpers.ViewModel viewModel = new TestHelpers.ViewModel(items, ItemView.of(BR.item, R.layout.item));
+        ViewDataBinding binding = DataBindingUtil.inflate(inflater, R.layout.list_view_factory_adapter, null, false);
+        binding.setVariable(BR.viewModel, viewModel);
+        binding.executePendingBindings();
+
+        ListView listView = (ListView) binding.getRoot();
+        @SuppressWarnings("unchecked")
+        BindingListViewAdapter<String> adapter = (BindingListViewAdapter<String>) listView.getAdapter();
+
+        assertThat(adapter).isInstanceOf(TestHelpers.MyBindingListViewAdapter.class);
+    }
+
+    @UiThreadTest
     public void testListViewAdapterItemIds() {
         List<String> items = Arrays.asList("one", "two", "three");
         List<Long> itemIds = Arrays.asList(1L, 2L, 3L);

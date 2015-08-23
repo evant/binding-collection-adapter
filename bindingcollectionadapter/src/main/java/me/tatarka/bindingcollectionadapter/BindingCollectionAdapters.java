@@ -8,11 +8,14 @@ import android.databinding.ViewDataBinding;
 import android.support.annotation.LayoutRes;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.widget.AdapterView;
 
 import java.lang.reflect.Field;
 import java.util.Collection;
+
+import me.tatarka.bindingcollectionadapter.factories.BindingAdapterViewFactory;
+import me.tatarka.bindingcollectionadapter.factories.BindingRecyclerViewAdapterFactory;
+import me.tatarka.bindingcollectionadapter.factories.BindingViewPagerAdapterFactory;
 
 /**
  * All the BindingAdapters so that you can set your adapters and items directly in your layout.
@@ -23,12 +26,7 @@ public class BindingCollectionAdapters {
     @SuppressWarnings("unchecked")
     @BindingAdapter({"itemView", "items"})
     public static <T> void setAdapter(RecyclerView recyclerView, ItemViewArg<T> arg, Collection<T> items) {
-        BindingRecyclerViewAdapter<T> adapter = (BindingRecyclerViewAdapter<T>) recyclerView.getAdapter();
-        if (adapter == null) {
-            adapter = new BindingRecyclerViewAdapter<>(arg);
-            recyclerView.setAdapter(adapter);
-        }
-        adapter.setItems(items);
+        setAdapter(recyclerView, BindingRecyclerViewAdapterFactory.DEFAULT, arg, items);
     }
 
     @BindingAdapter({"itemView", "items"})
@@ -38,18 +36,18 @@ public class BindingCollectionAdapters {
 
     @SuppressWarnings("unchecked")
     @BindingAdapter({"adapter", "itemView", "items"})
-    public static <T> void setAdapter(RecyclerView recyclerView, String adapterClassName, ItemViewArg<T> arg, Collection<T> items) {
+    public static <T> void setAdapter(RecyclerView recyclerView, BindingRecyclerViewAdapterFactory factory, ItemViewArg<T> arg, Collection<T> items) {
         BindingRecyclerViewAdapter<T> adapter = (BindingRecyclerViewAdapter<T>) recyclerView.getAdapter();
         if (adapter == null) {
-            adapter = createAdapter(adapterClassName, arg);
+            adapter = factory.create(recyclerView, arg);
             recyclerView.setAdapter(adapter);
         }
         adapter.setItems(items);
     }
 
     @BindingAdapter({"adapter", "itemView", "items"})
-    public static <T> void setAdapter(RecyclerView recyclerView, String adapterClassName, ItemViewSelector<T> arg, Collection<T> items) {
-        setAdapter(recyclerView, adapterClassName, ItemViewArg.of(arg), items);
+    public static <T> void setAdapter(RecyclerView recyclerView, BindingRecyclerViewAdapterFactory factory, ItemViewSelector<T> arg, Collection<T> items) {
+        setAdapter(recyclerView, factory, ItemViewArg.of(arg), items);
     }
 
     @BindingAdapter("layoutManager")
@@ -91,14 +89,7 @@ public class BindingCollectionAdapters {
     @SuppressWarnings("unchecked")
     @BindingAdapter({"itemView", "dropDownItemView", "items", "itemIds"})
     public static <T> void setAdapter(AdapterView adapterView, ItemViewArg<T> arg, ItemView dropDownItemView, Collection<T> items, BindingListViewAdapter.ItemIds<T> itemIds) {
-        BindingListViewAdapter<T> adapter = (BindingListViewAdapter<T>) adapterView.getAdapter();
-        if (adapter == null) {
-            adapter = new BindingListViewAdapter<>(arg);
-            adapterView.setAdapter(adapter);
-        }
-        adapter.setDropDownItemView(dropDownItemView);
-        adapter.setItems(items);
-        adapter.setItemIds(itemIds);
+        setAdapter(adapterView, BindingAdapterViewFactory.DEFAULT, arg, dropDownItemView, items, itemIds);
     }
 
     @BindingAdapter({"itemView", "dropDownItemView", "items", "itemIds"})
@@ -107,42 +98,42 @@ public class BindingCollectionAdapters {
     }
 
     @BindingAdapter({"adapter", "itemView", "items"})
-    public static <T> void setAdapter(AdapterView adapterView, String adapterClassName, ItemViewArg<T> arg, Collection<T> items) {
-        setAdapter(adapterView, adapterClassName, arg, items, null);
+    public static <T> void setAdapter(AdapterView adapterView, BindingAdapterViewFactory factory, ItemViewArg<T> arg, Collection<T> items) {
+        setAdapter(adapterView, factory, arg, items, null);
     }
 
     @BindingAdapter({"adapter", "itemView", "items"})
-    public static <T> void setAdapter(AdapterView adapterView, String adapterClassName, ItemViewSelector<T> arg, Collection<T> items) {
-        setAdapter(adapterView, adapterClassName, ItemViewArg.of(arg), items, null);
+    public static <T> void setAdapter(AdapterView adapterView, BindingAdapterViewFactory factory, ItemViewSelector<T> arg, Collection<T> items) {
+        setAdapter(adapterView, factory, ItemViewArg.of(arg), items, null);
     }
 
     @BindingAdapter({"adapter", "itemView", "dropDownItemView", "items"})
-    public static <T> void setAdapter(AdapterView adapterView, String adapterClassName, ItemViewArg<T> arg, ItemView dropDownItemView, Collection<T> items) {
-        setAdapter(adapterView, adapterClassName, arg, dropDownItemView, items, null);
+    public static <T> void setAdapter(AdapterView adapterView, BindingAdapterViewFactory factory, ItemViewArg<T> arg, ItemView dropDownItemView, Collection<T> items) {
+        setAdapter(adapterView, factory, arg, dropDownItemView, items, null);
     }
 
     @BindingAdapter({"adapter", "itemView", "dropDownItemView", "items"})
-    public static <T> void setAdapter(AdapterView adapterView, String adapterClassName, ItemViewSelector<T> arg, ItemView dropDownItemView, Collection<T> items) {
-        setAdapter(adapterView, adapterClassName, ItemViewArg.of(arg), dropDownItemView, items, null);
+    public static <T> void setAdapter(AdapterView adapterView, BindingAdapterViewFactory factory, ItemViewSelector<T> arg, ItemView dropDownItemView, Collection<T> items) {
+        setAdapter(adapterView, factory, ItemViewArg.of(arg), dropDownItemView, items, null);
     }
 
     @SuppressWarnings("unchecked")
     @BindingAdapter({"adapter", "itemView", "items", "itemIds"})
-    public static <T> void setAdapter(AdapterView adapterView, String adapterClassName, ItemViewArg<T> arg, Collection<T> items, BindingListViewAdapter.ItemIds<T> itemIds) {
-        setAdapter(adapterView, adapterClassName, arg, null, items, itemIds);
+    public static <T> void setAdapter(AdapterView adapterView, BindingAdapterViewFactory factory, ItemViewArg<T> arg, Collection<T> items, BindingListViewAdapter.ItemIds<T> itemIds) {
+        setAdapter(adapterView, factory, arg, null, items, itemIds);
     }
 
     @BindingAdapter({"adapter", "itemView", "items", "itemIds"})
-    public static <T> void setAdapter(AdapterView adapterView, String adapterClassName, ItemViewSelector<T> arg, Collection<T> items, BindingListViewAdapter.ItemIds<T> itemIds) {
-        setAdapter(adapterView, adapterClassName, ItemViewArg.of(arg), null, items, itemIds);
+    public static <T> void setAdapter(AdapterView adapterView, BindingAdapterViewFactory factory, ItemViewSelector<T> arg, Collection<T> items, BindingListViewAdapter.ItemIds<T> itemIds) {
+        setAdapter(adapterView, factory, ItemViewArg.of(arg), null, items, itemIds);
     }
 
     @SuppressWarnings("unchecked")
     @BindingAdapter({"adapter", "itemView", "dropDownItemView", "items", "itemIds"})
-    public static <T> void setAdapter(AdapterView adapterView, String adapterClassName, ItemViewArg<T> arg, ItemView dropDownItemView, Collection<T> items, BindingListViewAdapter.ItemIds<T> itemIds) {
+    public static <T> void setAdapter(AdapterView adapterView, BindingAdapterViewFactory factory, ItemViewArg<T> arg, ItemView dropDownItemView, Collection<T> items, BindingListViewAdapter.ItemIds<T> itemIds) {
         BindingListViewAdapter<T> adapter = (BindingListViewAdapter<T>) adapterView.getAdapter();
         if (adapter == null) {
-            adapter = createAdapter(adapterClassName, arg);
+            adapter = factory.create(adapterView, arg);
             adapterView.setAdapter(adapter);
         }
         adapter.setDropDownItemView(dropDownItemView);
@@ -151,8 +142,8 @@ public class BindingCollectionAdapters {
     }
 
     @BindingAdapter({"adapter", "itemView", "dropDownItemView", "items", "itemIds"})
-    public static <T> void setAdapter(AdapterView adapterView, String adapterClassName, ItemViewSelector<T> arg, ItemView dropDownItemView, Collection<T> items, BindingListViewAdapter.ItemIds<T> itemIds) {
-        setAdapter(adapterView, adapterClassName, ItemViewArg.of(arg), dropDownItemView, items, itemIds);
+    public static <T> void setAdapter(AdapterView adapterView, BindingAdapterViewFactory factory, ItemViewSelector<T> arg, ItemView dropDownItemView, Collection<T> items, BindingListViewAdapter.ItemIds<T> itemIds) {
+        setAdapter(adapterView, factory, ItemViewArg.of(arg), dropDownItemView, items, itemIds);
     }
 
     @BindingAdapter({"itemView", "items"})
@@ -168,13 +159,7 @@ public class BindingCollectionAdapters {
     @SuppressWarnings("unchecked")
     @BindingAdapter({"itemView", "items", "pageTitles"})
     public static <T> void setAdapter(ViewPager viewPager, ItemViewArg<T> arg, Collection<T> items, BindingViewPagerAdapter.PageTitles<T> pageTitles) {
-        BindingViewPagerAdapter<T> adapter = (BindingViewPagerAdapter<T>) viewPager.getAdapter();
-        if (adapter == null) {
-            adapter = new BindingViewPagerAdapter<>(arg);
-            viewPager.setAdapter(adapter);
-        }
-        adapter.setItems(items);
-        adapter.setPageTitles(pageTitles);
+        setAdapter(viewPager, BindingViewPagerAdapterFactory.DEFAULT, arg, items, pageTitles);
     }
 
     @BindingAdapter({"itemView", "items", "pageTitles"})
@@ -183,21 +168,21 @@ public class BindingCollectionAdapters {
     }
 
     @BindingAdapter({"adapter", "itemView", "items"})
-    public static <T> void setAdapter(ViewPager viewPager, String adapterClassName, ItemViewArg<T> arg, Collection<T> items) {
-        setAdapter(viewPager, adapterClassName, arg, items, null);
+    public static <T> void setAdapter(ViewPager viewPager, BindingViewPagerAdapterFactory factory, ItemViewArg<T> arg, Collection<T> items) {
+        setAdapter(viewPager, factory, arg, items, null);
     }
 
     @BindingAdapter({"adapter", "itemView", "items"})
-    public static <T> void setAdapter(ViewPager viewPager, String adapterClassName, ItemViewSelector<T> arg, Collection<T> items) {
-        setAdapter(viewPager, adapterClassName, ItemViewArg.of(arg), items, null);
+    public static <T> void setAdapter(ViewPager viewPager, BindingViewPagerAdapterFactory factory, ItemViewSelector<T> arg, Collection<T> items) {
+        setAdapter(viewPager, factory, ItemViewArg.of(arg), items, null);
     }
 
     @SuppressWarnings("unchecked")
     @BindingAdapter({"adapter", "itemView", "items", "pageTitles"})
-    public static <T> void setAdapter(ViewPager viewPager, String adapterClassName, ItemViewArg<T> arg, Collection<T> items, BindingViewPagerAdapter.PageTitles<T> pageTitles) {
+    public static <T> void setAdapter(ViewPager viewPager, BindingViewPagerAdapterFactory factory, ItemViewArg<T> arg, Collection<T> items, BindingViewPagerAdapter.PageTitles<T> pageTitles) {
         BindingViewPagerAdapter<T> adapter = (BindingViewPagerAdapter<T>) viewPager.getAdapter();
         if (adapter == null) {
-            adapter = createAdapter(adapterClassName, arg);
+            adapter = factory.create(viewPager, arg);
             viewPager.setAdapter(adapter);
         }
         adapter.setItems(items);
@@ -205,8 +190,8 @@ public class BindingCollectionAdapters {
     }
 
     @BindingAdapter({"adapter", "itemView", "items", "pageTitles"})
-    public static <T> void setAdapter(ViewPager viewPager, String adapterClassName, ItemViewSelector<T> arg, Collection<T> items, BindingViewPagerAdapter.PageTitles<T> pageTitles) {
-        setAdapter(viewPager, adapterClassName, ItemViewArg.of(arg), items, pageTitles);
+    public static <T> void setAdapter(ViewPager viewPager, BindingViewPagerAdapterFactory factory, ItemViewSelector<T> arg, Collection<T> items, BindingViewPagerAdapter.PageTitles<T> pageTitles) {
+        setAdapter(viewPager, factory, ItemViewArg.of(arg), items, pageTitles);
     }
 
     @BindingConversion
@@ -221,22 +206,29 @@ public class BindingCollectionAdapters {
         return ItemViewArg.of(selector);
     }
 
+    @BindingConversion
+    public static BindingAdapterViewFactory toAdapterViewAdapterFactory(String className) {
+        return new ClassNameBindingCollectionAdapterFactories.ClassNameBindingAdapterViewFactory(className);
+    }
+
+    @BindingConversion
+    public static BindingRecyclerViewAdapterFactory toRecyclerViewAdapterFactory(String className) {
+        return new ClassNameBindingCollectionAdapterFactories.ClassNameBindingRecyclerViewFactory(className);
+    }
+
+    @BindingConversion
+    public static BindingViewPagerAdapterFactory toViewPagerAdapterFactory(String className) {
+        return new ClassNameBindingCollectionAdapterFactories.ClassNameBindingViewPagerFactory(className);
+    }
+
+    /**
+     * @deprecated You should use an explicit {@code Binding*AdapterFactory} instead. If you want to
+     * still use a class name, use one of {@link ClassNameBindingCollectionAdapterFactories}.
+     */
+    @SuppressWarnings("unchecked")
+    @Deprecated
     public static <T extends BindingCollectionAdapter> T createAdapter(String className, ItemViewArg<?> arg) {
-        try {
-            return (T) Class.forName(className).getConstructor(ItemViewArg.class).newInstance(arg);
-        } catch (Exception e) {
-            // Fallback to either an ItemView or ItemViewSelector constructor.
-            Log.w(TAG, "Could not find constructor " + className + "(ItemViewArg), falling back to either ItemView or ItemViewSelector constructor. You should create this single unified constructor as this fallback will be removed in a later version.");
-            try {
-                if (arg.selector == BaseItemViewSelector.empty()) {
-                    return (T) Class.forName(className).getConstructor(ItemView.class).newInstance(arg.itemView);
-                } else {
-                    return (T) Class.forName(className).getConstructor(ItemViewSelector.class).newInstance(arg.selector);
-                }
-            } catch (Exception e2) {
-                throw new RuntimeException(e2);
-            }
-        }
+        return (T) ClassNameBindingCollectionAdapterFactories.createClass(className, arg);
     }
 
     /**

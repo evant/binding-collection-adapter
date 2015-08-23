@@ -3,9 +3,16 @@ package me.tatarka.bindingcollectionadapter;
 import android.support.annotation.NonNull;
 import android.support.test.espresso.core.deps.dagger.internal.Factory;
 import android.support.test.espresso.core.deps.guava.base.Joiner;
+import android.support.v4.view.ViewPager;
+import android.support.v7.widget.RecyclerView;
+import android.widget.AdapterView;
 
 import java.util.Iterator;
 import java.util.List;
+
+import me.tatarka.bindingcollectionadapter.factories.BindingAdapterViewFactory;
+import me.tatarka.bindingcollectionadapter.factories.BindingRecyclerViewAdapterFactory;
+import me.tatarka.bindingcollectionadapter.factories.BindingViewPagerAdapterFactory;
 
 public class TestHelpers {
 
@@ -41,7 +48,15 @@ public class TestHelpers {
         }
     }
 
+    public static final BindingAdapterViewFactory MY_LIST_VIEW_ADAPTER_FACTORY = new BindingAdapterViewFactory() {
+        @Override
+        public <T> BindingListViewAdapter<T> create(AdapterView adapterView, ItemViewArg<T> arg) {
+            return new MyBindingListViewAdapter<>(arg);
+        }
+    };
+
     public static class MyBindingListViewAdapter<T> extends BindingListViewAdapter<T> {
+
         public MyBindingListViewAdapter(@NonNull ItemView itemView) {
             super(itemView);
         }
@@ -55,7 +70,15 @@ public class TestHelpers {
         }
     }
 
+    public static final BindingRecyclerViewAdapterFactory MY_RECYCLER_VIEW_ADAPTER_FACTORY = new BindingRecyclerViewAdapterFactory() {
+        @Override
+        public <T> BindingRecyclerViewAdapter<T> create(RecyclerView recyclerView, ItemViewArg<T> arg) {
+            return new MyBindingRecyclerViewAdapter<>(arg);
+        }
+    };
+
     public static class MyBindingRecyclerViewAdapter<T> extends BindingRecyclerViewAdapter<T> {
+
         public MyBindingRecyclerViewAdapter(@NonNull ItemView itemView) {
             super(itemView);
         }
@@ -68,8 +91,16 @@ public class TestHelpers {
             super(arg);
         }
     }
-    
+
+    public static final BindingViewPagerAdapterFactory MY_VIEW_PAGER_ADAPTER_FACTORY = new BindingViewPagerAdapterFactory() {
+        @Override
+        public <T> BindingViewPagerAdapter<T> create(ViewPager viewPager, ItemViewArg<T> arg) {
+            return new MyBindingViewPagerAdapter<>(arg);
+        }
+    };
+
     public static class MyBindingViewPagerAdapter<T> extends BindingViewPagerAdapter<T> {
+
         public MyBindingViewPagerAdapter(@NonNull ItemView itemView) {
             super(itemView);
         }

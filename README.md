@@ -179,6 +179,27 @@ public class MyRecyclerViewAdapter<T> extends BindingRecyclerViewAdapter<T> {
   app:adapter='@{"com.example.MyRecyclerViewAdapter"}'/>
 ```
 
+You can also use a factory instead of the class name. This allows you to not have reflection and gives you more control over it's construction.
+
+```java
+public static final BindingRecyclerViewAdapterFactory MY_FACTORY = new BindingRecyclerViewAdapterFactory() {
+  @Override
+  public <T> BindingRecyclerViewAdapter<T> create(RecyclerView recyclerView, ItemViewArg<T> arg) {
+    return new MyRecyclerViewAdapter<>(arg);
+  }
+}
+```
+
+```xml
+<android.support.v7.widget.RecyclerView
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  app:layoutManager="{@LayoutManagers.linear()}"
+  app:items="@{viewModel.items}"
+  app:itemView="@{viewModel.itemView}"
+  app:adapter="@{MY_FACTORY}"/>
+```
+
 ## Known Issues
 
 ### Cannot Resolve the libraries `@BindingAdapter`'s
