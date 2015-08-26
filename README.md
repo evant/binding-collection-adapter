@@ -120,7 +120,7 @@ adapter.setItemIds(new BindingListViewAdapter.ItemIds<T>() {
 or by defining `app:itemIds="@{itemIds}"` in the `ListView` in your layout file.
 
 Setting this will make `hasStableIds` return true which can increase performace of data changes.
-```
+
 
 ### BindingViewPagerAdapter
 
