@@ -1,3 +1,19 @@
+### 0.13
+- Update databinding to rc2.
+- Simplified and re-ordered BindingAdapters
+- Removed support for modifying an `ObservableList` off the main thread. It will now throw an 
+exception.
+- Removed deprecated `BindingCollectionAdapter.getItems()`.
+- Removed a bunch of deprecated methods on `BindingCollectionAdapters` that should shouldn't be
+using anyway and deprecated some more.
+- Added `BindingCollectionAdapter.setItems(List<T>)` and deprecated 
+`BindingCollectionAdapters.setItems(Collection<T>)`. 
+**Warning!** This may cause a subtile change in behavior. The collection now always holds a 
+reference to the collection you pass it instead of copying it into it's own. You must now be careful 
+to only modify this collection on the main thread and call `notifyDataSetChanged()` or related if 
+you are not using an `ObservableList`.
+- Added support for itemId on RecyclerView.
+
 ### 0.12
 - Work around for `@BindingConversion` generics issue, fixes ItemViewSelector.
 - Added support for specifying adapters with factories instead of a class name.

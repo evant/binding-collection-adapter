@@ -8,11 +8,10 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
- * Base interface for the binding collection adapters for various components. Implementers of this
- * interface should also have two constructors, one that takes an {@link ItemView} and one that
- * takes an {@link ItemViewSelector}.
+ * Base interface for the binding collection adapters for various components.
  *
  * @see BindingListViewAdapter
  * @see BindingRecyclerViewAdapter
@@ -23,32 +22,26 @@ public interface BindingCollectionAdapter<T> {
      * Sets the adapter's items. These items will be displayed based on the {@link ItemView} or
      * {@link ItemViewSelector}. If you pass in an {@link ObservableList} the adapter will also
      * update itself based on that list's changes.
+     *
+     * @deprecated use {@link #setItems(List)} instead. This method copy the given list unless it is
+     * an {@link ObservableList}, the new one will never copy the list.
      */
+    @Deprecated
     void setItems(@Nullable Collection<T> items);
 
     /**
-     * Returns the items bound to this adapter. If an {@link ObservableList} was given to {@link
-     * #setItems(Collection)} this will return that same list. Otherwise, it will return a different
-     * {@link ObservableList} that you can still modify directly to update the adapter. If {@link
-     * #setItems(Collection)} was never called or was called with {@code null}, this will return
-     * null.
-     *
-     * @deprecated This method had 2 uses which could either be done an alternative way or were
-     * wrong. <ol> <li>If you want to access the backing collection, just use that collection
-     * directly. It should be your responsibility to hold a reference to it and determine if it's
-     * observable or not.</li> <li>If you want to get an item at a certain position for a custom
-     * adapter implementation, this won't always be correct. The adapter keeps a separate copy of
-     * the collection that is only modified on the main thread. If you add items to the backing
-     * collection on a separate thread they may get out of sync. Instead, you should use {@link
-     * #getAdapterItem(int)} instead.</li></ol>
+     * Sets the adapter's items. These items will be displayed based on the {@link ItemView} or
+     * {@link ItemViewSelector}. If you pass in an {@link ObservableList} the adapter will also
+     * update itself based on that list's changes. <br/> Note that the adapter will keep a direct
+     * reference to the given list. Any changes to it <em>must</em> happen on the main thread.
+     * Additionally, if you are not using an {@code ObservableList}, you <em>must</em> call {@code
+     * notifyDataSetChanged()} or one of the related methods.
      */
-    @Deprecated
-    ObservableList<T> getItems();
+    void setItems(@Nullable List<T> items);
 
     /**
-     * Returns the item in the adapter given position. If you need access to this in a custom
-     * adapter subclass you should use this instead of accessing the collection directly because the
-     * adapter keeps a second copy of the list that is only updated on the main thread.
+     * Returns the item in the adapter given position. This is useful for accessing items in the
+     * adapter.
      */
     T getAdapterItem(int position);
 

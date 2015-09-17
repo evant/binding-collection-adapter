@@ -5,7 +5,7 @@ apply plugin: 'signing'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.0"
+    buildToolsVersion "23.0.1"
 
     defaultConfig {
         minSdkVersion 10
@@ -41,6 +41,7 @@ dependencies {
     androidTestCompile 'com.android.support.test:rules:0.3'
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2'
     androidTestCompile 'com.squareup.assertj:assertj-android:1.1.0'
+    compile 'org.assertj:assertj-core:1.7.1'
 }
 
 task androidJavadocs(type: Javadoc) {

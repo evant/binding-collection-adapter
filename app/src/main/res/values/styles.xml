@@ -6,7 +6,7 @@
     </style>
 
     <style name="Toolbar">
-        <item name="android:theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+        <item name="android:theme">@style/ThemeOverlay.AppCompat.ActionBar</item>
         <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
     </style>
 </resources>

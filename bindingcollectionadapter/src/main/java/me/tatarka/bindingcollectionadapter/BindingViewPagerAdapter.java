@@ -1,7 +1,6 @@
 package me.tatarka.bindingcollectionadapter;
 
 import android.databinding.DataBindingUtil;
-import android.databinding.ObservableArrayList;
 import android.databinding.ObservableList;
 import android.databinding.ViewDataBinding;
 import android.support.annotation.LayoutRes;
@@ -28,15 +27,16 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter implements BindingC
     @NonNull
     private final ItemViewSelector<T> selector;
     private final WeakReferenceOnListChangedCallback<T> callback = new WeakReferenceOnListChangedCallback<>(this);
-    // This is what the viewpager sees. It will only be modified on the main thread.
-    private final List<T> boundItems = new ArrayList<>();
-    private ObservableList<T> items;
+    private List<T> items;
     private LayoutInflater inflater;
     private PageTitles<T> pageTitles;
 
     /**
      * Constructs a new instance with the given {@link ItemView}.
+     *
+     * @deprecated use {@link #BindingViewPagerAdapter(ItemViewArg)} instead.
      */
+    @Deprecated
     public BindingViewPagerAdapter(@NonNull ItemView itemView) {
         this.itemView = itemView;
         this.selector = BaseItemViewSelector.empty();
@@ -44,7 +44,10 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter implements BindingC
 
     /**
      * Constructs a new instance with the given {@link ItemViewSelector}.
+     *
+     * @deprecated use {@link #BindingViewPagerAdapter(ItemViewArg)} instead.
      */
+    @Deprecated
     public BindingViewPagerAdapter(@NonNull ItemViewSelector<T> selector) {
         this.itemView = new ItemView();
         this.selector = selector;
@@ -60,39 +63,27 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter implements BindingC
 
     @Override
     public void setItems(@Nullable Collection<T> items) {
-        if (this.items == items) {
-            return;
-        }
-
-        if (this.items != null) {
-            this.items.removeOnListChangedCallback(callback);
-            this.boundItems.clear();
-            notifyDataSetChanged();
-        }
-
-        if (items instanceof ObservableList) {
-            this.items = (ObservableList<T>) items;
-            this.boundItems.addAll(items);
-            notifyDataSetChanged();
-            this.items.addOnListChangedCallback(callback);
-        } else if (items != null) {
-            this.items = new ObservableArrayList<>();
-            this.items.addOnListChangedCallback(callback);
-            this.items.addAll(items);
-        } else {
-            this.items = null;
-        }
+        setItems(Utils.getListFromCollection(items));
     }
 
     @Override
-    @Deprecated
-    public ObservableList<T> getItems() {
-        return items;
+    public void setItems(@Nullable List<T> items) {
+        if (this.items == items) {
+            return;
+        }
+        if (this.items instanceof ObservableList) {
+            ((ObservableList<T>) this.items).removeOnListChangedCallback(callback);
+        }
+        if (items instanceof ObservableList) {
+            ((ObservableList<T>) items).addOnListChangedCallback(callback);
+        }
+        this.items = items;
+        notifyDataSetChanged();
     }
 
     @Override
     public T getAdapterItem(int position) {
-        return boundItems.get(position);
+        return items.get(position);
     }
 
     @Override
@@ -105,7 +96,7 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter implements BindingC
         if (itemView.getBindingVariable() != ItemView.BINDING_VARIABLE_NONE) {
             boolean result = binding.setVariable(bindingVariable, item);
             if (!result) {
-                BindingCollectionAdapters.throwMissingVariable(binding, bindingVariable, layoutRes);
+                Utils.throwMissingVariable(binding, bindingVariable, layoutRes);
             }
             binding.executePendingBindings();
         }
@@ -120,12 +111,12 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter implements BindingC
 
     @Override
     public int getCount() {
-        return boundItems.size();
+        return items == null ? 0 : items.size();
     }
 
     @Override
     public CharSequence getPageTitle(int position) {
-        return pageTitles == null ? null : pageTitles.getPageTitle(position, boundItems.get(position));
+        return pageTitles == null ? null : pageTitles.getPageTitle(position, items.get(position));
     }
 
     @Override
@@ -134,7 +125,7 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter implements BindingC
             inflater = LayoutInflater.from(container.getContext());
         }
 
-        T item = boundItems.get(position);
+        T item = items.get(position);
         selector.select(itemView, position, item);
 
         ViewDataBinding binding = onCreateBinding(inflater, itemView.getLayoutRes(), container);
@@ -155,18 +146,21 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter implements BindingC
         return view == object;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public int getItemPosition(Object object) {
         T item = (T) ((View) object).getTag();
-        for (int i = 0; i < boundItems.size(); i++) {
-            if (item == boundItems.get(i)) {
-                return i;
+        if (items != null) {
+            for (int i = 0; i < items.size(); i++) {
+                if (item == items.get(i)) {
+                    return i;
+                }
             }
         }
         return POSITION_NONE;
     }
 
-    private static class WeakReferenceOnListChangedCallback<T> extends BaseOnListChangedCallback<T> {
+    private static class WeakReferenceOnListChangedCallback<T> extends ObservableList.OnListChangedCallback<ObservableList<T>> {
         final WeakReference<BindingViewPagerAdapter<T>> adapterRef;
 
         WeakReferenceOnListChangedCallback(BindingViewPagerAdapter<T> adapter) {
@@ -179,18 +173,8 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter implements BindingC
             if (adapter == null) {
                 return;
             }
-            final List<T> changedItems = new ArrayList<>(adapter.items);
-            onMainThread(new OnMainThread() {
-                @Override
-                public void onMainThread() {
-                    BindingViewPagerAdapter<T> adapter = adapterRef.get();
-                    if (adapter != null) {
-                        adapter.boundItems.clear();
-                        adapter.boundItems.addAll(changedItems);
-                        adapter.notifyDataSetChanged();
-                    }
-                }
-            });
+            Utils.ensureChangeOnMainThread();
+            adapter.notifyDataSetChanged();
         }
 
         @Override
