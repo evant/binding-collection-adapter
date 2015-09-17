@@ -26,16 +26,13 @@ public class ItemViewModel extends BaseObservable {
     public boolean checked() {
         return checked;
     }
-
-    public final View.OnLongClickListener onToggleChecked = new View.OnLongClickListener() {
-        @Override
-        public boolean onLongClick(View v) {
-            if (!checkable) {
-                return false;
-            }
-            checked = !checked;
-            notifyPropertyChanged(BR.checked);
-            return true;
+    
+    public boolean onToggleChecked(View v) {
+        if (!checkable) {
+            return false;
         }
-    };
+        checked = !checked;
+        notifyPropertyChanged(BR.checked);
+        return true;
+    }
 }
