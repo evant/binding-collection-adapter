@@ -6,7 +6,7 @@ Easy way to bind collections to listviews and recyclerviews with the new [Androi
 ## Download
 
 ```groovy
-compile 'me.tatarka:bindingcollectionadapter:0.12'
+compile 'me.tatarka:bindingcollectionadapter:0.13'
 ```
 
 ## Usage
@@ -144,14 +144,6 @@ Data binding is awesome and all, but you may run into a case where you simply ne
 public class MyRecyclerViewAdapter<T> extends BindingRecyclerViewAdapter<T> {
     public LoggingRecyclerViewAdapter(@NonNull ItemViewArg<T> arg) {
       super(arg);
-    }
-    
-    public LoggingRecyclerViewAdapter(@NonNull ItemView itemView) {
-        super(itemView);
-    }
-
-    public LoggingRecyclerViewAdapter(@NonNull ItemViewSelector<T> selector) {
-        super(selector);
     }
 
     @Override
