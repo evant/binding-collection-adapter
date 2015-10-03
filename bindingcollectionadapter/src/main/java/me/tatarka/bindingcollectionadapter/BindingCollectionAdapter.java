@@ -14,21 +14,9 @@ import java.util.List;
  * Base interface for the binding collection adapters for various components.
  *
  * @see BindingListViewAdapter
- * @see BindingRecyclerViewAdapter
  * @see BindingViewPagerAdapter
  */
 public interface BindingCollectionAdapter<T> {
-    /**
-     * Sets the adapter's items. These items will be displayed based on the {@link ItemView} or
-     * {@link ItemViewSelector}. If you pass in an {@link ObservableList} the adapter will also
-     * update itself based on that list's changes.
-     *
-     * @deprecated use {@link #setItems(List)} instead. This method copy the given list unless it is
-     * an {@link ObservableList}, the new one will never copy the list.
-     */
-    @Deprecated
-    void setItems(@Nullable Collection<T> items);
-
     /**
      * Sets the adapter's items. These items will be displayed based on the {@link ItemView} or
      * {@link ItemViewSelector}. If you pass in an {@link ObservableList} the adapter will also

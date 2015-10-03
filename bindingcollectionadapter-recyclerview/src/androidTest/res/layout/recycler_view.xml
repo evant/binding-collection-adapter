@@ -7,7 +7,7 @@
         
         <variable 
             name="viewModel" 
-            type="me.tatarka.bindingcollectionadapter.TestHelpers.ViewModel" />
+            type="me.tatarka.bindingcollectionadapter.recyclerview.TestHelpers.ViewModel" />
     </data>
 
     <android.support.v7.widget.RecyclerView

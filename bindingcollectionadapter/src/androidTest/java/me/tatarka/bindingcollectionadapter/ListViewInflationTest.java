@@ -11,7 +11,6 @@ import android.widget.ListView;
 import java.util.Arrays;
 import java.util.List;
 
-import me.tatarka.bindingcollectionadapter.test.BR;
 import me.tatarka.bindingcollectionadapter.test.R;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -118,10 +117,5 @@ public class ListViewInflationTest extends InstrumentationTestCase {
 
         assertThat(adapter).isInstanceOf(TestHelpers.MyBindingListViewAdapter.class);
         assertThat(TestHelpers.iterableIds(adapter)).containsExactlyElementsOf(itemIds);
-    }
-
-    @Override
-    public void tearDown() throws Exception {
-        super.tearDown();
     }
 }

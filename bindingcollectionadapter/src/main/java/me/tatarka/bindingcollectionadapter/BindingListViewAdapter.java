@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import java.lang.ref.WeakReference;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -45,26 +44,6 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
     private ItemIds<T> itemIds;
 
     /**
-     * Constructs a new instance with the given {@link ItemView}.
-     *
-     * @deprecated use {@link #BindingListViewAdapter(ItemViewArg)} instead.
-     */
-    @Deprecated
-    public BindingListViewAdapter(@NonNull ItemView itemView) {
-        this(ItemViewArg.<T>of(itemView));
-    }
-
-    /**
-     * Constructs a new instance with the given {@link ItemViewSelector}.
-     *
-     * @deprecated use {@link #BindingListViewAdapter(ItemViewArg)}L instead.
-     */
-    @Deprecated
-    public BindingListViewAdapter(@NonNull ItemViewSelector<T> selector) {
-        this(ItemViewArg.of(selector));
-    }
-
-    /**
      * Constructs a new instance with the given {@link ItemViewArg}.
      */
     public BindingListViewAdapter(@NonNull ItemViewArg<T> arg) {
@@ -78,11 +57,6 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
      */
     public void setDropDownItemView(@Nullable ItemView itemView) {
         this.dropDownItemView = itemView;
-    }
-
-    @Override
-    public void setItems(@Nullable Collection<T> items) {
-        setItems(Utils.getListFromCollection(items));
     }
 
     @Override

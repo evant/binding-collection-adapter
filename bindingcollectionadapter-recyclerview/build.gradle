@@ -34,7 +34,8 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:21.0.3'
+    compile project(':bindingcollectionadapter')
+    compile 'com.android.support:recyclerview-v7:21.0.3'
 
     androidTestCompile 'com.android.support.test:runner:0.4'
     androidTestCompile 'com.android.support.test:rules:0.4'
@@ -84,7 +85,7 @@ if (project.hasProperty('sonatype.username') && project.hasProperty('sonatype.pa
                 }
 
                 pom.project {
-                    name 'BindingCollectionAdapter'
+                    name 'BindingCollectionAdapter (RecyclerView)'
                     packaging 'aar'
                     description 'Easy way to bind collections to listviews and recyclerviews with the new Android Data Binding framework'
                     url 'https://github.com/evant/binding-collection-adapter'

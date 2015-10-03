@@ -12,8 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -32,38 +30,11 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter implements BindingC
     private PageTitles<T> pageTitles;
 
     /**
-     * Constructs a new instance with the given {@link ItemView}.
-     *
-     * @deprecated use {@link #BindingViewPagerAdapter(ItemViewArg)} instead.
-     */
-    @Deprecated
-    public BindingViewPagerAdapter(@NonNull ItemView itemView) {
-        this.itemView = itemView;
-        this.selector = BaseItemViewSelector.empty();
-    }
-
-    /**
-     * Constructs a new instance with the given {@link ItemViewSelector}.
-     *
-     * @deprecated use {@link #BindingViewPagerAdapter(ItemViewArg)} instead.
-     */
-    @Deprecated
-    public BindingViewPagerAdapter(@NonNull ItemViewSelector<T> selector) {
-        this.itemView = new ItemView();
-        this.selector = selector;
-    }
-
-    /**
      * Constructs a new instance with the given {@link ItemViewArg}.
      */
     public BindingViewPagerAdapter(@NonNull ItemViewArg<T> arg) {
         this.itemView = arg.itemView;
         this.selector = arg.selector;
-    }
-
-    @Override
-    public void setItems(@Nullable Collection<T> items) {
-        setItems(Utils.getListFromCollection(items));
     }
 
     @Override

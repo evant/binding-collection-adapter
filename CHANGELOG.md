@@ -1,3 +1,13 @@
+### 0.14
+- Removed deprecated `BindingCollectionAdapter.setItems(Collection<T>)`.
+- Removed deprecated constructors on adapters.
+- Removed deprecated methods on `ItemView`.
+- Removed some more deprecated items in `BindingCollectionAdapters`.
+- Removed ClassNameBindingCollectionAdapterFactories, though you can still use the class name in
+binding.
+- Split out RecyclerView bindings into a separate dependency. If you are using RecyclerView, you
+should also include `compile 'me.tatarka:bindingcollectionadpater-recyclerview:0.14'`.
+
 ### 0.13
 - Update databinding to rc2.
 - Simplified and re-ordered BindingAdapters
@@ -7,7 +17,7 @@ exception.
 - Removed a bunch of deprecated methods on `BindingCollectionAdapters` that should shouldn't be
 using anyway and deprecated some more.
 - Added `BindingCollectionAdapter.setItems(List<T>)` and deprecated 
-`BindingCollectionAdapters.setItems(Collection<T>)`. 
+`BindingCollectionAdapter.setItems(Collection<T>)`.
 **Warning!** This may cause a subtile change in behavior. The collection now always holds a 
 reference to the collection you pass it instead of copying it into it's own. You must now be careful 
 to only modify this collection on the main thread and call `notifyDataSetChanged()` or related if 

@@ -1,4 +1,4 @@
-package me.tatarka.bindingcollectionadapter;
+package me.tatarka.bindingcollectionadapter.recyclerview;
 
 import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
@@ -7,12 +7,13 @@ import android.support.v7.widget.RecyclerView;
 import android.test.InstrumentationTestCase;
 import android.test.UiThreadTest;
 import android.view.LayoutInflater;
-import android.widget.ListView;
 
 import java.util.Arrays;
 import java.util.List;
 
-import me.tatarka.bindingcollectionadapter.test.R;
+import me.tatarka.bindingcollectionadapter.BindingRecyclerViewAdapter;
+import me.tatarka.bindingcollectionadapter.ItemView;
+import me.tatarka.bindingcollectionadapter.recyclerview.test.R;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -55,10 +56,5 @@ public class RecyclerViewInflationTest extends InstrumentationTestCase {
         BindingRecyclerViewAdapter<String> adapter = (BindingRecyclerViewAdapter<String>) recyclerView.getAdapter();
 
         assertThat(adapter).isInstanceOf(TestHelpers.MyBindingRecyclerViewAdapter.class);
-    }
-
-    @Override
-    public void tearDown() throws Exception {
-        super.tearDown();
     }
 }

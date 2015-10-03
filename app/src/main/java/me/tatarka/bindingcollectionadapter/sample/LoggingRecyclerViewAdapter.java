@@ -6,11 +6,8 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-
 import me.tatarka.bindingcollectionadapter.BindingRecyclerViewAdapter;
-import me.tatarka.bindingcollectionadapter.ItemView;
 import me.tatarka.bindingcollectionadapter.ItemViewArg;
-import me.tatarka.bindingcollectionadapter.ItemViewSelector;
 
 /**
  * Created by evan on 6/30/15.
@@ -20,14 +17,6 @@ public class LoggingRecyclerViewAdapter<T> extends BindingRecyclerViewAdapter<T>
 
     public LoggingRecyclerViewAdapter(@NonNull ItemViewArg<T> arg) {
         super(arg);
-    }
-
-    public LoggingRecyclerViewAdapter(@NonNull ItemView itemView) {
-        super(itemView);
-    }
-
-    public LoggingRecyclerViewAdapter(@NonNull ItemViewSelector<T> selector) {
-        super(selector);
     }
 
     @Override

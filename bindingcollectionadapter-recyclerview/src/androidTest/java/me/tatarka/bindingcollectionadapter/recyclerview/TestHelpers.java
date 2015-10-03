@@ -1,11 +1,20 @@
-package me.tatarka.bindingcollectionadapter;
+package me.tatarka.bindingcollectionadapter.recyclerview;
 
 import android.support.annotation.NonNull;
 import android.support.test.espresso.core.deps.dagger.internal.Factory;
 import android.support.test.espresso.core.deps.guava.base.Joiner;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.RecyclerView;
 import android.widget.AdapterView;
+
+import me.tatarka.bindingcollectionadapter.BaseItemViewSelector;
+import me.tatarka.bindingcollectionadapter.BindingListViewAdapter;
+import me.tatarka.bindingcollectionadapter.BindingRecyclerViewAdapter;
+import me.tatarka.bindingcollectionadapter.ItemView;
+import me.tatarka.bindingcollectionadapter.ItemViewArg;
+import me.tatarka.bindingcollectionadapter.ItemViewSelector;
 import me.tatarka.bindingcollectionadapter.factories.BindingAdapterViewFactory;
+import me.tatarka.bindingcollectionadapter.factories.BindingRecyclerViewAdapterFactory;
 import me.tatarka.bindingcollectionadapter.factories.BindingViewPagerAdapterFactory;
 
 import java.util.Iterator;
@@ -39,39 +48,26 @@ public class TestHelpers {
             this.itemViewSelector = new BaseItemViewSelector<String>() {
                 @Override
                 public void select(ItemView itemView, int position, String item) {
-                    itemView.set(itemView.bindingVariable, itemView.layoutRes);
+                    itemView.set(itemView.getBindingVariable(), itemView.getLayoutRes());
                 }
             };
         }
     }
 
-    public static final BindingAdapterViewFactory MY_LIST_VIEW_ADAPTER_FACTORY = new BindingAdapterViewFactory() {
+    public static final BindingRecyclerViewAdapterFactory MY_RECYCLER_VIEW_ADAPTER_FACTORY = new BindingRecyclerViewAdapterFactory() {
         @Override
-        public <T> BindingListViewAdapter<T> create(AdapterView adapterView, ItemViewArg<T> arg) {
-            return new MyBindingListViewAdapter<>(arg);
+        public <T> BindingRecyclerViewAdapter<T> create(RecyclerView recyclerView, ItemViewArg<T> arg) {
+            return new MyBindingRecyclerViewAdapter<>(arg);
         }
     };
 
-    public static class MyBindingListViewAdapter<T> extends BindingListViewAdapter<T> {
-        public MyBindingListViewAdapter(@NonNull ItemViewArg<T> arg) {
+    public static class MyBindingRecyclerViewAdapter<T> extends BindingRecyclerViewAdapter<T> {
+        public MyBindingRecyclerViewAdapter(@NonNull ItemViewArg<T> arg) {
             super(arg);
         }
     }
 
-    public static final BindingViewPagerAdapterFactory MY_VIEW_PAGER_ADAPTER_FACTORY = new BindingViewPagerAdapterFactory() {
-        @Override
-        public <T> BindingViewPagerAdapter<T> create(ViewPager viewPager, ItemViewArg<T> arg) {
-            return new MyBindingViewPagerAdapter<>(arg);
-        }
-    };
-
-    public static class MyBindingViewPagerAdapter<T> extends BindingViewPagerAdapter<T> {
-        public MyBindingViewPagerAdapter(@NonNull ItemViewArg<T> arg) {
-            super(arg);
-        }
-    }
-
-    public static <T> Iterable<T> iterable(final BindingListViewAdapter<T> adapter) {
+    public static <T> Iterable<T> iterable(final BindingRecyclerViewAdapter<T> adapter) {
         if (adapter == null) return null;
         return new IndexIterable<>(new Factory<IndexIterator<T>>() {
             @Override
@@ -79,52 +75,12 @@ public class TestHelpers {
                 return new IndexIterator<T>() {
                     @Override
                     int getCount() {
-                        return adapter.getCount();
+                        return adapter.getItemCount();
                     }
 
                     @Override
                     T get(int index) {
                         return adapter.getAdapterItem(index);
-                    }
-                };
-            }
-        });
-    }
-
-    public static <T> Iterable<T> iterable(final BindingViewPagerAdapter<T> adapter) {
-        if (adapter == null) return null;
-        return new IndexIterable<>(new Factory<IndexIterator<T>>() {
-            @Override
-            public IndexIterator<T> get() {
-                return new IndexIterator<T>() {
-                    @Override
-                    int getCount() {
-                        return adapter.getCount();
-                    }
-
-                    @Override
-                    T get(int index) {
-                        return adapter.getAdapterItem(index);
-                    }
-                };
-            }
-        });
-    }
-
-    public static Iterable<Long> iterableIds(final BindingListViewAdapter<?> adapter) {
-        if (adapter == null) return null;
-        return new IndexIterable<>(new Factory<IndexIterator<Long>>() {
-            @Override
-            public IndexIterator<Long> get() {
-                return new IndexIterator<Long>() {
-                    @Override
-                    int getCount() {
-                        return adapter.getCount();
-                    }
-
-                    @Override
-                    Long get(int index) {
-                        return adapter.getItemId(index);
                     }
                 };
             }

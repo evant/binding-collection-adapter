@@ -32,38 +32,11 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingR
     private int recyclerViewRefCount = 0;
 
     /**
-     * Constructs a new instance with the given {@link ItemView}.
-     *
-     * @deprecated Use {@link #BindingRecyclerViewAdapter(ItemViewArg)} instead.
-     */
-    @Deprecated
-    public BindingRecyclerViewAdapter(@NonNull ItemView itemView) {
-        this.itemView = itemView;
-        this.selector = BaseItemViewSelector.empty();
-    }
-
-    /**
-     * Constructs a new instance with the given {@link ItemViewSelector}.
-     *
-     * @deprecated use {@link #BindingRecyclerViewAdapter(ItemViewArg)} intead.
-     */
-    @Deprecated
-    public BindingRecyclerViewAdapter(@NonNull ItemViewSelector<T> selector) {
-        this.itemView = new ItemView();
-        this.selector = selector;
-    }
-
-    /**
      * Constructs a new instance with the given {@link ItemViewArg}.
      */
     public BindingRecyclerViewAdapter(@NonNull ItemViewArg<T> arg) {
         this.itemView = arg.itemView;
         this.selector = arg.selector;
-    }
-
-    @Override
-    public void setItems(@Nullable Collection<T> items) {
-        setItems(Utils.getListFromCollection(items));
     }
 
     @Override

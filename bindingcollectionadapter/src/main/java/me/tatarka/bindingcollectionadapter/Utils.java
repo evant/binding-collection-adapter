@@ -5,12 +5,8 @@ import android.content.res.Resources;
 import android.databinding.ViewDataBinding;
 import android.os.Looper;
 import android.support.annotation.LayoutRes;
-import android.util.Log;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 /**
  * Helper databinding utilities. May be made public some time in the future if they prove to be
@@ -72,15 +68,14 @@ class Utils {
     }
 
     /**
-     * Helper method for backwards compat with {@link BindingCollectionAdapter#setItems(Collection)}.
-     * Will be removed sometime in the future.
+     * Constructs a binding adapter class from it's class name using reflection.
      */
-    static <T> List<T> getListFromCollection(Collection<T> collection) {
-        if (collection instanceof List) {
-            return (List<T>) collection;
-        } else {
-            Log.w(TAG, "collection: " + collection + " is not a List. Support for non-list collections will be removed in a future version");
-            return new ArrayList<>(collection);
+    @SuppressWarnings("unchecked")
+    static <T, A extends BindingCollectionAdapter<T>> A createClass(String className, ItemViewArg<T> arg) {
+        try {
+            return (A) Class.forName(className).getConstructor(ItemViewArg.class).newInstance(arg);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 }

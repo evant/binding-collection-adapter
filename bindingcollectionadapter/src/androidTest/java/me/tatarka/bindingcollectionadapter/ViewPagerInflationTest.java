@@ -4,7 +4,6 @@ import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
 import android.support.test.InstrumentationRegistry;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.RecyclerView;
 import android.test.InstrumentationTestCase;
 import android.test.UiThreadTest;
 import android.view.LayoutInflater;

@@ -3,9 +3,7 @@
     
     <data>
         
-        <import type="me.tatarka.bindingcollectionadapter.LayoutManagers" />
-        
-        <variable 
+        <variable
             name="viewModel" 
             type="me.tatarka.bindingcollectionadapter.TestHelpers.ViewModel" />
     </data>
@@ -15,5 +13,5 @@
         android:layout_height="match_parent"
         app:items="@{viewModel.items}"
         app:itemView="@{viewModel.itemView}"
-    app:adapter='@{"me.tatarka.bindingcollectionadapter.TestHelpers$MyBindingViewPagerAdapter"}' />
+        app:adapter='@{"me.tatarka.bindingcollectionadapter.TestHelpers$MyBindingViewPagerAdapter"}' />
 </layout>

@@ -7,7 +7,7 @@
         
         <variable 
             name="viewModel" 
-            type="me.tatarka.bindingcollectionadapter.TestHelpers.ViewModel" />
+            type="me.tatarka.bindingcollectionadapter.recyclerview.TestHelpers.ViewModel" />
     </data>
 
     <android.support.v7.widget.RecyclerView
@@ -16,5 +16,5 @@
         app:items="@{viewModel.items}"
         app:itemView="@{viewModel.itemView}"
         app:layoutManager="@{LayoutManagers.linear()}"
-        app:adapter='@{"me.tatarka.bindingcollectionadapter.TestHelpers$MyBindingRecyclerViewAdapter"}' />
+        app:adapter='@{"me.tatarka.bindingcollectionadapter.recyclerview.TestHelpers$MyBindingRecyclerViewAdapter"}' />
 </layout>

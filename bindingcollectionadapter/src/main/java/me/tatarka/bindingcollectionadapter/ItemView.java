@@ -22,9 +22,6 @@ public final class ItemView {
     @LayoutRes
     int layoutRes;
 
-    @Deprecated
-    private ArrayMap<String, Integer> extraLayouts;
-
     /**
      * Constructs a new {@code ItemView} with the given binding variable and layout res.
      *
@@ -69,25 +66,6 @@ public final class ItemView {
         return this;
     }
 
-    /**
-     * Set an additional layout res value with the given key. This is used for adapters that want to
-     * show the same content in multiple ways.
-     *
-     * @return the {@code ItemView} for chaining
-     * @see BindingListViewAdapter#DROP_DOWN_LAYOUT
-     * @deprecated Instead of setting multiple layouts on one ItemView, you should set multiple item
-     * views on the adapter. For example, for a drop down layout use {@code app:dropDownItemView} or
-     * {@link BindingListViewAdapter#BindingListViewAdapter(ItemView, ItemView)}.
-     */
-    @Deprecated
-    public ItemView setLayoutRes(String key, @LayoutRes int layoutRes) {
-        if (extraLayouts == null) {
-            extraLayouts = new ArrayMap<>();
-        }
-        extraLayouts.put(key, layoutRes);
-        return this;
-    }
-
     public int getBindingVariable() {
         return bindingVariable;
     }
@@ -95,24 +73,5 @@ public final class ItemView {
     @LayoutRes
     public int getLayoutRes() {
         return layoutRes;
-    }
-
-    /**
-     * Get an additional layout res set with {@link #setLayoutRes(String, int)}, or 0 if it doesn't
-     * exist.
-     *
-     * @deprecated See {@link #setLayoutRes(String, int)}
-     */
-    @Deprecated
-    @LayoutRes
-    public int getLayoutRes(String key) {
-        if (extraLayouts == null) {
-            return 0;
-        }
-        Integer value = extraLayouts.get(key);
-        if (value == null) {
-            return 0;
-        }
-        return value;
     }
 }

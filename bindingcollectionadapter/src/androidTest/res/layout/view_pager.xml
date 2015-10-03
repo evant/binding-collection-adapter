@@ -3,9 +3,7 @@
     
     <data>
         
-        <import type="me.tatarka.bindingcollectionadapter.LayoutManagers" />
-        
-        <variable 
+        <variable
             name="viewModel" 
             type="me.tatarka.bindingcollectionadapter.TestHelpers.ViewModel" />
     </data>
