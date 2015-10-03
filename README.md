@@ -14,7 +14,7 @@ compile 'me.tatarka:bindingcollectionadapter-recyclerview:0.14'
 
 You need to provied your items and an `ItemView` to bind to the layout. You should use an
 `ObservableList` to automaticaly update your view based on list changes. However, you can
-use any `Collection` if you don't need that functionality.
+use any `List` if you don't need that functionality.
 
 ```java
 public class ViewModel {
