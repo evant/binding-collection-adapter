@@ -155,8 +155,8 @@ public class MyRecyclerViewAdapter<T> extends BindingRecyclerViewAdapter<T> {
     }
 
     @Override
-    public void onBindBinding(ViewDataBinding binding, int bindingVariable, @LayoutRes int layoutRes, int position, T item) {
-        super.onBindBinding(binding, bindingVariable, layoutRes, position, item);
+    public void onBindBinding(ViewDataBinding binding, int bindingVariable, @LayoutRes int layoutId, int position, T item) {
+        super.onBindBinding(binding, bindingVariable, layoutId, position, item);
         Log.d(TAG, "bound binding: " + binding + " at position: " + position);
     }
 }
