@@ -10,6 +10,16 @@ compile 'me.tatarka:bindingcollectionadapter:0.14'
 compile 'me.tatarka:bindingcollectionadapter-recyclerview:0.14'
 ```
 
+requires at least databinding `rc2`. You can use newer versions but you have to explicitly excluded transitive dependencies because gradle doesn't handle the weird version numbers well.
+```groovy
+compile('me.tatarka:bindingcollectionadapter:0.14') {
+  exclude group: 'com.android.databinding'
+}
+compile('me.tatarka:bindingcollectionadapter-recyclerview:0.14') {
+  exclude group: 'com.android.databinding'
+}
+```
+
 ## Usage
 
 You need to provied your items and an `ItemView` to bind to the layout. You should use an
