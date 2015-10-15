@@ -22,8 +22,8 @@ compile('me.tatarka:bindingcollectionadapter-recyclerview:0.14') {
 
 ## Usage
 
-You need to provied your items and an `ItemView` to bind to the layout. You should use an
-`ObservableList` to automaticaly update your view based on list changes. However, you can
+You need to provide your items and an `ItemView` to bind to the layout. You should use an
+`ObservableList` to automatically update your view based on list changes. However, you can
 use any `List` if you don't need that functionality.
 
 ```java
@@ -74,7 +74,7 @@ convience factories to attach a `LayoutManager` to a `RecyclerView` with `app:la
 ```
 
 In your item layout, the collection item will be bound to the variable with the
-name you passed into the `ItemView`
+name you passed into the `ItemView`.
 
 ```xml
 <!-- item.xml -->
