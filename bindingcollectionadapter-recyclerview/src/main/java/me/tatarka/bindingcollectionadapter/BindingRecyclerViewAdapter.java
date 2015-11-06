@@ -21,9 +21,7 @@ import java.util.List;
  */
 public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingRecyclerViewAdapter.ViewHolder> implements BindingCollectionAdapter<T> {
     @NonNull
-    private final ItemView itemView;
-    @NonNull
-    private final ItemViewSelector<T> selector;
+    private final ItemViewArg<T> itemViewArg;
     private final WeakReferenceOnListChangedCallback<T> callback = new WeakReferenceOnListChangedCallback<>(this);
     private List<T> items;
     private LayoutInflater inflater;
@@ -35,8 +33,7 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingR
      * Constructs a new instance with the given {@link ItemViewArg}.
      */
     public BindingRecyclerViewAdapter(@NonNull ItemViewArg<T> arg) {
-        this.itemView = arg.itemView;
-        this.selector = arg.selector;
+        this.itemViewArg = arg;
     }
 
     @Override
@@ -107,13 +104,13 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingR
     @Override
     public final void onBindViewHolder(ViewHolder viewHolder, int position) {
         T item = items.get(position);
-        onBindBinding(viewHolder.binding, itemView.getBindingVariable(), itemView.getLayoutRes(), position, item);
+        onBindBinding(viewHolder.binding, itemViewArg.bindingVariable(), itemViewArg.layoutRes(), position, item);
     }
 
     @Override
     public int getItemViewType(int position) {
-        selector.select(itemView, position, items.get(position));
-        return itemView.getLayoutRes();
+        itemViewArg.select(position, items.get(position));
+        return itemViewArg.layoutRes();
     }
 
     /**

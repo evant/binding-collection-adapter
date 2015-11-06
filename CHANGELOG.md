@@ -1,3 +1,10 @@
+### 0.15
+- Deprecated `ItemView.getBindingVariable()` and `ItemView.getLayoutRes()` in favor of 
+`ItemView.bindingVariable()` and `ItemView.layoutRes()`.
+- Added public accessor methods to `ItemViewArg` to select and get item view info.
+- Removed unused constant in `BindingListViewAdapter`
+- Fixed `BindingViewPagerAdapter` possibly using the wrong binding variable in `onBindBinding()`.
+
 ### 0.14
 - Removed deprecated `BindingCollectionAdapter.setItems(Collection<T>)`.
 - Removed deprecated constructors on adapters.

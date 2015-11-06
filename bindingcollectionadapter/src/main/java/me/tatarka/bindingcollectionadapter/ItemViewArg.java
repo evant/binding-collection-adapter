@@ -1,8 +1,7 @@
 package me.tatarka.bindingcollectionadapter;
 
 /**
- * Unify {@link ItemView} and {@link ItemViewSelector} to simplify BindingAdapters. This is a
- * poor-man's union type.
+ * Unify {@link ItemView} and {@link ItemViewSelector} to simplify BindingAdapters.
  */
 public class ItemViewArg<T> {
     public static <T> ItemViewArg<T> of(ItemView itemView) {
@@ -13,8 +12,8 @@ public class ItemViewArg<T> {
         return new ItemViewArg<>(selector);
     }
 
-    final ItemView itemView;
-    final ItemViewSelector<T> selector;
+    private final ItemView itemView;
+    private final ItemViewSelector<T> selector;
 
     private ItemViewArg(ItemView itemView) {
         this.itemView = itemView;
@@ -24,5 +23,21 @@ public class ItemViewArg<T> {
     private ItemViewArg(ItemViewSelector<T> selector) {
         this.itemView = new ItemView();
         this.selector = selector;
+    }
+
+    public void select(int position, T item) {
+        selector.select(itemView, position, item);
+    }
+
+    public int bindingVariable() {
+        return itemView.bindingVariable();
+    }
+
+    public int layoutRes() {
+        return itemView.layoutRes();
+    }
+
+    public int viewTypeCount() {
+        return selector.viewTypeCount();
     }
 }

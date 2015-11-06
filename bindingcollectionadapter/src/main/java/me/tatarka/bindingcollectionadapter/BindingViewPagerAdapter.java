@@ -21,9 +21,7 @@ import java.util.List;
  */
 public class BindingViewPagerAdapter<T> extends PagerAdapter implements BindingCollectionAdapter<T> {
     @NonNull
-    private final ItemView itemView;
-    @NonNull
-    private final ItemViewSelector<T> selector;
+    private final ItemViewArg<T> itemViewArg;
     private final WeakReferenceOnListChangedCallback<T> callback = new WeakReferenceOnListChangedCallback<>(this);
     private List<T> items;
     private LayoutInflater inflater;
@@ -33,8 +31,7 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter implements BindingC
      * Constructs a new instance with the given {@link ItemViewArg}.
      */
     public BindingViewPagerAdapter(@NonNull ItemViewArg<T> arg) {
-        this.itemView = arg.itemView;
-        this.selector = arg.selector;
+        this.itemViewArg = arg;
     }
 
     @Override
@@ -64,7 +61,7 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter implements BindingC
 
     @Override
     public void onBindBinding(ViewDataBinding binding, int bindingVariable, @LayoutRes int layoutRes, int position, T item) {
-        if (itemView.getBindingVariable() != ItemView.BINDING_VARIABLE_NONE) {
+        if (bindingVariable != ItemView.BINDING_VARIABLE_NONE) {
             boolean result = binding.setVariable(bindingVariable, item);
             if (!result) {
                 Utils.throwMissingVariable(binding, bindingVariable, layoutRes);
@@ -97,10 +94,10 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter implements BindingC
         }
 
         T item = items.get(position);
-        selector.select(itemView, position, item);
+        itemViewArg.select(position, item);
 
-        ViewDataBinding binding = onCreateBinding(inflater, itemView.getLayoutRes(), container);
-        onBindBinding(binding, itemView.getBindingVariable(), itemView.getLayoutRes(), position, item);
+        ViewDataBinding binding = onCreateBinding(inflater, itemViewArg.layoutRes(), container);
+        onBindBinding(binding, itemViewArg.bindingVariable(), itemViewArg.layoutRes(), position, item);
 
         container.addView(binding.getRoot());
         binding.getRoot().setTag(item);

@@ -20,20 +20,8 @@ import java.util.List;
  * changes to that list.
  */
 public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCollectionAdapter<T> {
-    /**
-     * Pass this constant to {@link ItemView#setLayoutRes(String, int)} to set a drop down layout
-     * res for the given item.
-     *
-     * @see #getDropDownView(int, View, ViewGroup)
-     * @deprecated See {@link ItemView#setLayoutRes(String, int)}
-     */
-    @Deprecated
-    public static final String DROP_DOWN_LAYOUT = "drop_down_layout";
-
     @NonNull
-    private final ItemView itemView;
-    @NonNull
-    private final ItemViewSelector<T> selector;
+    private final ItemViewArg<T> itemViewArg;
     @Nullable
     private ItemView dropDownItemView;
     @NonNull
@@ -47,8 +35,7 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
      * Constructs a new instance with the given {@link ItemViewArg}.
      */
     public BindingListViewAdapter(@NonNull ItemViewArg<T> arg) {
-        this.itemView = arg.itemView;
-        this.selector = arg.selector;
+        this.itemViewArg = arg;
     }
 
     /**
@@ -137,7 +124,7 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
         }
 
         T item = items.get(position);
-        onBindBinding(binding, itemView.getBindingVariable(), layoutRes, position, item);
+        onBindBinding(binding, itemViewArg.bindingVariable(), layoutRes, position, item);
 
         return binding.getRoot();
     }
@@ -151,7 +138,7 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
         if (dropDownItemView == null) {
             return super.getDropDownView(position, convertView, parent);
         } else {
-            int layoutRes = dropDownItemView.layoutRes;
+            int layoutRes = dropDownItemView.layoutRes();
             ViewDataBinding binding;
             if (convertView == null) {
                 binding = onCreateBinding(inflater, layoutRes, parent);
@@ -171,18 +158,18 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
     public int getItemViewType(int position) {
         ensureLayoutsInit();
         T item = items.get(position);
-        selector.select(itemView, position, item);
+        itemViewArg.select(position, item);
 
         int firstEmpty = 0;
         for (int i = 0; i < layouts.length; i++) {
-            if (itemView.layoutRes == layouts[i]) {
+            if (itemViewArg.layoutRes() == layouts[i]) {
                 return i;
             }
             if (layouts[i] == 0) {
                 firstEmpty = i;
             }
         }
-        layouts[firstEmpty] = itemView.layoutRes;
+        layouts[firstEmpty] = itemViewArg.layoutRes();
         return firstEmpty;
     }
 
@@ -197,7 +184,7 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
     }
 
     private int ensureLayoutsInit() {
-        int count = selector.viewTypeCount();
+        int count = itemViewArg.viewTypeCount();
         if (layouts == null) {
             layouts = new int[count];
         }

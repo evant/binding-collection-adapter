@@ -1,7 +1,6 @@
 package me.tatarka.bindingcollectionadapter;
 
 import android.support.annotation.LayoutRes;
-import android.support.v4.util.ArrayMap;
 
 /**
  * An {@code ItemView} provides the necessary information for an item in a collection view. All
@@ -18,9 +17,9 @@ public final class ItemView {
      */
     public static final int BINDING_VARIABLE_NONE = 0;
 
-    int bindingVariable;
+    private int bindingVariable;
     @LayoutRes
-    int layoutRes;
+    private int layoutRes;
 
     /**
      * Constructs a new {@code ItemView} with the given binding variable and layout res.
@@ -66,12 +65,29 @@ public final class ItemView {
         return this;
     }
 
+    /**
+     * @deprecated Use {@link #bindingVariable()}
+     */
+    @Deprecated
     public int getBindingVariable() {
         return bindingVariable;
     }
 
+    public int bindingVariable() {
+        return bindingVariable;
+    }
+
+    /**
+     * @deprecated Use {@link #layoutRes()}
+     */
+    @Deprecated
     @LayoutRes
     public int getLayoutRes() {
+        return layoutRes;
+    }
+
+    @LayoutRes
+    public int layoutRes() {
         return layoutRes;
     }
 }
