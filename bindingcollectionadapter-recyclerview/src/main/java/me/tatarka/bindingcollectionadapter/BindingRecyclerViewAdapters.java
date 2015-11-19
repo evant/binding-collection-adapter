@@ -3,9 +3,10 @@ package me.tatarka.bindingcollectionadapter;
 import android.databinding.BindingAdapter;
 import android.databinding.BindingConversion;
 import android.support.v7.widget.RecyclerView;
-import me.tatarka.bindingcollectionadapter.factories.BindingRecyclerViewAdapterFactory;
 
 import java.util.List;
+
+import me.tatarka.bindingcollectionadapter.factories.BindingRecyclerViewAdapterFactory;
 
 /**
  * @see {@link BindingCollectionAdapters}
@@ -13,24 +14,14 @@ import java.util.List;
 public class BindingRecyclerViewAdapters {
     // RecyclerView
     @SuppressWarnings("unchecked")
-    @BindingAdapter({"itemView", "items"})
-    public static <T> void setAdapter(RecyclerView recyclerView, ItemViewArg<T> arg, List<T> items) {
-        setAdapter(recyclerView, arg, items, BindingRecyclerViewAdapterFactory.DEFAULT, null);
-    }
-
-    @BindingAdapter({"itemView", "items", "adapter"})
-    public static <T> void setAdapter(RecyclerView recyclerView, ItemViewArg<T> arg, List<T> items, BindingRecyclerViewAdapterFactory factory) {
-        setAdapter(recyclerView, arg, items, factory, null);
-    }
-
-    @BindingAdapter({"itemView", "items", "itemIds"})
-    public static <T> void setAdapter(RecyclerView recyclerView, ItemViewArg<T> args, List<T> items, BindingRecyclerViewAdapter.ItemIds<T> itemIds) {
-        setAdapter(recyclerView, args, items, BindingRecyclerViewAdapterFactory.DEFAULT, itemIds);
-    }
-
-    @SuppressWarnings("unchecked")
-    @BindingAdapter({"itemView", "items", "adapter", "itemIds"})
+    @BindingAdapter(value = {"itemView", "items", "adapter", "itemIds"}, requireAll = false)
     public static <T> void setAdapter(RecyclerView recyclerView, ItemViewArg<T> arg, List<T> items, BindingRecyclerViewAdapterFactory factory, BindingRecyclerViewAdapter.ItemIds<T> itemIds) {
+        if (arg == null) {
+            throw new IllegalArgumentException("itemView must not be null");
+        }
+        if (factory == null) {
+            factory = BindingRecyclerViewAdapterFactory.DEFAULT;
+        }
         BindingRecyclerViewAdapter<T> adapter = (BindingRecyclerViewAdapter<T>) recyclerView.getAdapter();
         if (adapter == null) {
             adapter = factory.create(recyclerView, arg);

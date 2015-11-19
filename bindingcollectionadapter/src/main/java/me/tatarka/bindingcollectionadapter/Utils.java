@@ -6,7 +6,9 @@ import android.databinding.ViewDataBinding;
 import android.os.Looper;
 import android.support.annotation.LayoutRes;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 /**
  * Helper databinding utilities. May be made public some time in the future if they prove to be
@@ -42,19 +44,46 @@ class Utils {
      */
     static String getBindingVariableName(Context context, int bindingVariable) throws Resources.NotFoundException {
         try {
-            String packageName = context.getApplicationInfo().packageName;
-            Class BRClass = Class.forName(packageName + ".BR");
-            Field[] fields = BRClass.getFields();
-            for (Field field : fields) {
-                int value = field.getInt(null);
-                if (value == bindingVariable) {
-                    return field.getName();
-                }
+            return getBindingVariableByDataBinderMapper(bindingVariable);
+        } catch (Exception e1) {
+            try {
+                return getBindingVariableByBR(context, bindingVariable);
+            } catch (Exception e2) {
+                throw new Resources.NotFoundException("" + bindingVariable);
             }
-        } catch (Exception e) {
-            //Ignore, throws NotFoundException
         }
-        throw new Resources.NotFoundException("" + bindingVariable);
+    }
+
+    /**
+     * Attempt to get the name from a non-public method on the generated DataBinderMapper class.
+     * This method does exactly what we want, but who knows if it will be there in future versions.
+     */
+    private static String getBindingVariableByDataBinderMapper(int bindingVariable) throws Exception {
+        Class<?> dataBinderMapper = Class.forName("android.databinding.DataBinderMapper");
+        Method convertIdMethod = dataBinderMapper.getDeclaredMethod("convertBrIdToString", int.class);
+        convertIdMethod.setAccessible(true);
+        Constructor constructor = dataBinderMapper.getDeclaredConstructor();
+        constructor.setAccessible(true);
+        Object instance = constructor.newInstance();
+        Object result = convertIdMethod.invoke(instance, bindingVariable);
+        return (String) result;
+    }
+
+    /**
+     * Attempt to get the name by using reflection on the generated BR class. Unfortunately, we 
+     * don't know BR's package name so this may fail if it's not the same as the apps package name.
+     */
+    private static String getBindingVariableByBR(Context context, int bindingVariable) throws Exception {
+        String packageName = context.getPackageName();
+        Class BRClass = Class.forName(packageName + ".BR");
+        Field[] fields = BRClass.getFields();
+        for (Field field : fields) {
+            int value = field.getInt(null);
+            if (value == bindingVariable) {
+                return field.getName();
+            }
+        }
+        throw new Exception("not found");
     }
 
     /**

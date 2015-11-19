@@ -1,3 +1,11 @@
+### 0.16
+- Updated to latest databinding, requites android plugin `1.5.0`
+- Use `requireAll = false` to vastly simplify binding adapters.
+- Fail with a more helpful error message when `itemView` is null.
+- Removed deprecated `ItemView` methods.
+- Invalid binding variable error can now show it's name even if the app's package and the BR package 
+do not match.
+
 ### 0.15
 - Deprecated `ItemView.getBindingVariable()` and `ItemView.getLayoutRes()` in favor of 
 `ItemView.bindingVariable()` and `ItemView.layoutRes()`.

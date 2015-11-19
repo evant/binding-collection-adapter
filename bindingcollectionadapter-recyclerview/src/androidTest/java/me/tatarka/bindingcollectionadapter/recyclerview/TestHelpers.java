@@ -48,7 +48,7 @@ public class TestHelpers {
             this.itemViewSelector = new BaseItemViewSelector<String>() {
                 @Override
                 public void select(ItemView itemView, int position, String item) {
-                    itemView.set(itemView.getBindingVariable(), itemView.getLayoutRes());
+                    itemView.set(itemView.bindingVariable(), itemView.layoutRes());
                 }
             };
         }

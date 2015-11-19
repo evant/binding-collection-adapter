@@ -148,7 +148,7 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
             }
 
             T item = items.get(position);
-            onBindBinding(binding, dropDownItemView.getBindingVariable(), layoutRes, position, item);
+            onBindBinding(binding, dropDownItemView.bindingVariable(), layoutRes, position, item);
 
             return binding.getRoot();
         }

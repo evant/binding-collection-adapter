@@ -23,7 +23,7 @@ public class ItemViewModel extends BaseObservable {
         return index;
     }
 
-    public boolean checked() {
+    public boolean isChecked() {
         return checked;
     }
     

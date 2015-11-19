@@ -4,63 +4,26 @@ import android.databinding.BindingAdapter;
 import android.databinding.BindingConversion;
 import android.support.v4.view.ViewPager;
 import android.widget.AdapterView;
-import me.tatarka.bindingcollectionadapter.factories.BindingAdapterViewFactory;
-import me.tatarka.bindingcollectionadapter.factories.BindingViewPagerAdapterFactory;
 
 import java.util.List;
+
+import me.tatarka.bindingcollectionadapter.factories.BindingAdapterViewFactory;
+import me.tatarka.bindingcollectionadapter.factories.BindingViewPagerAdapterFactory;
 
 /**
  * All the BindingAdapters so that you can set your adapters and items directly in your layout.
  */
 public class BindingCollectionAdapters {
-    // There are quite a few arguments here so we need some rules for consistency.
-    // 1) All arguments must be in the order: view, itemViewArg, items, factory, additional args
-    // 2) There must be one method that takes all possible args. All other methods must call that
-    // one with no intermediate steps.
-    // 3) Methods for a given view are order from least to greatest number of arguments.
-    // 4) Methods with factory must come before items without (when they are the same length).
-    // 5) Methods with an earlier argument in the master method must come before ones later
-    // (when they are the same length).
-
     // AdapterView
-    @BindingAdapter({"itemView", "items"})
-    public static <T> void setAdapter(AdapterView adapterView, ItemViewArg<T> arg, List<T> items) {
-        setAdapter(adapterView, arg, items, BindingAdapterViewFactory.DEFAULT, null, null);
-    }
-
-    @BindingAdapter({"itemView", "items", "adapter"})
-    public static <T> void setAdapter(AdapterView adapterView, ItemViewArg<T> arg, List<T> items, BindingAdapterViewFactory factory) {
-        setAdapter(adapterView, arg, items, factory, null, null);
-    }
-
-    @BindingAdapter({"itemView", "items", "dropDownItemView"})
-    public static <T> void setAdapter(AdapterView adapterView, ItemViewArg<T> arg, List<T> items, ItemView dropDownItemView) {
-        setAdapter(adapterView, arg, items, BindingAdapterViewFactory.DEFAULT, dropDownItemView, null);
-    }
-
-    @BindingAdapter({"itemView", "items", "itemIds"})
-    public static <T> void setAdapter(AdapterView adapterView, ItemViewArg<T> arg, List<T> items, BindingListViewAdapter.ItemIds<T> itemIds) {
-        setAdapter(adapterView, arg, items, BindingAdapterViewFactory.DEFAULT, null, itemIds);
-    }
-
-    @BindingAdapter({"itemView", "items", "adapter", "dropDownItemView"})
-    public static <T> void setAdapter(AdapterView adapterView, ItemViewArg<T> arg, List<T> items, BindingAdapterViewFactory factory, ItemView dropDownItemView) {
-        setAdapter(adapterView, arg, items, factory, dropDownItemView, null);
-    }
-
-    @BindingAdapter({"itemView", "items", "adapter", "itemIds"})
-    public static <T> void setAdapter(AdapterView adapter, ItemViewArg<T> args, List<T> items, BindingAdapterViewFactory factory, BindingListViewAdapter.ItemIds<T> itemIds) {
-        setAdapter(adapter, args, items, factory, null, itemIds);
-    }
-
-    @BindingAdapter({"itemView", "items", "dropDownItemView", "itemIds"})
-    public static <T> void setAdapter(AdapterView adapter, ItemViewArg<T> args, List<T> items, ItemView dropDownItemsView, BindingListViewAdapter.ItemIds<T> itemIds) {
-        setAdapter(adapter, args, items, BindingAdapterViewFactory.DEFAULT, dropDownItemsView, itemIds);
-    }
-
     @SuppressWarnings("unchecked")
-    @BindingAdapter({"itemView", "items", "adapter", "dropDownItemView", "itemIds"})
+    @BindingAdapter(value = {"itemView", "items", "adapter", "dropDownItemView", "itemIds"}, requireAll = false)
     public static <T> void setAdapter(AdapterView adapterView, ItemViewArg<T> arg, List<T> items, BindingAdapterViewFactory factory, ItemView dropDownItemView, BindingListViewAdapter.ItemIds<T> itemIds) {
+        if (arg == null) {
+            throw new IllegalArgumentException("itemView must not be null");
+        }
+        if (factory == null) {
+            factory = BindingAdapterViewFactory.DEFAULT;
+        }
         BindingListViewAdapter<T> adapter = (BindingListViewAdapter<T>) adapterView.getAdapter();
         if (adapter == null) {
             adapter = factory.create(adapterView, arg);
@@ -72,24 +35,15 @@ public class BindingCollectionAdapters {
     }
 
     // ViewPager
-    @BindingAdapter({"itemView", "items"})
-    public static <T> void setAdapter(ViewPager viewPager, ItemViewArg<T> arg, List<T> items) {
-        setAdapter(viewPager, arg, items, BindingViewPagerAdapterFactory.DEFAULT, null);
-    }
-
-    @BindingAdapter({"itemView", "items", "adapter"})
-    public static <T> void setAdapter(ViewPager viewPager, ItemViewArg<T> arg, List<T> items, BindingViewPagerAdapterFactory factory) {
-        setAdapter(viewPager, arg, items, factory, null);
-    }
-
-    @BindingAdapter({"itemView", "items", "pageTitles"})
-    public static <T> void setAdapter(ViewPager viewPager, ItemViewArg<T> arg, List<T> items, BindingViewPagerAdapter.PageTitles<T> pageTitles) {
-        setAdapter(viewPager, arg, items, BindingViewPagerAdapterFactory.DEFAULT, pageTitles);
-    }
-
     @SuppressWarnings("unchecked")
-    @BindingAdapter({"itemView", "items", "adapter", "pageTitles"})
+    @BindingAdapter(value = {"itemView", "items", "adapter", "pageTitles"}, requireAll = false)
     public static <T> void setAdapter(ViewPager viewPager, ItemViewArg<T> arg, List<T> items, BindingViewPagerAdapterFactory factory, BindingViewPagerAdapter.PageTitles<T> pageTitles) {
+        if (arg == null) {
+            throw new IllegalArgumentException("itemView must not be null");
+        }
+        if (factory == null) {
+            factory = BindingViewPagerAdapterFactory.DEFAULT;
+        }
         BindingViewPagerAdapter<T> adapter = (BindingViewPagerAdapter<T>) viewPager.getAdapter();
         if (adapter == null) {
             adapter = factory.create(viewPager, arg);

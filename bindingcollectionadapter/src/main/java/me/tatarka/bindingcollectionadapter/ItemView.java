@@ -65,25 +65,8 @@ public final class ItemView {
         return this;
     }
 
-    /**
-     * @deprecated Use {@link #bindingVariable()}
-     */
-    @Deprecated
-    public int getBindingVariable() {
-        return bindingVariable;
-    }
-
     public int bindingVariable() {
         return bindingVariable;
-    }
-
-    /**
-     * @deprecated Use {@link #layoutRes()}
-     */
-    @Deprecated
-    @LayoutRes
-    public int getLayoutRes() {
-        return layoutRes;
     }
 
     @LayoutRes
