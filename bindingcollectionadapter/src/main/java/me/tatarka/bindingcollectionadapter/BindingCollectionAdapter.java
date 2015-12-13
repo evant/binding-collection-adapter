@@ -3,11 +3,11 @@ package me.tatarka.bindingcollectionadapter;
 import android.databinding.ObservableList;
 import android.databinding.ViewDataBinding;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -17,6 +17,11 @@ import java.util.List;
  * @see BindingViewPagerAdapter
  */
 public interface BindingCollectionAdapter<T> {
+    /**
+     * Returns the {@link ItemViewArg} that the adapter was constructed with.
+     */
+    ItemViewArg<T> getItemViewArg();
+
     /**
      * Sets the adapter's items. These items will be displayed based on the {@link ItemView} or
      * {@link ItemViewSelector}. If you pass in an {@link ObservableList} the adapter will also

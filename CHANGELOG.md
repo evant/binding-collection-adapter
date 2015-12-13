@@ -1,3 +1,12 @@
+### 1.0.0
+- Officially stable release! The won't be any backwards-incompatible changes without a major version 
+bump.
+- Added `getItemViewArg()` to `BindingCollectionAdapter` so you can easily get the arg it was 
+constructed with.
+- Added `ItemIsEnabled` to `BindingListViewAdapter` to easily configure the behavior of 
+`isEnabled(int)`. You can set with `setItemIsEnabled()` in code or `itemIsEnabled` in your layout.
+- Support dynamically changing the `itemView` in a binding. This will replace the entire adapter.
+
 ### 0.16
 - Updated to latest databinding, requites android plugin `1.5.0`
 - Use `requireAll = false` to vastly simplify binding adapters.

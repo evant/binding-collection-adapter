@@ -73,4 +73,22 @@ public final class ItemView {
     public int layoutRes() {
         return layoutRes;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ItemView itemView = (ItemView) o;
+
+        if (bindingVariable != itemView.bindingVariable) return false;
+        return layoutRes == itemView.layoutRes;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = bindingVariable;
+        result = 31 * result + layoutRes;
+        return result;
+    }
 }

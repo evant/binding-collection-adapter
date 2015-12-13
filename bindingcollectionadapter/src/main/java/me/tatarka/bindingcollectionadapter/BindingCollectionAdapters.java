@@ -16,8 +16,8 @@ import me.tatarka.bindingcollectionadapter.factories.BindingViewPagerAdapterFact
 public class BindingCollectionAdapters {
     // AdapterView
     @SuppressWarnings("unchecked")
-    @BindingAdapter(value = {"itemView", "items", "adapter", "dropDownItemView", "itemIds"}, requireAll = false)
-    public static <T> void setAdapter(AdapterView adapterView, ItemViewArg<T> arg, List<T> items, BindingAdapterViewFactory factory, ItemView dropDownItemView, BindingListViewAdapter.ItemIds<T> itemIds) {
+    @BindingAdapter(value = {"itemView", "items", "adapter", "dropDownItemView", "itemIds", "itemIsEnabled"}, requireAll = false)
+    public static <T> void setAdapter(AdapterView adapterView, ItemViewArg<T> arg, List<T> items, BindingAdapterViewFactory factory, ItemView dropDownItemView, BindingListViewAdapter.ItemIds<T> itemIds, BindingListViewAdapter.ItemIsEnabled<T> itemIsEnabled) {
         if (arg == null) {
             throw new IllegalArgumentException("itemView must not be null");
         }
@@ -25,13 +25,14 @@ public class BindingCollectionAdapters {
             factory = BindingAdapterViewFactory.DEFAULT;
         }
         BindingListViewAdapter<T> adapter = (BindingListViewAdapter<T>) adapterView.getAdapter();
-        if (adapter == null) {
+        if (adapter == null || !adapter.getItemViewArg().equals(arg)) {
             adapter = factory.create(adapterView, arg);
             adapterView.setAdapter(adapter);
         }
         adapter.setDropDownItemView(dropDownItemView);
         adapter.setItems(items);
         adapter.setItemIds(itemIds);
+        adapter.setItemIsEnabled(itemIsEnabled);
     }
 
     // ViewPager
@@ -45,7 +46,7 @@ public class BindingCollectionAdapters {
             factory = BindingViewPagerAdapterFactory.DEFAULT;
         }
         BindingViewPagerAdapter<T> adapter = (BindingViewPagerAdapter<T>) viewPager.getAdapter();
-        if (adapter == null) {
+        if (adapter == null || !adapter.getItemViewArg().equals(arg)) {
             adapter = factory.create(viewPager, arg);
             viewPager.setAdapter(adapter);
         }

@@ -35,6 +35,11 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter implements BindingC
     }
 
     @Override
+    public ItemViewArg<T> getItemViewArg() {
+        return itemViewArg;
+    }
+
+    @Override
     public void setItems(@Nullable List<T> items) {
         if (this.items == items) {
             return;
