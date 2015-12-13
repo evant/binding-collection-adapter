@@ -5,11 +5,12 @@ import android.support.test.espresso.core.deps.dagger.internal.Factory;
 import android.support.test.espresso.core.deps.guava.base.Joiner;
 import android.support.v4.view.ViewPager;
 import android.widget.AdapterView;
-import me.tatarka.bindingcollectionadapter.factories.BindingAdapterViewFactory;
-import me.tatarka.bindingcollectionadapter.factories.BindingViewPagerAdapterFactory;
 
 import java.util.Iterator;
 import java.util.List;
+
+import me.tatarka.bindingcollectionadapter.factories.BindingAdapterViewFactory;
+import me.tatarka.bindingcollectionadapter.factories.BindingViewPagerAdapterFactory;
 
 public class TestHelpers {
 
@@ -18,12 +19,9 @@ public class TestHelpers {
         public final ItemView itemView;
         public final ItemViewSelector<String> itemViewSelector;
         public final BindingListViewAdapter.ItemIds<String> itemIds;
+        public final BindingListViewAdapter.ItemIsEnabled<String> itemIsEnabled;
 
-        public ViewModel(List<String> items, ItemView itemView) {
-            this(items, itemView, null);
-        }
-
-        public ViewModel(List<String> items, ItemView itemView, final List<Long> itemIds) {
+        private ViewModel(List<String> items, ItemView itemView, final List<Long> itemIds, final List<Boolean> itemIsEnabled) {
             this.items = items;
             this.itemView = itemView;
             if (itemIds != null) {
@@ -36,12 +34,48 @@ public class TestHelpers {
             } else {
                 this.itemIds = null;
             }
+            if (itemIsEnabled != null) {
+                this.itemIsEnabled = new BindingListViewAdapter.ItemIsEnabled<String>() {
+                    @Override
+                    public boolean isEnabled(int position, String item) {
+                        return itemIsEnabled.get(position);
+                    }
+                };
+            } else {
+                this.itemIsEnabled = null;
+            }
             this.itemViewSelector = new BaseItemViewSelector<String>() {
                 @Override
                 public void select(ItemView itemView, int position, String item) {
                     itemView.set(itemView.bindingVariable(), itemView.layoutRes());
                 }
             };
+        }
+
+        public static class Builder {
+            private List<String> items;
+            private ItemView itemView;
+            private List<Long> itemIds;
+            private List<Boolean> itemIsEnabled;
+
+            public Builder(List<String> items, ItemView itemView) {
+                this.items = items;
+                this.itemView = itemView;
+            }
+
+            public Builder itemIds(List<Long> itemIds) {
+                this.itemIds = itemIds;
+                return this;
+            }
+
+            public Builder itemIsEnabled(List<Boolean> itemIsEnabled) {
+                this.itemIsEnabled = itemIsEnabled;
+                return this;
+            }
+
+            public ViewModel build() {
+                return new ViewModel(items, itemView, itemIds, itemIsEnabled);
+            }
         }
     }
 
@@ -125,6 +159,26 @@ public class TestHelpers {
                     @Override
                     Long get(int index) {
                         return adapter.getItemId(index);
+                    }
+                };
+            }
+        });
+    }
+
+    public static Iterable<Boolean> iterableIsEnabled(final BindingListViewAdapter<?> adapter) {
+        if (adapter == null) return null;
+        return new IndexIterable<>(new Factory<IndexIterator<Boolean>>() {
+            @Override
+            public IndexIterator<Boolean> get() {
+                return new IndexIterator<Boolean>() {
+                    @Override
+                    int getCount() {
+                        return adapter.getCount();
+                    }
+
+                    @Override
+                    Boolean get(int index) {
+                        return adapter.isEnabled(index);
                     }
                 };
             }

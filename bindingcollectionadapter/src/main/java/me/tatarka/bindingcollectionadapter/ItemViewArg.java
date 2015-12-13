@@ -40,4 +40,22 @@ public class ItemViewArg<T> {
     public int viewTypeCount() {
         return selector.viewTypeCount();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ItemViewArg<?> that = (ItemViewArg<?>) o;
+
+        if (!itemView.equals(that.itemView)) return false;
+        return selector == that.selector;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = itemView.hashCode();
+        result = 31 * result + selector.hashCode();
+        return result;
+    }
 }

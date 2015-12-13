@@ -6,8 +6,8 @@ Easy way to bind collections to listviews and recyclerviews with the new [Androi
 ## Download
 
 ```groovy
-compile 'me.tatarka:bindingcollectionadapter:0.16'
-compile 'me.tatarka:bindingcollectionadapter-recyclerview:0.16'
+compile 'me.tatarka.bindingcollectionadaper:bindingcollectionadapter:1.0.0'
+compile 'me.tatarka.bindingcollectionadaper:bindingcollectionadapter-recyclerview:1.0.0'
 ```
 requires at least android gradle plugin `1.5.0`.
 
@@ -103,11 +103,13 @@ public final ItemViewSelector<String> itemView = new BaseItemViewSelector<String
 };
 ```
 
-Note that `select` is called many times so you should not do any complex processing in there. If you don't need to bind an item at a specific position (a static footer for example) you can use `ItemView.BINDING_VARIABLE_NONE` as the binding varibale.
+Note that `select` is called many times so you should not do any complex processing in there. If you 
+don't need to bind an item at a specific position (a static footer for example) you can use 
+`ItemView.BINDING_VARIABLE_NONE` as the binding varibale.
 
 ## Additonal Adapter Configuration
 
-### BindingListViewAdapter
+### ListView
 
 You can set a callback to give an id for each item in the list with
 
@@ -120,11 +122,20 @@ adapter.setItemIds(new BindingListViewAdapter.ItemIds<T>() {
 });
 ```
 or by defining `app:itemIds="@{itemIds}"` in the `ListView` in your layout file.
+Setting this will make `hasStableIds` return true which can increase performance of data changes.
 
-Setting this will make `hasStableIds` return true which can increase performace of data changes.
+You can set a callback for `isEnabled()` as well with
+```java
+adapter.setItemEnabled(new BindingListViewAdapter.ItemEnabled<T>() {
+    @Override
+    public boolean isEnabled(int position, T item) {
+        return // Calculate if item is enabled.
+    }
+});
+```
+or by defining `app:itemEnabled="@{itemEnabled}"`in the `ListView` in you layout file.
 
-
-### BindingViewPagerAdapter
+### ViewPager
 
 You can set a callback to give a page title for each item in the list with
 
@@ -138,9 +149,14 @@ adapter.setPageTitles(new PageTitles<T>() {
 ```
 or by defining `app:pageTitles="@{pageTitles}"` in the `ViewPager` in your layout file.
 
-## Directly manipulationg views
+## Directly manipulating views
 
-Data binding is awesome and all, but you may run into a case where you simply need to manipulate the views directly. You can do this without throwing away the whole of databinding by subclassing an exisiting `BindingCollectionAdapter`. You can then bind `adapter` in your layout to your subclass's class name to have it use that instead. Instead of overriding the nomral adapter methods, you should override `onCreateBinding()` or `onBindBinding()` and call `super` allowing you to run code before and after those events and get access to the item view's binding.
+Data binding is awesome and all, but you may run into a case where you simply need to manipulate the 
+views directly. You can do this without throwing away the whole of databinding by subclassing an 
+existing `BindingCollectionAdapter`. You can then bind `adapter` in your layout to your subclass's 
+class name to have it use that instead. Instead of overriding the normal adapter methods, you should 
+override `onCreateBinding()` or `onBindBinding()` and call `super` allowing you to run code before 
+and after those events and get access to the item view's binding.
 
 ```java
 public class MyRecyclerViewAdapter<T> extends BindingRecyclerViewAdapter<T> {
@@ -173,7 +189,8 @@ public class MyRecyclerViewAdapter<T> extends BindingRecyclerViewAdapter<T> {
   app:adapter='@{"com.example.MyRecyclerViewAdapter"}'/>
 ```
 
-You can also use a factory instead of the class name. This allows you to not have reflection and gives you more control over it's construction.
+You can also use a factory instead of the class name. This allows you to not have reflection and 
+gives you more control over it's construction.
 
 ```java
 public static final BindingRecyclerViewAdapterFactory MY_FACTORY = new BindingRecyclerViewAdapterFactory() {
@@ -198,7 +215,15 @@ public static final BindingRecyclerViewAdapterFactory MY_FACTORY = new BindingRe
 
 ### Cannot Resolve the libraries `@BindingAdapter`'s
 
-This is likely because you are using the [android-apt](https://bitbucket.org/hvisser/android-apt) plugin which [broke](https://bitbucket.org/hvisser/android-apt/issues/45/breaks-declaring-bindingadapter-in-a) this in previous versions. Update to `1.6+` to fix it.
+This is likely because you are using the [android-apt](https://bitbucket.org/hvisser/android-apt) 
+plugin which [broke](https://bitbucket.org/hvisser/android-apt/issues/45/breaks-declaring-bindingadapter-in-a) 
+this in previous versions. Update to `1.6+` to fix it.
+
+### View's adapter is null
+
+If you attempt to retrieve an adapter from a view right after binding it you may find it is null.
+This is because databinding waits for the next draw pass to run to batch up changes. You can force
+it to run immediately by calling `binding.executePendingBindings()`.
 
 ## License
 

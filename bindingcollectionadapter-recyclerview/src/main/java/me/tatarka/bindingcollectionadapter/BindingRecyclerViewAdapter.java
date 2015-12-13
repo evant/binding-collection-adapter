@@ -37,6 +37,11 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingR
     }
 
     @Override
+    public ItemViewArg<T> getItemViewArg() {
+        return itemViewArg;
+    }
+
+    @Override
     public void setItems(@Nullable List<T> items) {
         if (this.items == items) {
             return;

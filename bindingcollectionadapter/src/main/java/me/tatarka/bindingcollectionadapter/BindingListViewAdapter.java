@@ -30,12 +30,18 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
     private int[] layouts;
     private LayoutInflater inflater;
     private ItemIds<T> itemIds;
+    private ItemIsEnabled<T> itemIsEnabled;
 
     /**
      * Constructs a new instance with the given {@link ItemViewArg}.
      */
     public BindingListViewAdapter(@NonNull ItemViewArg<T> arg) {
         this.itemViewArg = arg;
+    }
+
+    @Override
+    public ItemViewArg<T> getItemViewArg() {
+        return itemViewArg;
     }
 
     /**
@@ -91,6 +97,13 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
         this.itemIds = itemIds;
     }
 
+    /**
+     * Sets {@link #isEnabled(int)} for the items.
+     */
+    public void setItemIsEnabled(@Nullable ItemIsEnabled<T> itemIsEnabled) {
+        this.itemIsEnabled = itemIsEnabled;
+    }
+
     @Override
     public int getCount() {
         return items == null ? 0 : items.size();
@@ -104,6 +117,11 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
     @Override
     public long getItemId(int position) {
         return itemIds == null ? position : itemIds.getItemId(position, items.get(position));
+    }
+
+    @Override
+    public boolean isEnabled(int position) {
+        return itemIsEnabled == null || itemIsEnabled.isEnabled(position, items.get(position));
     }
 
     @Override
@@ -231,5 +249,9 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
 
     public interface ItemIds<T> {
         long getItemId(int position, T item);
+    }
+
+    public interface ItemIsEnabled<T> {
+        boolean isEnabled(int position, T item);
     }
 }
