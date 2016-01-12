@@ -37,7 +37,7 @@ android {
 
 dependencies {
     compile project(':bindingcollectionadapter')
-    compile 'com.android.support:recyclerview-v7:21.0.3'
+    compile 'com.android.support:recyclerview-v7:23.1.1'
 
     androidTestCompile 'com.android.support.test:runner:0.4'
     androidTestCompile 'com.android.support.test:rules:0.4'
