@@ -3,9 +3,10 @@ package me.tatarka.bindingcollectionadapter.recyclerview;
 import android.support.annotation.NonNull;
 import android.support.test.espresso.core.deps.dagger.internal.Factory;
 import android.support.test.espresso.core.deps.guava.base.Joiner;
-import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
-import android.widget.AdapterView;
+
+import java.util.Iterator;
+import java.util.List;
 
 import me.tatarka.bindingcollectionadapter.BaseItemViewSelector;
 import me.tatarka.bindingcollectionadapter.BindingListViewAdapter;
@@ -13,28 +14,27 @@ import me.tatarka.bindingcollectionadapter.BindingRecyclerViewAdapter;
 import me.tatarka.bindingcollectionadapter.ItemView;
 import me.tatarka.bindingcollectionadapter.ItemViewArg;
 import me.tatarka.bindingcollectionadapter.ItemViewSelector;
-import me.tatarka.bindingcollectionadapter.factories.BindingAdapterViewFactory;
 import me.tatarka.bindingcollectionadapter.factories.BindingRecyclerViewAdapterFactory;
-import me.tatarka.bindingcollectionadapter.factories.BindingViewPagerAdapterFactory;
-
-import java.util.Iterator;
-import java.util.List;
 
 public class TestHelpers {
 
     public static class ViewModel {
         public final List<String> items;
-        public final ItemView itemView;
+        public final ItemViewArg<?> itemView;
         public final ItemViewSelector<String> itemViewSelector;
         public final BindingListViewAdapter.ItemIds<String> itemIds;
 
         public ViewModel(List<String> items, ItemView itemView) {
-            this(items, itemView, null);
+            this(items, ItemViewArg.of(itemView), null);
         }
 
-        public ViewModel(List<String> items, ItemView itemView, final List<Long> itemIds) {
+        public ViewModel(List<String> items, ItemViewSelector<?> itemView) {
+            this(items, ItemViewArg.of(itemView), null);
+        }
+
+        public ViewModel(List<String> items, ItemViewArg<?> itemViewArg, final List<Long> itemIds) {
             this.items = items;
-            this.itemView = itemView;
+            this.itemView = itemViewArg;
             if (itemIds != null) {
                 this.itemIds = new BindingListViewAdapter.ItemIds<String>() {
                     @Override
