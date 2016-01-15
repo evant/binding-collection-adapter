@@ -16,14 +16,14 @@ public class TestHelpers {
 
     public static class ViewModel {
         public final List<String> items;
-        public final ItemView itemView;
+        public final ItemViewArg<?> itemView;
         public final ItemViewSelector<String> itemViewSelector;
         public final BindingListViewAdapter.ItemIds<String> itemIds;
         public final BindingListViewAdapter.ItemIsEnabled<String> itemIsEnabled;
 
-        private ViewModel(List<String> items, ItemView itemView, final List<Long> itemIds, final List<Boolean> itemIsEnabled) {
+        private ViewModel(List<String> items, ItemViewArg<?> itemViewArg, final List<Long> itemIds, final List<Boolean> itemIsEnabled) {
             this.items = items;
-            this.itemView = itemView;
+            this.itemView = itemViewArg;
             if (itemIds != null) {
                 this.itemIds = new BindingListViewAdapter.ItemIds<String>() {
                     @Override
@@ -54,13 +54,19 @@ public class TestHelpers {
 
         public static class Builder {
             private List<String> items;
-            private ItemView itemView;
+            private ItemViewArg<?> itemViewArg;
             private List<Long> itemIds;
             private List<Boolean> itemIsEnabled;
 
             public Builder(List<String> items, ItemView itemView) {
                 this.items = items;
-                this.itemView = itemView;
+                this.itemViewArg = ItemViewArg.of(itemView);
+            }
+
+            public Builder(List<String> items, ItemViewSelector<?> itemView) {
+                this.items = items;
+                this.itemViewArg = ItemViewArg.of(itemView);
+
             }
 
             public Builder itemIds(List<Long> itemIds) {
@@ -74,7 +80,7 @@ public class TestHelpers {
             }
 
             public ViewModel build() {
-                return new ViewModel(items, itemView, itemIds, itemIsEnabled);
+                return new ViewModel(items, itemViewArg, itemIds, itemIsEnabled);
             }
         }
     }
