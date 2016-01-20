@@ -4,12 +4,18 @@ import android.databinding.DataBindingUtil;
 import android.databinding.ObservableArrayList;
 import android.databinding.ObservableList;
 import android.databinding.ViewDataBinding;
-import android.support.test.InstrumentationRegistry;
+import android.support.test.annotation.UiThreadTest;
+import android.support.test.rule.ActivityTestRule;
+import android.support.test.runner.AndroidJUnit4;
 import android.support.v4.view.ViewPager;
-import android.test.InstrumentationTestCase;
-import android.test.UiThreadTest;
 import android.view.LayoutInflater;
 import android.widget.ListView;
+
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.Arrays;
 import java.util.List;
@@ -18,19 +24,23 @@ import me.tatarka.bindingcollectionadapter.test.R;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class DynamicItemViewTest extends InstrumentationTestCase {
+@Ignore
+@RunWith(AndroidJUnit4.class)
+public class DynamicItemViewTest {
+
+    @Rule
+    public ActivityTestRule<EmptyActivity> activityTestRule = new ActivityTestRule<>(EmptyActivity.class);
 
     private LayoutInflater inflater;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        injectInstrumentation(InstrumentationRegistry.getInstrumentation());
-        inflater = LayoutInflater.from(getInstrumentation().getContext());
+    @Before
+    public void setup() throws Exception {
+        inflater = LayoutInflater.from(activityTestRule.getActivity());
     }
 
+    @Test
     @UiThreadTest
-    public void testDynamicItemViewInListView() {
+    public void dynamicItemViewInListView() {
         List<String> items = Arrays.asList("one", "two", "three");
         TestHelpers.ViewModel viewModel = new TestHelpers.ViewModel.Builder(items, ItemView.of(BR.item, R.layout.item)).build();
 
@@ -45,12 +55,13 @@ public class DynamicItemViewTest extends InstrumentationTestCase {
         ListView listView = (ListView) binding.getRoot();
         @SuppressWarnings("unchecked")
         BindingCollectionAdapter<String> adapter = (BindingCollectionAdapter<String>) listView.getAdapter();
-        
+
         assertThat(adapter.getItemViewArg().layoutRes()).isEqualTo(R.layout.item2);
     }
-    
+
+    @Test
     @UiThreadTest
-    public void testAdapterDoesntChangeForSameItemViewInListView() {
+    public void adapterDoesntChangeForSameItemViewInListView() {
         ObservableList<String> items = new ObservableArrayList<>();
         items.addAll(Arrays.asList("one", "two", "three"));
         TestHelpers.ViewModel viewModel = new TestHelpers.ViewModel.Builder(items, ItemView.of(BR.item, R.layout.item)).build();
@@ -61,7 +72,7 @@ public class DynamicItemViewTest extends InstrumentationTestCase {
 
         ListView listView1 = (ListView) binding.getRoot();
         BindingCollectionAdapter<String> adapter1 = (BindingCollectionAdapter<String>) listView1.getAdapter();
-        
+
         items.add("four");
 
         ListView listView2 = (ListView) binding.getRoot();
@@ -71,8 +82,9 @@ public class DynamicItemViewTest extends InstrumentationTestCase {
         assertThat(adapter1).isSameAs(adapter2);
     }
 
+    @Test
     @UiThreadTest
-    public void testAdapterDoesntChangeForSameItemViewSelectorInListView() {
+    public void adapterDoesntChangeForSameItemViewSelectorInListView() {
         ObservableList<String> items = new ObservableArrayList<>();
         items.addAll(Arrays.asList("one", "two", "three"));
         ItemViewSelector<String> itemView = new BaseItemViewSelector<String>() {
@@ -86,12 +98,12 @@ public class DynamicItemViewTest extends InstrumentationTestCase {
         ViewDataBinding binding = DataBindingUtil.inflate(inflater, R.layout.list_view, null, false);
         binding.setVariable(BR.viewModel, viewModel);
         binding.executePendingBindings();
-        
+
         ListView listView1 = (ListView) binding.getRoot();
         BindingCollectionAdapter<String> adapter1 = (BindingCollectionAdapter<String>) listView1.getAdapter();
-        
+
         items.add("four");
-        
+
         ListView listView2 = (ListView) binding.getRoot();
         @SuppressWarnings("unchecked")
         BindingCollectionAdapter<String> adapter2 = (BindingCollectionAdapter<String>) listView2.getAdapter();
@@ -99,8 +111,9 @@ public class DynamicItemViewTest extends InstrumentationTestCase {
         assertThat(adapter1).isSameAs(adapter2);
     }
 
+    @Test
     @UiThreadTest
-    public void testDynamicItemViewInViewPager() {
+    public void dynamicItemViewInViewPager() {
         List<String> items = Arrays.asList("one", "two", "three");
         TestHelpers.ViewModel viewModel = new TestHelpers.ViewModel.Builder(items, ItemView.of(BR.item, R.layout.item)).build();
 

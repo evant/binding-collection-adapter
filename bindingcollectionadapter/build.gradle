@@ -36,6 +36,7 @@ android {
 }
 
 dependencies {
+    //noinspection GradleDependency,GradleCompatible
     compile 'com.android.support:support-v4:21.0.3'
 
     androidTestCompile 'com.android.support.test:runner:0.4'

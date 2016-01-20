@@ -2,11 +2,16 @@ package me.tatarka.bindingcollectionadapter;
 
 import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
-import android.support.test.InstrumentationRegistry;
-import android.test.InstrumentationTestCase;
-import android.test.UiThreadTest;
+import android.support.test.annotation.UiThreadTest;
+import android.support.test.rule.ActivityTestRule;
+import android.support.test.runner.AndroidJUnit4;
 import android.view.LayoutInflater;
 import android.widget.ListView;
+
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.Arrays;
 import java.util.List;
@@ -15,19 +20,22 @@ import me.tatarka.bindingcollectionadapter.test.R;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ListViewInflationTest extends InstrumentationTestCase {
+@RunWith(AndroidJUnit4.class)
+public class ListViewInflationTest {
+
+    @Rule
+    public ActivityTestRule<EmptyActivity> activityTestRule = new ActivityTestRule<>(EmptyActivity.class);
 
     private LayoutInflater inflater;
 
-    @Override
-    public void setUp() throws Exception {
-        super.setUp();
-        injectInstrumentation(InstrumentationRegistry.getInstrumentation());
-        inflater = LayoutInflater.from(getInstrumentation().getContext());
+    @Before
+    public void setup() throws Exception {
+        inflater = LayoutInflater.from(activityTestRule.getActivity());
     }
 
+    @Test
     @UiThreadTest
-    public void testListView() {
+    public void listView() {
         List<String> items = Arrays.asList("one", "two", "three");
         TestHelpers.ViewModel viewModel = new TestHelpers.ViewModel.Builder(items, ItemView.of(BR.item, R.layout.item)).build();
         ViewDataBinding binding = DataBindingUtil.inflate(inflater, R.layout.list_view, null, false);
@@ -41,8 +49,9 @@ public class ListViewInflationTest extends InstrumentationTestCase {
         assertThat(TestHelpers.iterable(adapter)).containsExactlyElementsOf(items);
     }
 
+    @Test
     @UiThreadTest
-    public void testListViewSelector() {
+    public void listViewSelector() {
         List<String> items = Arrays.asList("one", "two", "three");
         TestHelpers.ViewModel viewModel = new TestHelpers.ViewModel.Builder(items, ItemView.of(BR.item, R.layout.item)).build();
         ViewDataBinding binding = DataBindingUtil.inflate(inflater, R.layout.list_view_selector, null, false);
@@ -56,8 +65,9 @@ public class ListViewInflationTest extends InstrumentationTestCase {
         assertThat(TestHelpers.iterable(adapter)).containsExactlyElementsOf(items);
     }
 
+    @Test
     @UiThreadTest
-    public void testListViewItemIds() {
+    public void listViewItemIds() {
         List<String> items = Arrays.asList("one", "two", "three");
         List<Long> itemIds = Arrays.asList(1L, 2L, 3L);
         TestHelpers.ViewModel viewModel = new TestHelpers.ViewModel.Builder(items, ItemView.of(BR.item, R.layout.item)).itemIds(itemIds).build();
@@ -72,8 +82,9 @@ public class ListViewInflationTest extends InstrumentationTestCase {
         assertThat(TestHelpers.iterableIds(adapter)).containsExactlyElementsOf(itemIds);
     }
 
+    @Test
     @UiThreadTest
-    public void testListViewItemIsEnabled() {
+    public void listViewItemIsEnabled() {
         List<String> items = Arrays.asList("one", "two", "three");
         List<Boolean> itemIsEnabled = Arrays.asList(true, true, false);
         TestHelpers.ViewModel viewModel = new TestHelpers.ViewModel.Builder(items, ItemView.of(BR.item, R.layout.item)).itemIsEnabled(itemIsEnabled).build();
@@ -88,8 +99,9 @@ public class ListViewInflationTest extends InstrumentationTestCase {
         assertThat(TestHelpers.iterableIsEnabled(adapter)).containsExactlyElementsOf(itemIsEnabled);
     }
 
+    @Test
     @UiThreadTest
-    public void testListViewAdapter() {
+    public void listViewAdapter() {
         List<String> items = Arrays.asList("one", "two", "three");
         TestHelpers.ViewModel viewModel = new TestHelpers.ViewModel.Builder(items, ItemView.of(BR.item, R.layout.item)).build();
         ViewDataBinding binding = DataBindingUtil.inflate(inflater, R.layout.list_view_adapter, null, false);
@@ -103,8 +115,9 @@ public class ListViewInflationTest extends InstrumentationTestCase {
         assertThat(adapter).isInstanceOf(TestHelpers.MyBindingListViewAdapter.class);
     }
 
+    @Test
     @UiThreadTest
-    public void testListViewAdapterFactory() {
+    public void listViewAdapterFactory() {
         List<String> items = Arrays.asList("one", "two", "three");
         TestHelpers.ViewModel viewModel = new TestHelpers.ViewModel.Builder(items, ItemView.of(BR.item, R.layout.item)).build();
         ViewDataBinding binding = DataBindingUtil.inflate(inflater, R.layout.list_view_factory_adapter, null, false);
@@ -118,8 +131,9 @@ public class ListViewInflationTest extends InstrumentationTestCase {
         assertThat(adapter).isInstanceOf(TestHelpers.MyBindingListViewAdapter.class);
     }
 
+    @Test
     @UiThreadTest
-    public void testListViewAdapterItemIds() {
+    public void listViewAdapterItemIds() {
         List<String> items = Arrays.asList("one", "two", "three");
         List<Long> itemIds = Arrays.asList(1L, 2L, 3L);
         TestHelpers.ViewModel viewModel = new TestHelpers.ViewModel.Builder(items, ItemView.of(BR.item, R.layout.item)).itemIds(itemIds).build();

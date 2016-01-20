@@ -23,7 +23,7 @@ public class BindingRecyclerViewAdapters {
             factory = BindingRecyclerViewAdapterFactory.DEFAULT;
         }
         BindingRecyclerViewAdapter<T> adapter = (BindingRecyclerViewAdapter<T>) recyclerView.getAdapter();
-        if (adapter == null || !adapter.getItemViewArg().equals(arg)) {
+        if (adapter == null) {
             adapter = factory.create(recyclerView, arg);
             adapter.setItemIds(itemIds);
             recyclerView.setAdapter(adapter);
