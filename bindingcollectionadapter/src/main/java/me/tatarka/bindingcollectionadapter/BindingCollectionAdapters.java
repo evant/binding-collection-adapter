@@ -25,7 +25,7 @@ public class BindingCollectionAdapters {
             factory = BindingAdapterViewFactory.DEFAULT;
         }
         BindingListViewAdapter<T> adapter = (BindingListViewAdapter<T>) adapterView.getAdapter();
-        if (adapter == null || !adapter.getItemViewArg().equals(arg)) {
+        if (adapter == null) {
             adapter = factory.create(adapterView, arg);
             adapterView.setAdapter(adapter);
         }
@@ -46,7 +46,7 @@ public class BindingCollectionAdapters {
             factory = BindingViewPagerAdapterFactory.DEFAULT;
         }
         BindingViewPagerAdapter<T> adapter = (BindingViewPagerAdapter<T>) viewPager.getAdapter();
-        if (adapter == null || !adapter.getItemViewArg().equals(arg)) {
+        if (adapter == null) {
             adapter = factory.create(viewPager, arg);
             viewPager.setAdapter(adapter);
         }
