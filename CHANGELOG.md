@@ -1,3 +1,7 @@
+### 1.0.1
+- Disabled support for dynamic item views. This was causing unnecessary adapter replacement. It may
+ be added back in a later version if it can be done correctly.
+
 ### 1.0.0
 - Officially stable release! The won't be any backwards-incompatible changes without a major version 
 bump.
