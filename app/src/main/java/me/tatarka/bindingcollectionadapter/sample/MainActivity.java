@@ -13,6 +13,8 @@ import android.view.MenuItem;
 import me.tatarka.bindingcollectionadapter.sample.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
+    private static final String STATE_TITLE = "title";
+    
     private ActivityMainBinding binding;
     private ActionBarDrawerToggle toggle;
 
@@ -54,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.content, fragment)
                         .commit();
-                menuItem.setChecked(true);
+                getSupportActionBar().setTitle(menuItem.getTitle());
                 binding.drawerLayout.closeDrawers();
                 return true;
             }
@@ -63,6 +65,9 @@ public class MainActivity extends AppCompatActivity {
 
         if (savedInstanceState == null) {
             listener.onNavigationItemSelected(binding.navView.getMenu().getItem(0));
+        } else {
+            CharSequence title = savedInstanceState.getCharSequence(STATE_TITLE);
+            getSupportActionBar().setTitle(title);
         }
     }
 
@@ -81,5 +86,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         toggle.syncState();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putCharSequence(STATE_TITLE, getSupportActionBar().getTitle());
     }
 }
