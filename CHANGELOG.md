@@ -1,3 +1,7 @@
+### 1.1.0
+-  Better support for recyclerview item changes. This means better handling of layout changes and 
+item animations. Source: https://realm.io/news/data-binding-android-boyar-mount/
+
 ### 1.0.1
 - Disabled support for dynamic item views. This was causing unnecessary adapter replacement. It may
  be added back in a later version if it can be done correctly.
