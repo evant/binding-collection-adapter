@@ -1,3 +1,17 @@
+### 1.2.0-beta1
+- Added some utilities to help work with more complex item views and data sources.
+  * MergeObservableList: create a 'merged' view of multiple ObservableLists and single items. Any
+    changes to a backing list will be reflected in the merge one. Useful for headers, footers, and
+    concatenating data sources.
+  * ItemViewClassSelector: build an ItemViewSelector based on the classes of the items. Useful if
+    you find yourself doing a bunch of instanceof checks in an ItemSelector.
+  * ItemViewModelSelector: a selector that selects item views using list items that implement the
+    ItemViewModel interface.
+- Fixed bug where BindingRecyclerViewAdapter would not register for list changes if the items are
+  set on the adapter before the adapter is set on the recycler view.
+- Items are now set on adapters before they are added to the collection view. This should make it
+  more likely to restore state (ex: scroll position) if the items are already populated when bound.
+
 ### 1.1.0
 -  Better support for recyclerview item changes. This means better handling of layout changes and 
 item animations. Source: https://realm.io/news/data-binding-android-boyar-mount/
