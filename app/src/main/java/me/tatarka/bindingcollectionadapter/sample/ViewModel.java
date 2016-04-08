@@ -13,14 +13,18 @@ import me.tatarka.bindingcollectionadapter.ItemViewSelector;
  */
 public class ViewModel {
     private final boolean checkable;
-    public final ObservableList<ItemViewModel> items = new ObservableArrayList<>();
+    public ObservableList<ItemViewModel> items = new ObservableArrayList<>();
 
     public ViewModel(boolean checkable) {
         this.checkable = checkable;
-        items.add(new ItemViewModel("我是header"));
         for (int i = 0; i < 3; i++) {
             items.add(new ItemViewModel(i, checkable));
         }
+    }
+    public ViewModel(boolean checkable, ObservableList<ItemViewModel> items) {
+        this.checkable = checkable;
+        this.items = items;
+
     }
 
     /**

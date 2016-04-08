@@ -13,10 +13,9 @@ public class ItemViewModel extends BaseObservable {
     private boolean checked;
 
     @Bindable
-    private String name;
+    protected String name;
 
-    public ItemViewModel(String name) {
-        this.name = name;
+    public ItemViewModel() {
         this.checkable = false;
     }
 
