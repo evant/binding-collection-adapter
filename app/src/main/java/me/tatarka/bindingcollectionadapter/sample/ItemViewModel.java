@@ -10,17 +10,22 @@ import android.view.View;
 public class ItemViewModel extends BaseObservable {
     public final boolean checkable;
     @Bindable
-    private int index;
-    @Bindable
     private boolean checked;
 
+    @Bindable
+    private String name;
+
     public ItemViewModel(int index, boolean checkable) {
-        this.index = index;
+        this.name = index+" a item";
         this.checkable = checkable;
     }
 
-    public int getIndex() {
-        return index;
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public boolean isChecked() {

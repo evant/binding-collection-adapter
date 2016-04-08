@@ -65,7 +65,7 @@ public class ViewModel {
     public final BindingViewPagerAdapter.PageTitles<ItemViewModel> pageTitles = new BindingViewPagerAdapter.PageTitles<ItemViewModel>() {
         @Override
         public CharSequence getPageTitle(int position, ItemViewModel item) {
-            return "Item " + (item.getIndex() + 1);
+            return "Item " + (item.getName() + 1);
         }
     };
 
