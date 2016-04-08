@@ -83,7 +83,7 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingR
 
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
-        if (recyclerView == null && items != null && items instanceof ObservableList) {
+        if (this.recyclerView == null && items != null && items instanceof ObservableList) {
             ((ObservableList<T>) items).addOnListChangedCallback(callback);
         }
         this.recyclerView = recyclerView;
@@ -91,7 +91,7 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingR
 
     @Override
     public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
-        if (recyclerView != null && items != null && items instanceof ObservableList) {
+        if (this.recyclerView != null && items != null && items instanceof ObservableList) {
             ((ObservableList<T>) items).removeOnListChangedCallback(callback);
         }
         this.recyclerView = null;

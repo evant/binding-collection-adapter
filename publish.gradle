@@ -1,0 +1,97 @@
+task androidJavadocs(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+}
+
+task androidJavadocsJar(type: Jar) {
+    classifier = 'javadoc'
+    from androidJavadocs.destinationDir
+}
+task androidSourcesJar(type: Jar) {
+    classifier = 'sources'
+    from android.sourceSets.main.java.srcDirs
+}
+
+artifacts {
+    archives androidSourcesJar
+    archives androidJavadocsJar
+}
+
+if (project.hasProperty('sonatype.username') || project.hasProperty('bintray.username')) {
+
+    signing {
+        sign configurations.archives
+    }
+
+    def siteUrl = 'https://github.com/evant/binding-collection-adapter'
+    def gitUrl = 'https://github.com/evantlemaddaluno/binding-collection-adapter.git'
+
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                beforeDeployment { deployment -> signing.signPom(deployment) }
+
+                def repoUrl
+                if (project.version.endsWith("SNAPSHOT")) {
+                    repoUrl = "https://oss.sonatype.org/content/repositories/snapshots"
+                } else {
+                    repoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+                }
+
+                repository(url: repoUrl) {
+                    authentication(
+                            userName: project.getProperty('sonatype.username'),
+                            password: project.getProperty('sonatype.password'))
+                }
+
+                pom.project {
+                    name project.name
+                    packaging 'aar'
+                    description 'Easy way to bind collections to listviews and recyclerviews with the new Android Data Binding framework'
+                    url siteUrl
+
+                    scm {
+                        url siteUrl
+                        connection gitUrl
+                        developerConnection gitUrl
+                    }
+
+                    licenses {
+                        license {
+                            name 'The Apache Software License, Version 2.0'
+                            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                            distribution 'repo'
+                        }
+                    }
+
+                    developers {
+                        developer {
+                            id 'evant'
+                            name 'Evan Tatarka'
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    if (project.hasProperty('bintray.username')) {
+        bintray {
+            user = project.property('bintray.username')
+            key = project.property('bintray.apikey')
+            configurations = ['archives']
+            pkg {
+                repo = 'maven'
+                name = 'binding-collection-adapter'
+                websiteUrl = siteUrl
+                vcsUrl = gitUrl
+                licenses = ["Apache-2.0"]
+                version {
+                    gpg {
+                        sign = true
+                        passphrase = project.getProperty('signing.password')
+                    }
+                }
+            }
+        }
+    }
+}

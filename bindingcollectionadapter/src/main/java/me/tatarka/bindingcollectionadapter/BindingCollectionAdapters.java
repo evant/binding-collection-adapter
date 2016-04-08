@@ -27,12 +27,17 @@ public class BindingCollectionAdapters {
         BindingListViewAdapter<T> adapter = (BindingListViewAdapter<T>) adapterView.getAdapter();
         if (adapter == null) {
             adapter = factory.create(adapterView, arg);
+            adapter.setDropDownItemView(dropDownItemView);
+            adapter.setItems(items);
+            adapter.setItemIds(itemIds);
+            adapter.setItemIsEnabled(itemIsEnabled);
             adapterView.setAdapter(adapter);
+        } else {
+            adapter.setDropDownItemView(dropDownItemView);
+            adapter.setItems(items);
+            adapter.setItemIds(itemIds);
+            adapter.setItemIsEnabled(itemIsEnabled);
         }
-        adapter.setDropDownItemView(dropDownItemView);
-        adapter.setItems(items);
-        adapter.setItemIds(itemIds);
-        adapter.setItemIsEnabled(itemIsEnabled);
     }
 
     // ViewPager
@@ -48,10 +53,13 @@ public class BindingCollectionAdapters {
         BindingViewPagerAdapter<T> adapter = (BindingViewPagerAdapter<T>) viewPager.getAdapter();
         if (adapter == null) {
             adapter = factory.create(viewPager, arg);
+            adapter.setItems(items);
+            adapter.setPageTitles(pageTitles);
             viewPager.setAdapter(adapter);
+        } else {
+            adapter.setItems(items);
+            adapter.setPageTitles(pageTitles);
         }
-        adapter.setItems(items);
-        adapter.setPageTitles(pageTitles);
     }
 
     @BindingConversion

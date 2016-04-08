@@ -95,7 +95,8 @@ public final ItemViewSelector<String> itemView = new BaseItemViewSelector<String
         itemView.set(BR.item, position == 0 ? R.layout.item_header : R.layout.item);
     }
     
-    // This is only needed if you are using a BindingListViewAdapter
+    // You need to override this method when using a ListView as it requires to know how
+    // many view types there are immedeatly. RecyclerView and ViewPager don't need this.
     @Override
     public int viewTypeCount() {
       return 2;

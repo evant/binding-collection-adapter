@@ -1,6 +1,7 @@
 package me.tatarka.bindingcollectionadapter;
 
 import android.support.annotation.LayoutRes;
+import android.support.v4.util.Pools;
 
 /**
  * An {@code ItemView} provides the necessary information for an item in a collection view. All

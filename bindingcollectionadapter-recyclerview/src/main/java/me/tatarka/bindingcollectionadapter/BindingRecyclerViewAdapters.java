@@ -25,10 +25,12 @@ public class BindingRecyclerViewAdapters {
         BindingRecyclerViewAdapter<T> adapter = (BindingRecyclerViewAdapter<T>) recyclerView.getAdapter();
         if (adapter == null) {
             adapter = factory.create(recyclerView, arg);
+            adapter.setItems(items);
             adapter.setItemIds(itemIds);
             recyclerView.setAdapter(adapter);
+        } else {
+            adapter.setItems(items);
         }
-        adapter.setItems(items);
     }
 
     @BindingAdapter("layoutManager")

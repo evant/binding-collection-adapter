@@ -13,8 +13,8 @@ public interface ItemViewSelector<T> {
     void select(ItemView itemView, int position, T item);
 
     /**
-     * Return the number of <em>different</em> layouts that you will be displaying. Currently this
-     * is only used in {@link BindingListViewAdapter}.
+     * Return the number of <em>different</em> layouts that you will be displaying. This is only
+     * required for using in a {@link android.widget.ListView}.
      */
     int viewTypeCount();
 }
