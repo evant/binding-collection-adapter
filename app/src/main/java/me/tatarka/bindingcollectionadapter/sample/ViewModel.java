@@ -17,6 +17,7 @@ public class ViewModel {
 
     public ViewModel(boolean checkable) {
         this.checkable = checkable;
+        items.add(new ItemViewModel("我是header"));
         for (int i = 0; i < 3; i++) {
             items.add(new ItemViewModel(i, checkable));
         }
