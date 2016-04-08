@@ -5,7 +5,8 @@ package me.tatarka.bindingcollectionadapter.sample;
  */
 public class HeaderItemViewModel extends ItemViewModel {
 
-    public HeaderItemViewModel(String name) {
-        this.name = name;
+    public HeaderItemViewModel(String header) {
+        super(header);
+        this.text = header;
     }
 }

@@ -26,7 +26,7 @@ public class FragmentListView extends Fragment {
         ObservableList<ItemViewModel> items = new ObservableArrayList<>();
         items.add(new HeaderItemViewModel("我是header"));
         for (int i = 0; i < 3; i++) {
-            items.add(new ItemViewModel(i, true));
+            items.add(new NormalItemViewModel(i, true));
         }
 
         viewModel = new ViewModel(true, items);

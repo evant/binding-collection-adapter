@@ -7,41 +7,36 @@ import android.view.View;
 /**
  * Created by evan on 6/14/15.
  */
-public class ItemViewModel extends BaseObservable {
+public abstract class ItemViewModel extends BaseObservable {
     public final boolean checkable;
-    @Bindable
-    private boolean checked;
+    protected String text;
 
-    @Bindable
-    protected String name;
-
-    public ItemViewModel() {
+    public ItemViewModel(String text) {
         this.checkable = false;
+        this.text = text;
     }
 
-    public ItemViewModel(int index, boolean checkable) {
-        this.name = index+" a item";
+    public ItemViewModel(boolean checkable, String text) {
         this.checkable = checkable;
+        this.text = text;
     }
 
+    @Bindable
     public String getName() {
-        return name;
+        return text;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    @Bindable
+    public String getHeader() {
+        return text;
     }
 
+    @Bindable
     public boolean isChecked() {
-        return checked;
+        return false;
     }
-    
+
     public boolean onToggleChecked(View v) {
-        if (!checkable) {
-            return false;
-        }
-        checked = !checked;
-        notifyPropertyChanged(BR.checked);
-        return true;
+        return false;
     }
 }

@@ -18,7 +18,7 @@ public class ViewModel {
     public ViewModel(boolean checkable) {
         this.checkable = checkable;
         for (int i = 0; i < 3; i++) {
-            items.add(new ItemViewModel(i, checkable));
+            items.add(new NormalItemViewModel(i, checkable));
         }
     }
     public ViewModel(boolean checkable, ObservableList<ItemViewModel> items) {
@@ -75,7 +75,7 @@ public class ViewModel {
     };
 
     public void addItem() {
-        items.add(new ItemViewModel(items.size(), checkable));
+        items.add(new NormalItemViewModel(items.size(), checkable));
     }
 
     public void removeItem() {
