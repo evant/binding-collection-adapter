@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import me.tatarka.bindingcollectionadapter.sample.databinding.ListViewBinding;
 import me.tatarka.bindingcollectionadapter.sample.databinding.SpinnerViewBinding;
 
 /**
@@ -16,6 +15,7 @@ import me.tatarka.bindingcollectionadapter.sample.databinding.SpinnerViewBinding
 public class FragmentSpinnerView extends Fragment {
     private static final String TAG = "BindingSpinner";
     private ViewModel viewModel;
+    SpinnerViewBinding binding;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -27,10 +27,15 @@ public class FragmentSpinnerView extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        SpinnerViewBinding binding = SpinnerViewBinding.inflate(inflater, container, false);
+        binding = SpinnerViewBinding.inflate(inflater, container, false);
+
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         binding.setViewModel(viewModel);
         binding.setListeners(new Listeners(viewModel));
         binding.executePendingBindings();
-        return binding.getRoot();
     }
 }

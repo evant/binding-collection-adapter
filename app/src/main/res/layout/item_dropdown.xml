@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:padding="16dp"
-            android:text='@{"Item " + (item.index + 1) + " (Drop Down)"}'
+            android:text="@{item.name}"
             tools:text="Item 1 (Drop Down)" />
     </LinearLayout>
 </layout>

@@ -1,5 +1,7 @@
 package me.tatarka.bindingcollectionadapter.sample;
 
+import android.databinding.ObservableArrayList;
+import android.databinding.ObservableList;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -20,7 +22,14 @@ public class FragmentListView extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        viewModel = new ViewModel(true);
+
+        ObservableList<ItemViewModel> items = new ObservableArrayList<>();
+        items.add(new HeaderItemViewModel(getString(R.string.header)));
+        for (int i = 0; i < 3; i++) {
+            items.add(new NormalItemViewModel(i, true));
+        }
+
+        viewModel = new ViewModel(true, items);
     }
 
     @Nullable

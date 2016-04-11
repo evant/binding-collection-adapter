@@ -24,7 +24,7 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             app:itemIds="@{viewModel.itemIds}"
-            app:itemView="@{viewModel.singleItemView}"
+            app:itemView="@{viewModel.multipleItemViews}"
             app:items="@{viewModel.items}" />
 
         <LinearLayout
