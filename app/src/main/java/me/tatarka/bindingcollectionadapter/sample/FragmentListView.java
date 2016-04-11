@@ -24,7 +24,7 @@ public class FragmentListView extends Fragment {
         setRetainInstance(true);
 
         ObservableList<ItemViewModel> items = new ObservableArrayList<>();
-        items.add(new HeaderItemViewModel("我是header"));
+        items.add(new HeaderItemViewModel(getString(R.string.header)));
         for (int i = 0; i < 3; i++) {
             items.add(new NormalItemViewModel(i, true));
         }
