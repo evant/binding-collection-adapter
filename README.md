@@ -184,7 +184,7 @@ public class MyRecyclerViewAdapter<T> extends BindingRecyclerViewAdapter<T> {
 <android.support.v7.widget.RecyclerView
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  app:layoutManager="{@LayoutManagers.linear()}"
+  app:layoutManager="@{LayoutManagers.linear()}"
   app:items="@{viewModel.items}"
   app:itemView="@{viewModel.itemView}"
   app:adapter='@{"com.example.MyRecyclerViewAdapter"}'/>
@@ -206,7 +206,7 @@ public static final BindingRecyclerViewAdapterFactory MY_FACTORY = new BindingRe
 <android.support.v7.widget.RecyclerView
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  app:layoutManager="{@LayoutManagers.linear()}"
+  app:layoutManager="@{LayoutManagers.linear()}"
   app:items="@{viewModel.items}"
   app:itemView="@{viewModel.itemView}"
   app:adapter="@{MY_FACTORY}"/>
