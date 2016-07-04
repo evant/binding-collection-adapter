@@ -1,3 +1,6 @@
+### 1.2.0
+- Updated databinding dependency to work around some of it's bugs.
+
 ### 1.2.0-beta1
 - Added some utilities to help work with more complex item views and data sources.
   * MergeObservableList: create a 'merged' view of multiple ObservableLists and single items. Any
@@ -13,7 +16,7 @@
   more likely to restore state (ex: scroll position) if the items are already populated when bound.
 
 ### 1.1.0
--  Better support for recyclerview item changes. This means better handling of layout changes and 
+-  Better support for recyclerview item changes. This means better handling of layout changes and
 item animations. Source: https://realm.io/news/data-binding-android-boyar-mount/
 
 ### 1.0.1
@@ -21,12 +24,12 @@ item animations. Source: https://realm.io/news/data-binding-android-boyar-mount/
  be added back in a later version if it can be done correctly.
 
 ### 1.0.0
-- Officially stable release! The won't be any backwards-incompatible changes without a major version 
+- Officially stable release! The won't be any backwards-incompatible changes without a major version
 bump.
 - Changed group to `me.tatarka.bindingcolectionadapter`.
-- Added `getItemViewArg()` to `BindingCollectionAdapter` so you can easily get the arg it was 
+- Added `getItemViewArg()` to `BindingCollectionAdapter` so you can easily get the arg it was
 constructed with.
-- Added `ItemIsEnabled` to `BindingListViewAdapter` to easily configure the behavior of 
+- Added `ItemIsEnabled` to `BindingListViewAdapter` to easily configure the behavior of
 `isEnabled(int)`. You can set with `setItemIsEnabled()` in code or `itemIsEnabled` in your layout.
 - Support dynamically changing the `itemView` in a binding. This will replace the entire adapter.
 
@@ -35,11 +38,11 @@ constructed with.
 - Use `requireAll = false` to vastly simplify binding adapters.
 - Fail with a more helpful error message when `itemView` is null.
 - Removed deprecated `ItemView` methods.
-- Invalid binding variable error can now show it's name even if the app's package and the BR package 
+- Invalid binding variable error can now show it's name even if the app's package and the BR package
 do not match.
 
 ### 0.15
-- Deprecated `ItemView.getBindingVariable()` and `ItemView.getLayoutRes()` in favor of 
+- Deprecated `ItemView.getBindingVariable()` and `ItemView.getLayoutRes()` in favor of
 `ItemView.bindingVariable()` and `ItemView.layoutRes()`.
 - Added public accessor methods to `ItemViewArg` to select and get item view info.
 - Removed unused constant in `BindingListViewAdapter`
@@ -58,16 +61,16 @@ should also include `compile 'me.tatarka:bindingcollectionadpater-recyclerview:0
 ### 0.13
 - Update databinding to rc2.
 - Simplified and re-ordered BindingAdapters
-- Removed support for modifying an `ObservableList` off the main thread. It will now throw an 
+- Removed support for modifying an `ObservableList` off the main thread. It will now throw an
 exception.
 - Removed deprecated `BindingCollectionAdapter.getItems()`.
 - Removed a bunch of deprecated methods on `BindingCollectionAdapters` that should shouldn't be
 using anyway and deprecated some more.
-- Added `BindingCollectionAdapter.setItems(List<T>)` and deprecated 
+- Added `BindingCollectionAdapter.setItems(List<T>)` and deprecated
 `BindingCollectionAdapter.setItems(Collection<T>)`.
-**Warning!** This may cause a subtile change in behavior. The collection now always holds a 
-reference to the collection you pass it instead of copying it into it's own. You must now be careful 
-to only modify this collection on the main thread and call `notifyDataSetChanged()` or related if 
+**Warning!** This may cause a subtile change in behavior. The collection now always holds a
+reference to the collection you pass it instead of copying it into it's own. You must now be careful
+to only modify this collection on the main thread and call `notifyDataSetChanged()` or related if
 you are not using an `ObservableList`.
 - Added support for itemId on RecyclerView.
 
@@ -89,15 +92,15 @@ just be to call super). There is currently a fallback so that this
 change is backwards-compatible but it will be removed in a future
 update.
 - Deprecated `itemView.setLayoutRes(DROP_DOWN_LAYOUT, int)` in favor of `app:dropDownItemView` or
-`adapter.setDropDownItemView(itemViw)`. Original functionality is completely removed but that 
+`adapter.setDropDownItemView(itemViw)`. Original functionality is completely removed but that
 shouldn't matter since you couldn't bind the adapter to the spinner anyway.
-- Added warning for changing list off the main thread. This future doesn't carry it's weight and 
+- Added warning for changing list off the main thread. This future doesn't carry it's weight and
 will be removed from a future version.
 
 ### 0.10
 - Deprecated `BindingCollectionAdapter.getItems()` and added
 `BindingCollectionAdapter.getAdapterItem(int)`. See javadoc for reasoning.
-- Show the binding variable name instead of int value when it fails to bind an item. 
+- Show the binding variable name instead of int value when it fails to bind an item.
 
 ### 0.9
 - Bumped data-binding dep to `1.0-rc1`.
@@ -115,20 +118,20 @@ to work incorrectly.
 give you more control over the superclass implementations.
 
 ### 0.5
-- You now need to subclass the adapters to access the views, this simpilifes things as you don't 
-have to worry about setting the listener after it's been called. There is an additional binding 
+- You now need to subclass the adapters to access the views, this simpilifes things as you don't
+have to worry about setting the listener after it's been called. There is an additional binding
 'adapter' that you can set to bind to your subclass.
-    
-- Changed binding adapters to use multiple variables instead of tags, makes them easier to 
-understand. If you copied the binding adapters yourself to get around apt plugin bug, you'll have to 
+
+- Changed binding adapters to use multiple variables instead of tags, makes them easier to
+understand. If you copied the binding adapters yourself to get around apt plugin bug, you'll have to
 redo that.
 
 ### 0.4
-- Minor refactoring in how the binding adapters are created. 
+- Minor refactoring in how the binding adapters are created.
 
 ### 0.3
 - Fail fast when a variable cannot be bound to a layout.
-- Add CollectionBindingListener which allows you to get access to item binding and manipulate it 
+- Add CollectionBindingListener which allows you to get access to item binding and manipulate it
 when it's created and when it's bound.
 
 ### 0.2

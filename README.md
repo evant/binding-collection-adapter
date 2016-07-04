@@ -6,8 +6,8 @@ Easy way to bind collections to listviews and recyclerviews with the new [Androi
 ## Download
 
 ```groovy
-compile 'me.tatarka.bindingcollectionadapter:bindingcollectionadapter:1.1.0'
-compile 'me.tatarka.bindingcollectionadapter:bindingcollectionadapter-recyclerview:1.1.0'
+compile 'me.tatarka.bindingcollectionadapter:bindingcollectionadapter:1.2.0'
+compile 'me.tatarka.bindingcollectionadapter:bindingcollectionadapter-recyclerview:1.2.0'
 ```
 requires at least android gradle plugin `1.5.0`.
 
@@ -24,7 +24,7 @@ public class ViewModel {
 }
 ```
 
-Then bind it to the collection view with `app:items` and `app:itemView`. There are also some 
+Then bind it to the collection view with `app:items` and `app:itemView`. There are also some
 convience factories to attach a `LayoutManager` to a `RecyclerView` with `app:layoutManager`.
 
 ```xml
@@ -32,29 +32,29 @@ convience factories to attach a `LayoutManager` to a `RecyclerView` with `app:la
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
-      <variable name="viewModel" type="com.example.ViewModel"/> 
+      <variable name="viewModel" type="com.example.ViewModel"/>
       <import type="me.tatarka.bindingcollectionadapter.LayoutManagers" />
     </data>
-    
+
     <ListView
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       app:items="@{viewModel.items}"
       app:itemView="@{viewModel.itemView}"/>
-      
+
     <android.support.v7.widget.RecyclerView
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       app:layoutManager="@{LayoutManagers.linear()}"
       app:items="@{viewModel.items}"
       app:itemView="@{viewModel.itemView}"/>
-      
+
     <android.support.v4.view.ViewPager
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       app:items="@{viewModel.items}"
       app:itemView="@{viewModel.itemView}"/>
-      
+
     <Spinner
       android:layout_width="match_parent"
       android:layout_height="match_parent"
@@ -72,9 +72,9 @@ name you passed into the `ItemView`.
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
-      <variable name="item" type="String"/> 
+      <variable name="item" type="String"/>
     </data>
-    
+
     <TextView
       android:id="@+id/text"
       android:layout_width="match_parent"
@@ -94,7 +94,7 @@ public final ItemViewSelector<String> itemView = new BaseItemViewSelector<String
     public void select(ItemView itemView, int position, String item) {
         itemView.set(BR.item, position == 0 ? R.layout.item_header : R.layout.item);
     }
-    
+
     // You need to override this method when using a ListView as it requires to know how
     // many view types there are immedeatly. RecyclerView and ViewPager don't need this.
     @Override
@@ -104,8 +104,8 @@ public final ItemViewSelector<String> itemView = new BaseItemViewSelector<String
 };
 ```
 
-Note that `select` is called many times so you should not do any complex processing in there. If you 
-don't need to bind an item at a specific position (a static footer for example) you can use 
+Note that `select` is called many times so you should not do any complex processing in there. If you
+don't need to bind an item at a specific position (a static footer for example) you can use
 `ItemView.BINDING_VARIABLE_NONE` as the binding varibale.
 
 ## Additonal Adapter Configuration
@@ -152,11 +152,11 @@ or by defining `app:pageTitles="@{pageTitles}"` in the `ViewPager` in your layou
 
 ## Directly manipulating views
 
-Data binding is awesome and all, but you may run into a case where you simply need to manipulate the 
-views directly. You can do this without throwing away the whole of databinding by subclassing an 
-existing `BindingCollectionAdapter`. You can then bind `adapter` in your layout to your subclass's 
-class name to have it use that instead. Instead of overriding the normal adapter methods, you should 
-override `onCreateBinding()` or `onBindBinding()` and call `super` allowing you to run code before 
+Data binding is awesome and all, but you may run into a case where you simply need to manipulate the
+views directly. You can do this without throwing away the whole of databinding by subclassing an
+existing `BindingCollectionAdapter`. You can then bind `adapter` in your layout to your subclass's
+class name to have it use that instead. Instead of overriding the normal adapter methods, you should
+override `onCreateBinding()` or `onBindBinding()` and call `super` allowing you to run code before
 and after those events and get access to the item view's binding.
 
 ```java
@@ -190,7 +190,7 @@ public class MyRecyclerViewAdapter<T> extends BindingRecyclerViewAdapter<T> {
   app:adapter='@{"com.example.MyRecyclerViewAdapter"}'/>
 ```
 
-You can also use a factory instead of the class name. This allows you to not have reflection and 
+You can also use a factory instead of the class name. This allows you to not have reflection and
 gives you more control over it's construction.
 
 ```java
@@ -212,12 +212,59 @@ public static final BindingRecyclerViewAdapterFactory MY_FACTORY = new BindingRe
   app:adapter="@{MY_FACTORY}"/>
 ```
 
+## Selector Helpers
+
+There are a few classes to help with common implementations of `ItemViewSelector`.
+
+`ItemViewClassSelector` selects an item view based on the class of the item in the list.
+
+```java
+selector = ItemViewClassSelector.builder()
+  .put(String.class, BR.name, R.layout.item_name)
+  .put(Footer.class, ItemView.BINDING_VARIABLE_NONE, R.layout.item_footer)
+  .build();
+```
+
+`ItemViewModelSelector` delegates to the items in the list themselves to determine the item view.
+
+```java
+selector = new ItemViewModelSelector<Model>();
+
+public class Model implements ItemViewModel {
+  @Override
+  public void itemView(ItemView itemView) {
+    itemView.set(BR.name, R.layout.item_name);
+  }
+}
+```
+
+## MergeObservableList
+
+There are many times you want to merge multiple data sources together. This can be as simple as
+adding headers and footers or as complex as concatenating multiple data sources. It is hard to
+manage these lists yourself since you have to take into account all items when updating a subset.
+
+`MergeObservableList` solves this by giving you a "merged" view of your data sources.
+
+```java
+ObservableList<String> data = new ObservableArrayList<>();
+MergeObservableList<String> list = new MergeObservableList<>()
+    .insertItem("Header")
+    .insertList(data)
+    .insertItem("Footer");
+
+data.addAll(Arrays.asList("One", "Two"));
+// list => ["Header", "One", "Two", "Footer"]
+data.remove("One");
+// list => ["Header", "Two", "Footer"]
+```
+
 ## Known Issues
 
 ### Cannot Resolve the libraries `@BindingAdapter`'s
 
-This is likely because you are using the [android-apt](https://bitbucket.org/hvisser/android-apt) 
-plugin which [broke](https://bitbucket.org/hvisser/android-apt/issues/45/breaks-declaring-bindingadapter-in-a) 
+This is likely because you are using the [android-apt](https://bitbucket.org/hvisser/android-apt)
+plugin which [broke](https://bitbucket.org/hvisser/android-apt/issues/45/breaks-declaring-bindingadapter-in-a)
 this in previous versions. Update to `1.6+` to fix it.
 
 ### View's adapter is null
@@ -229,13 +276,13 @@ it to run immediately by calling `binding.executePendingBindings()`.
 ## License
 
     Copyright 2015 Evan Tatarka
-    
+
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
-    
+
        http://www.apache.org/licenses/LICENSE-2.0
-    
+
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
