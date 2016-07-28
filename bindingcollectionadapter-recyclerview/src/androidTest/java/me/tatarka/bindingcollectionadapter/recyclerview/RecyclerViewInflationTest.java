@@ -46,7 +46,7 @@ public class RecyclerViewInflationTest {
 
         RecyclerView recyclerView = (RecyclerView) binding.getRoot();
         @SuppressWarnings("unchecked")
-        BindingRecyclerViewAdapter<String> adapter = (BindingRecyclerViewAdapter<String>) recyclerView.getAdapter();
+        BindingRecyclerViewAdapter<String, ?> adapter = (BindingRecyclerViewAdapter<String, ?>) recyclerView.getAdapter();
 
         assertThat(TestHelpers.iterable(adapter)).containsExactlyElementsOf(items);
     }
@@ -62,7 +62,7 @@ public class RecyclerViewInflationTest {
 
         RecyclerView recyclerView = (RecyclerView) binding.getRoot();
         @SuppressWarnings("unchecked")
-        BindingRecyclerViewAdapter<String> adapter = (BindingRecyclerViewAdapter<String>) recyclerView.getAdapter();
+        BindingRecyclerViewAdapter<String, ?> adapter = (BindingRecyclerViewAdapter<String, ?>) recyclerView.getAdapter();
 
         assertThat(adapter).isInstanceOf(TestHelpers.MyBindingRecyclerViewAdapter.class);
     }

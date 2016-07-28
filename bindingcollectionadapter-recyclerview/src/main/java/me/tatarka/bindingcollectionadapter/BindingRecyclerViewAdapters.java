@@ -15,14 +15,16 @@ public class BindingRecyclerViewAdapters {
     // RecyclerView
     @SuppressWarnings("unchecked")
     @BindingAdapter(value = {"itemView", "items", "adapter", "itemIds"}, requireAll = false)
-    public static <T> void setAdapter(RecyclerView recyclerView, ItemViewArg<T> arg, List<T> items, BindingRecyclerViewAdapterFactory factory, BindingRecyclerViewAdapter.ItemIds<T> itemIds) {
+    public static <T, VH extends RecyclerView.ViewHolder & BindingViewHolder>
+    void setAdapter(RecyclerView recyclerView, ItemViewArg<T> arg, List<T> items, BindingRecyclerViewAdapterFactory factory, BindingRecyclerViewAdapter.ItemIds<T> itemIds) {
         if (arg == null) {
             throw new IllegalArgumentException("itemView must not be null");
         }
         if (factory == null) {
             factory = BindingRecyclerViewAdapterFactory.DEFAULT;
         }
-        BindingRecyclerViewAdapter<T> adapter = (BindingRecyclerViewAdapter<T>) recyclerView.getAdapter();
+        BindingRecyclerViewAdapter<T, VH> adapter
+                = (BindingRecyclerViewAdapter<T, VH>) recyclerView.getAdapter();
         if (adapter == null) {
             adapter = factory.create(recyclerView, arg);
             adapter.setItems(items);
@@ -42,7 +44,8 @@ public class BindingRecyclerViewAdapters {
     public static BindingRecyclerViewAdapterFactory toRecyclerViewAdapterFactory(final String className) {
         return new BindingRecyclerViewAdapterFactory() {
             @Override
-            public <T> BindingRecyclerViewAdapter<T> create(RecyclerView recyclerView, ItemViewArg<T> arg) {
+            public <T, VH extends RecyclerView.ViewHolder & BindingViewHolder>
+            BindingRecyclerViewAdapter<T, VH> create(RecyclerView recyclerView, ItemViewArg<T> arg) {
                 return Utils.createClass(className, arg);
             }
         };

@@ -6,13 +6,14 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-import me.tatarka.bindingcollectionadapter.BindingRecyclerViewAdapter;
+
+import me.tatarka.bindingcollectionadapter.DefaultBindingRecyclerViewAdapter;
 import me.tatarka.bindingcollectionadapter.ItemViewArg;
 
 /**
  * Created by evan on 6/30/15.
  */
-public class LoggingRecyclerViewAdapter<T> extends BindingRecyclerViewAdapter<T> {
+public class LoggingRecyclerViewAdapter<T> extends DefaultBindingRecyclerViewAdapter<T> {
     public static final String TAG = "RecyclerView";
 
     public LoggingRecyclerViewAdapter(@NonNull ItemViewArg<T> arg) {

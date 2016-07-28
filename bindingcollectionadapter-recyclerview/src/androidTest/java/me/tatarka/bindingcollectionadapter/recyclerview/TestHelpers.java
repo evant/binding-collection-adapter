@@ -11,6 +11,8 @@ import java.util.List;
 import me.tatarka.bindingcollectionadapter.BaseItemViewSelector;
 import me.tatarka.bindingcollectionadapter.BindingListViewAdapter;
 import me.tatarka.bindingcollectionadapter.BindingRecyclerViewAdapter;
+import me.tatarka.bindingcollectionadapter.BindingViewHolder;
+import me.tatarka.bindingcollectionadapter.DefaultBindingRecyclerViewAdapter;
 import me.tatarka.bindingcollectionadapter.ItemView;
 import me.tatarka.bindingcollectionadapter.ItemViewArg;
 import me.tatarka.bindingcollectionadapter.ItemViewSelector;
@@ -56,18 +58,21 @@ public class TestHelpers {
 
     public static final BindingRecyclerViewAdapterFactory MY_RECYCLER_VIEW_ADAPTER_FACTORY = new BindingRecyclerViewAdapterFactory() {
         @Override
-        public <T> BindingRecyclerViewAdapter<T> create(RecyclerView recyclerView, ItemViewArg<T> arg) {
-            return new MyBindingRecyclerViewAdapter<>(arg);
+        public <T, VH extends RecyclerView.ViewHolder & BindingViewHolder>
+        BindingRecyclerViewAdapter<T, VH>
+        create(RecyclerView recyclerView, ItemViewArg<T> arg) {
+            return new MyBindingRecyclerViewAdapter(arg);
         }
     };
 
-    public static class MyBindingRecyclerViewAdapter<T> extends BindingRecyclerViewAdapter<T> {
+    public static class MyBindingRecyclerViewAdapter<T> extends DefaultBindingRecyclerViewAdapter<T> {
         public MyBindingRecyclerViewAdapter(@NonNull ItemViewArg<T> arg) {
             super(arg);
         }
     }
 
-    public static <T> Iterable<T> iterable(final BindingRecyclerViewAdapter<T> adapter) {
+    public static <T, VH extends RecyclerView.ViewHolder & BindingViewHolder>
+    Iterable<T> iterable(final BindingRecyclerViewAdapter<T, VH> adapter) {
         if (adapter == null) return null;
         return new IndexIterable<>(new Factory<IndexIterator<T>>() {
             @Override
