@@ -19,16 +19,17 @@ import java.util.List;
  * {@link ItemViewSelector}. If you give it an {@link ObservableList} it will also updated itself
  * based on changes to that list.
  */
-public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingRecyclerViewAdapter.ViewHolder> implements BindingCollectionAdapter<T> {
+public abstract class BindingRecyclerViewAdapter<T, VH extends RecyclerView.ViewHolder & BindingViewHolder>
+        extends RecyclerView.Adapter<VH> implements BindingCollectionAdapter<T> {
     private static final Object DATA_INVALIDATION = new Object();
 
     @NonNull
     private final ItemViewArg<T> itemViewArg;
-    private final WeakReferenceOnListChangedCallback<T> callback = new WeakReferenceOnListChangedCallback<>(this);
+    private final WeakReferenceOnListChangedCallback<T, VH> callback = new WeakReferenceOnListChangedCallback<>(this);
     private List<T> items;
     private LayoutInflater inflater;
     private ItemIds<T> itemIds;
-    // Currently attached recyclerview, we don't have to listen to notifications if null.
+    // Currently attached RecyclerView, we don't have to listen to notifications if null.
     @Nullable
     private RecyclerView recyclerView;
 
@@ -46,7 +47,7 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingR
         if (this.items == items) {
             return;
         }
-        // If a recyclerview is listening, set up listeners. Otherwise wait until one is attached.
+        // If a RecyclerView is listening, set up listeners. Otherwise wait until one is attached.
         // No need to make a sound if nobody is listening right?
         if (recyclerView != null) {
             if (this.items instanceof ObservableList) {
@@ -98,12 +99,12 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingR
     }
 
     @Override
-    public final ViewHolder onCreateViewHolder(ViewGroup viewGroup, int layoutId) {
+    public final VH onCreateViewHolder(ViewGroup viewGroup, int layoutId) {
         if (inflater == null) {
             inflater = LayoutInflater.from(viewGroup.getContext());
         }
         ViewDataBinding binding = onCreateBinding(inflater, layoutId, viewGroup);
-        final ViewHolder holder = new ViewHolder(binding);
+        final VH holder = createViewHolder(binding);
         binding.addOnRebindCallback(new OnRebindCallback() {
             @Override
             public boolean onPreBind(ViewDataBinding binding) {
@@ -124,16 +125,18 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingR
         return holder;
     }
 
+    protected abstract VH createViewHolder(ViewDataBinding binding);
+
     @Override
-    public final void onBindViewHolder(ViewHolder viewHolder, int position) {
+    public final void onBindViewHolder(VH viewHolder, int position) {
         T item = items.get(position);
-        onBindBinding(viewHolder.binding, itemViewArg.bindingVariable(), itemViewArg.layoutRes(), position, item);
+        onBindBinding(viewHolder.getBinding(), itemViewArg.bindingVariable(), itemViewArg.layoutRes(), position, item);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position, List<Object> payloads) {
+    public void onBindViewHolder(VH holder, int position, List<Object> payloads) {
         if (isForDataBinding(payloads)) {
-            holder.binding.executePendingBindings();
+            holder.getBinding().executePendingBindings();
         } else {
             super.onBindViewHolder(holder, position, payloads);
         }
@@ -177,25 +180,17 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingR
         return itemIds == null ? position : itemIds.getItemId(position, items.get(position));
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        final ViewDataBinding binding;
+    private static class WeakReferenceOnListChangedCallback<T, VH extends RecyclerView.ViewHolder & BindingViewHolder>
+            extends ObservableList.OnListChangedCallback<ObservableList<T>> {
+        final WeakReference<BindingRecyclerViewAdapter<T, VH>> adapterRef;
 
-        ViewHolder(ViewDataBinding binding) {
-            super(binding.getRoot());
-            this.binding = binding;
-        }
-    }
-
-    private static class WeakReferenceOnListChangedCallback<T> extends ObservableList.OnListChangedCallback<ObservableList<T>> {
-        final WeakReference<BindingRecyclerViewAdapter<T>> adapterRef;
-
-        WeakReferenceOnListChangedCallback(BindingRecyclerViewAdapter<T> adapter) {
+        WeakReferenceOnListChangedCallback(BindingRecyclerViewAdapter<T, VH> adapter) {
             this.adapterRef = new WeakReference<>(adapter);
         }
 
         @Override
         public void onChanged(ObservableList sender) {
-            BindingRecyclerViewAdapter<T> adapter = adapterRef.get();
+            BindingRecyclerViewAdapter<T, VH> adapter = adapterRef.get();
             if (adapter == null) {
                 return;
             }
@@ -205,7 +200,7 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingR
 
         @Override
         public void onItemRangeChanged(ObservableList sender, final int positionStart, final int itemCount) {
-            BindingRecyclerViewAdapter<T> adapter = adapterRef.get();
+            BindingRecyclerViewAdapter<T, VH> adapter = adapterRef.get();
             if (adapter == null) {
                 return;
             }
@@ -215,7 +210,7 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingR
 
         @Override
         public void onItemRangeInserted(ObservableList sender, final int positionStart, final int itemCount) {
-            BindingRecyclerViewAdapter<T> adapter = adapterRef.get();
+            BindingRecyclerViewAdapter<T, VH> adapter = adapterRef.get();
             if (adapter == null) {
                 return;
             }
@@ -225,7 +220,7 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingR
 
         @Override
         public void onItemRangeMoved(ObservableList sender, final int fromPosition, final int toPosition, final int itemCount) {
-            BindingRecyclerViewAdapter<T> adapter = adapterRef.get();
+            BindingRecyclerViewAdapter<T, VH> adapter = adapterRef.get();
             if (adapter == null) {
                 return;
             }
@@ -237,7 +232,7 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingR
 
         @Override
         public void onItemRangeRemoved(ObservableList sender, final int positionStart, final int itemCount) {
-            BindingRecyclerViewAdapter<T> adapter = adapterRef.get();
+            BindingRecyclerViewAdapter<T, VH> adapter = adapterRef.get();
             if (adapter == null) {
                 return;
             }
