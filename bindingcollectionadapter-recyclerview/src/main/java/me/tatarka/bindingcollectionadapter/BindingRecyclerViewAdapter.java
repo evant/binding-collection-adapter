@@ -8,7 +8,9 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import java.lang.ref.WeakReference;
@@ -19,7 +21,7 @@ import java.util.List;
  * {@link ItemViewSelector}. If you give it an {@link ObservableList} it will also updated itself
  * based on changes to that list.
  */
-public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingRecyclerViewAdapter.ViewHolder> implements BindingCollectionAdapter<T> {
+public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<ViewHolder> implements BindingCollectionAdapter<T> {
     private static final Object DATA_INVALIDATION = new Object();
 
     @NonNull
@@ -28,6 +30,7 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingR
     private List<T> items;
     private LayoutInflater inflater;
     private ItemIds<T> itemIds;
+    private ViewHolderFactory viewHolderFactory;
     // Currently attached recyclerview, we don't have to listen to notifications if null.
     @Nullable
     private RecyclerView recyclerView;
@@ -103,7 +106,7 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingR
             inflater = LayoutInflater.from(viewGroup.getContext());
         }
         ViewDataBinding binding = onCreateBinding(inflater, layoutId, viewGroup);
-        final ViewHolder holder = new ViewHolder(binding);
+        final ViewHolder holder = onCreateViewHolder(binding);
         binding.addOnRebindCallback(new OnRebindCallback() {
             @Override
             public boolean onPreBind(ViewDataBinding binding) {
@@ -124,16 +127,36 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingR
         return holder;
     }
 
+    /**
+     * Constructs a view holder for the given databinding. The default implementation is to use
+     * {@link ViewHolderFactory} if provided, otherwise use a default view holder.
+     */
+    public ViewHolder onCreateViewHolder(ViewDataBinding binding) {
+        if (viewHolderFactory != null) {
+            return viewHolderFactory.createViewHolder(binding);
+        } else {
+            return new BindingViewHolder(binding);
+        }
+    }
+
+    private static class BindingViewHolder extends RecyclerView.ViewHolder {
+        public BindingViewHolder(ViewDataBinding binding) {
+            super(binding.getRoot());
+        }
+    }
+
     @Override
     public final void onBindViewHolder(ViewHolder viewHolder, int position) {
         T item = items.get(position);
-        onBindBinding(viewHolder.binding, itemViewArg.bindingVariable(), itemViewArg.layoutRes(), position, item);
+        ViewDataBinding binding = DataBindingUtil.getBinding(viewHolder.itemView);
+        onBindBinding(binding, itemViewArg.bindingVariable(), itemViewArg.layoutRes(), position, item);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position, List<Object> payloads) {
         if (isForDataBinding(payloads)) {
-            holder.binding.executePendingBindings();
+            ViewDataBinding binding = DataBindingUtil.getBinding(holder.itemView);
+            binding.executePendingBindings();
         } else {
             super.onBindViewHolder(holder, position, payloads);
         }
@@ -167,6 +190,14 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingR
         setHasStableIds(itemIds != null);
     }
 
+    /**
+     * Set the factory for creating view holders. If null, a default view holder will be used. This
+     * is useful for holding custom state in the view holder or other more complex customization.
+     */
+    public void setViewHolderFactory(@Nullable ViewHolderFactory factory) {
+        viewHolderFactory = factory;
+    }
+
     @Override
     public int getItemCount() {
         return items == null ? 0 : items.size();
@@ -176,16 +207,11 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingR
     public long getItemId(int position) {
         return itemIds == null ? position : itemIds.getItemId(position, items.get(position));
     }
-
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        final ViewDataBinding binding;
-
-        ViewHolder(ViewDataBinding binding) {
-            super(binding.getRoot());
-            this.binding = binding;
-        }
+    
+    public interface ViewHolderFactory {
+        ViewHolder createViewHolder(ViewDataBinding binding);
     }
-
+    
     private static class WeakReferenceOnListChangedCallback<T> extends ObservableList.OnListChangedCallback<ObservableList<T>> {
         final WeakReference<BindingRecyclerViewAdapter<T>> adapterRef;
 

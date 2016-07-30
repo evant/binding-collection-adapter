@@ -14,8 +14,8 @@ import me.tatarka.bindingcollectionadapter.factories.BindingRecyclerViewAdapterF
 public class BindingRecyclerViewAdapters {
     // RecyclerView
     @SuppressWarnings("unchecked")
-    @BindingAdapter(value = {"itemView", "items", "adapter", "itemIds"}, requireAll = false)
-    public static <T> void setAdapter(RecyclerView recyclerView, ItemViewArg<T> arg, List<T> items, BindingRecyclerViewAdapterFactory factory, BindingRecyclerViewAdapter.ItemIds<T> itemIds) {
+    @BindingAdapter(value = {"itemView", "items", "adapter", "itemIds", "viewHolder"}, requireAll = false)
+    public static <T> void setAdapter(RecyclerView recyclerView, ItemViewArg<T> arg, List<T> items, BindingRecyclerViewAdapterFactory factory, BindingRecyclerViewAdapter.ItemIds<T> itemIds, BindingRecyclerViewAdapter.ViewHolderFactory viewHolderFactory) {
         if (arg == null) {
             throw new IllegalArgumentException("itemView must not be null");
         }
@@ -27,6 +27,7 @@ public class BindingRecyclerViewAdapters {
             adapter = factory.create(recyclerView, arg);
             adapter.setItems(items);
             adapter.setItemIds(itemIds);
+            adapter.setViewHolderFactory(viewHolderFactory);
             recyclerView.setAdapter(adapter);
         } else {
             adapter.setItems(items);

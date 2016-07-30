@@ -1,3 +1,6 @@
+### 1.3.0
+- Added way to construct your own custom view holder for a RecyclerView adapter.
+
 ### 1.2.0
 - Updated databinding dependency to work around some of it's bugs.
 

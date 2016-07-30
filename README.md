@@ -6,8 +6,8 @@ Easy way to bind collections to listviews and recyclerviews with the new [Androi
 ## Download
 
 ```groovy
-compile 'me.tatarka.bindingcollectionadapter:bindingcollectionadapter:1.2.0'
-compile 'me.tatarka.bindingcollectionadapter:bindingcollectionadapter-recyclerview:1.2.0'
+compile 'me.tatarka.bindingcollectionadapter:bindingcollectionadapter:1.3.0'
+compile 'me.tatarka.bindingcollectionadapter:bindingcollectionadapter-recyclerview:1.3.0'
 ```
 requires at least android gradle plugin `1.5.0`.
 
@@ -149,6 +149,20 @@ adapter.setPageTitles(new PageTitles<T>() {
 });
 ```
 or by defining `app:pageTitles="@{pageTitles}"` in the `ViewPager` in your layout file.
+
+### RecyclerView
+
+You can construct custom view holders with
+
+```java
+adapter.setViewHolderFactory(new ViewHolderFactory() {
+  @Override
+  public RecyclerView.ViewHolder createViewHolder(ViewDataBinding binding) {
+    return new MyCustomViewHolder(binding.getRoot());
+  }
+});
+```
+or by defining `app:viewHolder="@{viewHolderFactory}"` in the `RecyclerView` in your layout file.
 
 ## Directly manipulating views
 
