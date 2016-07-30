@@ -2,13 +2,11 @@ package me.tatarka.bindingcollectionadapter;
 
 import android.databinding.BindingAdapter;
 import android.databinding.BindingConversion;
+import android.support.annotation.LayoutRes;
 import android.support.v4.view.ViewPager;
 import android.widget.AdapterView;
 
 import java.util.List;
-
-import me.tatarka.bindingcollectionadapter.factories.BindingAdapterViewFactory;
-import me.tatarka.bindingcollectionadapter.factories.BindingViewPagerAdapterFactory;
 
 /**
  * All the BindingAdapters so that you can set your adapters and items directly in your layout.
@@ -16,79 +14,57 @@ import me.tatarka.bindingcollectionadapter.factories.BindingViewPagerAdapterFact
 public class BindingCollectionAdapters {
     // AdapterView
     @SuppressWarnings("unchecked")
-    @BindingAdapter(value = {"itemView", "items", "adapter", "dropDownItemView", "itemIds", "itemIsEnabled"}, requireAll = false)
-    public static <T> void setAdapter(AdapterView adapterView, ItemViewArg<T> arg, List<T> items, BindingAdapterViewFactory factory, ItemView dropDownItemView, BindingListViewAdapter.ItemIds<T> itemIds, BindingListViewAdapter.ItemIsEnabled<T> itemIsEnabled) {
-        if (arg == null) {
-            throw new IllegalArgumentException("itemView must not be null");
+    @BindingAdapter(value = {"itemBinding", "itemTypeCount", "items", "adapter", "itemDropDownLayout", "itemIds", "itemIsEnabled"}, requireAll = false)
+    public static <T> void setAdapter(AdapterView adapterView, ItemBinding<T> itemBinding, Integer itemTypeCount, List items, BindingListViewAdapter<T> adapter, @LayoutRes int itemDropDownLayout, BindingListViewAdapter.ItemIds<? super T> itemIds, BindingListViewAdapter.ItemIsEnabled<? super T> itemIsEnabled) {
+        if (itemBinding == null) {
+            throw new IllegalArgumentException("onItemBind must not be null");
         }
-        if (factory == null) {
-            factory = BindingAdapterViewFactory.DEFAULT;
-        }
-        BindingListViewAdapter<T> adapter = (BindingListViewAdapter<T>) adapterView.getAdapter();
+        BindingListViewAdapter<T> oldAdapter = (BindingListViewAdapter<T>) adapterView.getAdapter();
         if (adapter == null) {
-            adapter = factory.create(adapterView, arg);
-            adapter.setDropDownItemView(dropDownItemView);
-            adapter.setItems(items);
-            adapter.setItemIds(itemIds);
-            adapter.setItemIsEnabled(itemIsEnabled);
+            if (oldAdapter == null) {
+                int count = itemTypeCount != null ? itemTypeCount : 1;
+                adapter = new BindingListViewAdapter<>(count);
+            } else {
+                adapter = oldAdapter;
+            }
+        }
+        adapter.setItemBinding(itemBinding);
+        adapter.setDropDownItemLayout(itemDropDownLayout);
+        adapter.setItems(items);
+        adapter.setItemIds(itemIds);
+        adapter.setItemIsEnabled(itemIsEnabled);
+
+        if (oldAdapter != adapter) {
             adapterView.setAdapter(adapter);
-        } else {
-            adapter.setDropDownItemView(dropDownItemView);
-            adapter.setItems(items);
-            adapter.setItemIds(itemIds);
-            adapter.setItemIsEnabled(itemIsEnabled);
         }
     }
 
     // ViewPager
     @SuppressWarnings("unchecked")
-    @BindingAdapter(value = {"itemView", "items", "adapter", "pageTitles"}, requireAll = false)
-    public static <T> void setAdapter(ViewPager viewPager, ItemViewArg<T> arg, List<T> items, BindingViewPagerAdapterFactory factory, BindingViewPagerAdapter.PageTitles<T> pageTitles) {
-        if (arg == null) {
-            throw new IllegalArgumentException("itemView must not be null");
+    @BindingAdapter(value = {"itemBinding", "items", "adapter", "pageTitles"}, requireAll = false)
+    public static <T> void setAdapter(ViewPager viewPager, ItemBinding<T> itemBinding, List items, BindingViewPagerAdapter<T> adapter, BindingViewPagerAdapter.PageTitles<T> pageTitles) {
+        if (itemBinding == null) {
+            throw new IllegalArgumentException("onItemBind must not be null");
         }
-        if (factory == null) {
-            factory = BindingViewPagerAdapterFactory.DEFAULT;
-        }
-        BindingViewPagerAdapter<T> adapter = (BindingViewPagerAdapter<T>) viewPager.getAdapter();
+        BindingViewPagerAdapter<T> oldAdapter = (BindingViewPagerAdapter<T>) viewPager.getAdapter();
         if (adapter == null) {
-            adapter = factory.create(viewPager, arg);
-            adapter.setItems(items);
-            adapter.setPageTitles(pageTitles);
+            if (oldAdapter == null) {
+                adapter = new BindingViewPagerAdapter<>();
+            } else {
+                adapter = oldAdapter;
+            }
+        }
+        adapter.setItemBinding(itemBinding);
+        adapter.setItems(items);
+        adapter.setPageTitles(pageTitles);
+
+        if (oldAdapter != adapter) {
             viewPager.setAdapter(adapter);
-        } else {
-            adapter.setItems(items);
-            adapter.setPageTitles(pageTitles);
         }
     }
-
+    
     @BindingConversion
-    public static ItemViewArg toItemViewArg(ItemView itemView) {
-        return ItemViewArg.of(itemView);
-    }
-
-    @BindingConversion
-    public static ItemViewArg toItemViewArg(ItemViewSelector<?> selector) {
-        return ItemViewArg.of(selector);
-    }
-
-    @BindingConversion
-    public static BindingAdapterViewFactory toAdapterViewAdapterFactory(final String className) {
-        return new BindingAdapterViewFactory() {
-            @Override
-            public <T> BindingListViewAdapter<T> create(AdapterView adapterView, ItemViewArg<T> arg) {
-                return Utils.createClass(className, arg);
-            }
-        };
-    }
-
-    @BindingConversion
-    public static BindingViewPagerAdapterFactory toViewPagerAdapterFactory(final String className) {
-        return new BindingViewPagerAdapterFactory() {
-            @Override
-            public <T> BindingViewPagerAdapter<T> create(ViewPager viewPager, ItemViewArg<T> arg) {
-                return Utils.createClass(className, arg);
-            }
-        };
+    public static <T> ItemBinding<T> toItemBinding(OnItemBind<T> onItemBind) {
+        return ItemBinding.of(onItemBind);
     }
 }

@@ -4,6 +4,8 @@
 
     <data>
 
+        <import type="me.tatarka.bindingcollectionadapter.sample.ItemViewModel" />
+
         <variable
             name="viewModel"
             type="me.tatarka.bindingcollectionadapter.sample.ViewModel" />
@@ -25,9 +27,10 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            app:adapter='@{"me.tatarka.bindingcollectionadapter.sample.LoggingRecyclerViewAdapter"}'
-            app:itemView="@{viewModel.singleItemView}"
-            app:items="@{viewModel.items}"
+            app:adapter="@{viewModel.adapter}"
+            app:itemBinding="@{viewModel.multipleItems}"
+            app:items="@{viewModel.headerFooterItems}"
+            app:viewHolder="@{viewModel.viewHolder}"
             app:layoutManager="@{LayoutManagers.linear()}" />
 
         <LinearLayout
@@ -41,7 +44,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:onClickListener="@{listeners.addItem}"
+                android:onClickListener="@{() -> listeners.onAddItem()}"
                 android:text="Add Item" />
 
             <Button
@@ -50,7 +53,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:onClickListener="@{listeners.removeItem}"
+                android:onClickListener="@{() -> listeners.onRemoveItem()}"
                 android:text="Remove Item" />
         </LinearLayout>
     </LinearLayout>

@@ -20,23 +20,20 @@ import java.util.List;
  * changes to that list.
  */
 public class BindingViewPagerAdapter<T> extends PagerAdapter implements BindingCollectionAdapter<T> {
-    @NonNull
-    private final ItemViewArg<T> itemViewArg;
+    private ItemBinding<T> itemBinding;
     private final WeakReferenceOnListChangedCallback<T> callback = new WeakReferenceOnListChangedCallback<>(this);
     private List<T> items;
     private LayoutInflater inflater;
     private PageTitles<T> pageTitles;
 
-    /**
-     * Constructs a new instance with the given {@link ItemViewArg}.
-     */
-    public BindingViewPagerAdapter(@NonNull ItemViewArg<T> arg) {
-        this.itemViewArg = arg;
+    @Override
+    public void setItemBinding(ItemBinding<T> itemBinding) {
+        this.itemBinding = itemBinding;
     }
 
     @Override
-    public ItemViewArg<T> getItemViewArg() {
-        return itemViewArg;
+    public ItemBinding<T> getItemBinding() {
+        return itemBinding;
     }
 
     @Override
@@ -65,12 +62,8 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter implements BindingC
     }
 
     @Override
-    public void onBindBinding(ViewDataBinding binding, int bindingVariable, @LayoutRes int layoutRes, int position, T item) {
-        if (bindingVariable != ItemView.BINDING_VARIABLE_NONE) {
-            boolean result = binding.setVariable(bindingVariable, item);
-            if (!result) {
-                Utils.throwMissingVariable(binding, bindingVariable, layoutRes);
-            }
+    public void onBindBinding(ViewDataBinding binding, int variableId, @LayoutRes int layoutRes, int position, T item) {
+        if (itemBinding.bind(binding, item)) {
             binding.executePendingBindings();
         }
     }
@@ -99,10 +92,10 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter implements BindingC
         }
 
         T item = items.get(position);
-        itemViewArg.select(position, item);
+        itemBinding.onItemBind(position, item);
 
-        ViewDataBinding binding = onCreateBinding(inflater, itemViewArg.layoutRes(), container);
-        onBindBinding(binding, itemViewArg.bindingVariable(), itemViewArg.layoutRes(), position, item);
+        ViewDataBinding binding = onCreateBinding(inflater, itemBinding.layoutRes(), container);
+        onBindBinding(binding, itemBinding.variableId(), itemBinding.layoutRes(), position, item);
 
         container.addView(binding.getRoot());
         binding.getRoot().setTag(item);

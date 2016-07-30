@@ -3,7 +3,6 @@ package me.tatarka.bindingcollectionadapter;
 import android.databinding.ObservableList;
 import android.databinding.ViewDataBinding;
 import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -17,18 +16,25 @@ import java.util.List;
  * @see BindingViewPagerAdapter
  */
 public interface BindingCollectionAdapter<T> {
-    /**
-     * Returns the {@link ItemViewArg} that the adapter was constructed with.
-     */
-    ItemViewArg<T> getItemViewArg();
 
     /**
-     * Sets the adapter's items. These items will be displayed based on the {@link ItemView} or
-     * {@link ItemViewSelector}. If you pass in an {@link ObservableList} the adapter will also
-     * update itself based on that list's changes. <br/> Note that the adapter will keep a direct
-     * reference to the given list. Any changes to it <em>must</em> happen on the main thread.
-     * Additionally, if you are not using an {@code ObservableList}, you <em>must</em> call {@code
-     * notifyDataSetChanged()} or one of the related methods.
+     * Sets the item biding for the adapter.
+     */
+    void setItemBinding(ItemBinding<T> itemBinding);
+
+
+    /**
+     * Returns the {@link ItemBinding} that the adapter that was set.
+     */
+    ItemBinding<T> getItemBinding();
+
+    /**
+     * Sets the adapter's items. These items will be displayed based on the {@link ItemBinding}. If
+     * you pass in an {@link ObservableList} the adapter will also update itself based on that
+     * list's changes. <br/> Note that the adapter will keep a direct reference to the given list.
+     * Any changes to it <em>must</em> happen on the main thread. Additionally, if you are not using
+     * an {@code ObservableList}, you <em>must</em> call {@code notifyDataSetChanged()} or one of
+     * the related methods.
      */
     void setItems(@Nullable List<T> items);
 
@@ -50,5 +56,5 @@ public interface BindingCollectionAdapter<T> {
      * a variable on the binding. A subclass may override this and cast the binding to an
      * implementation specific layout binding to get at the generated view fields.
      */
-    void onBindBinding(ViewDataBinding binding, int bindingVariable, @LayoutRes int layoutRes, int position, T item);
+    void onBindBinding(ViewDataBinding binding, int variableId, @LayoutRes int layoutRes, int position, T item);
 }

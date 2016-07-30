@@ -1,3 +1,56 @@
+### 2.0.0-beta1
+This is a complete refactor to simplify and improve naming of components.
+- Replaced `ItemView`, `ItemViewSelector`, and `ItemViewArg` with `ItemBinding` and `OnItemBind`.
+Everything is just an `ItemBinding` so 2 different classes don't have to be juggled. You can pass an
+`OnItemBind` callback into an `ItemBinding` for dynamic selection. There is a convenience conversion
+so you can just provide an `OnItemBind` to `app:itemBinding` in your layout.
+- `ItemView.BINDING_VARIABLE_NONE` is now `ItemBinding.VAR_NONE`. Before, forgetting this would lead
+to subtle bugs.
+- An exception will be thrown if nothing is set on an itemBinding in `onItemBind`.
+- Knowledge of `itemTypeCount` is only present in `BindingListViewAdapter`. You can pass it to the
+constructor or set it with `app:itemTypeCount="@{count}"` in your layout.
+- `setItemBinding()` is added to the `BindingCollectionAdapter` instead of it being a required
+constructor arg.
+- Factories for custom adapters are removed, just pass in the instance directly to `app:adapter`.
+- Dynamically changing a bound adapter is supported. Note: this means that if it is not intended to
+change, you must provide the same instance each time.
+- Constructing adapters from a class name is no longer supported.
+-
+```java
+selector = ItemViewClassSelector.builder()
+  .put(String.class, BR.name, R.layout.item_name)
+  .put(Footer.class, ItemView.BINDING_VARIABLE_NONE, R.layout.item_footer)
+  .build();
+```
+is now
+```java
+itemBind = new OnItemBindClass<>()
+  .map(String.class, BR.name, R.layout.item_name)
+  .map(Footer.class, ItemBinding.VAR_NONE, R.layout.item_footer);
+```
+-
+```java
+selector = new ItemViewModelSelector<Model>();
+
+public class Model implements ItemViewModel {
+  @Override
+  public void itemView(ItemView itemView) {
+    itemView.set(BR.name, R.layout.item_name);
+  }
+}
+```
+is now
+```java
+itemBind = new OnItemBindModel<Model>();
+
+public class Model implements ItemBindingModel {
+  @Override
+  public void onItemBind(ItemBinding itemBinding) {
+    itemBinding.set(BR.name, R.layout.item_name);
+  }
+}
+```
+
 ### 1.3.0
 - Added way to construct your own custom view holder for a RecyclerView adapter.
 

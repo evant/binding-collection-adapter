@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:items="@{viewModel.items}"
-        app:itemView="@{viewModel.itemView}"
+        app:itemBinding="@{viewModel.itemBinding}"
         app:layoutManager="@{LayoutManagers.linear()}"
-        app:adapter='@{"me.tatarka.bindingcollectionadapter.recyclerview.TestHelpers$MyBindingRecyclerViewAdapter"}' />
+        app:adapter="@{viewModel.adapter}" />
 </layout>

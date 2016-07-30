@@ -6,8 +6,8 @@ Easy way to bind collections to listviews and recyclerviews with the new [Androi
 ## Download
 
 ```groovy
-compile 'me.tatarka.bindingcollectionadapter:bindingcollectionadapter:1.3.0'
-compile 'me.tatarka.bindingcollectionadapter:bindingcollectionadapter-recyclerview:1.3.0'
+compile 'me.tatarka.bindingcollectionadapter:bindingcollectionadapter:2.0.0-beta1'
+compile 'me.tatarka.bindingcollectionadapter:bindingcollectionadapter-recyclerview:2.0.0-beta1'
 ```
 requires at least android gradle plugin `1.5.0`.
 
@@ -20,47 +20,48 @@ use any `List` if you don't need that functionality.
 ```java
 public class ViewModel {
   public final ObservableList<String> items = new ObservableArrayList<>();
-  public final ItemView itemView = ItemView.of(BR.item, R.layout.item);
+  public final ItemBinding<String> itemBinding = ItemBinding.of(BR.item, R.layout.item);
 }
 ```
 
 Then bind it to the collection view with `app:items` and `app:itemView`. There are also some
-convience factories to attach a `LayoutManager` to a `RecyclerView` with `app:layoutManager`.
+convenience factories to attach a `LayoutManager` to a `RecyclerView` with `app:layoutManager`.
 
 ```xml
 <!-- layout.xml -->
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
-      <variable name="viewModel" type="com.example.ViewModel"/>
+      <import type="com.example.R" />
       <import type="me.tatarka.bindingcollectionadapter.LayoutManagers" />
+      <variable name="viewModel" type="com.example.ViewModel"/>
     </data>
 
     <ListView
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       app:items="@{viewModel.items}"
-      app:itemView="@{viewModel.itemView}"/>
+      app:itemBinding="@{viewModel.itemBinding}"/>
 
     <android.support.v7.widget.RecyclerView
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       app:layoutManager="@{LayoutManagers.linear()}"
       app:items="@{viewModel.items}"
-      app:itemView="@{viewModel.itemView}"/>
+      app:itemBinding="@{viewModel.itemBinding}"/>
 
     <android.support.v4.view.ViewPager
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       app:items="@{viewModel.items}"
-      app:itemView="@{viewModel.itemView}"/>
+      app:itemBinding="@{viewModel.itemBinding}"/>
 
     <Spinner
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       app:items="@{viewModel.items}"
-      app:itemView="@{viewModel.itemView}"
-      app:dropDownItemView="@{viewModel.dropDownItemView}"/>
+      app:itemBinding="@{viewModel.itemBinding}"
+      app:itemDropDownLayout="@{R.layout.item_dropdown}"/>
 </layout>
 ```
 
@@ -86,29 +87,58 @@ name you passed into the `ItemView`.
 ## Multiple View Types
 
 You can use multiple view types by using a `ItemViewSelector` instead. You can still bind
-it to the view with `app:itemView`.
+it to the view with `app:itemBinding`.
 
 ```java
-public final ItemViewSelector<String> itemView = new BaseItemViewSelector<String>() {
-    @Override
-    public void select(ItemView itemView, int position, String item) {
-        itemView.set(BR.item, position == 0 ? R.layout.item_header : R.layout.item);
-    }
-
-    // You need to override this method when using a ListView as it requires to know how
-    // many view types there are immedeatly. RecyclerView and ViewPager don't need this.
-    @Override
-    public int viewTypeCount() {
-      return 2;
-    }
+public final OnItemBind<String> onItemBind = new OnItemBind<String>() {
+  @Override
+  public void onItemBind(ItemBinding itemBinding, int position, String item) {
+    itemView.set(BR.item, position == 0 ? R.layout.item_header : R.layout.item);
+  }
 };
 ```
 
-Note that `select` is called many times so you should not do any complex processing in there. If you
-don't need to bind an item at a specific position (a static footer for example) you can use
-`ItemView.BINDING_VARIABLE_NONE` as the binding varibale.
+If you are binding to a ListView, you should also provide the number of item types you have with
+`app:itemTypeCount="@{2}`.
 
-## Additonal Adapter Configuration
+Note that `onItemBind` is called many times so you should not do any complex processing in there. If 
+you don't need to bind an item at a specific position (a static footer for example) you can use
+`ItemBinding.VAR_NONE` as the variable id.
+
+## Bind Extra Variables
+
+You can bind additional variables to items in the list with `itemBinding.bindExtra(BR.extra, value)`.
+This is useful for components that you don't want the items themselves to care about. For example, 
+you can implement an item click listener as such
+
+```java
+public interface OnItemClickListener {
+    void onItemClick(String item);
+}
+
+OnItemClickListener listener = ...;
+ItemBinding<Item> itemBinding = ItemBinding.of(BR.item, R.layout.item)
+    .bindExtra(BR.listener, listener);
+```
+
+```xml
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+      <variable name="item" type="String"/>
+      <variable name="listener" type="OnItemClickListener"/>
+    </data>
+
+    <TextView
+      android:id="@+id/text"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:onClick="@{() -> listener.onItemClick(item)}"
+      android:text="@{item}"/>
+</layout>
+```
+
+## Additional Adapter Configuration
 
 ### ListView
 
@@ -116,10 +146,10 @@ You can set a callback to give an id for each item in the list with
 
 ```java
 adapter.setItemIds(new BindingListViewAdapter.ItemIds<T>() {
-    @Override
-    public long getItemId(int position, T item) {
-        return // Calculate item id.
-    }
+  @Override
+  public long getItemId(int position, T item) {
+    return // Calculate item id.
+  }
 });
 ```
 or by defining `app:itemIds="@{itemIds}"` in the `ListView` in your layout file.
@@ -128,10 +158,10 @@ Setting this will make `hasStableIds` return true which can increase performance
 You can set a callback for `isEnabled()` as well with
 ```java
 adapter.setItemEnabled(new BindingListViewAdapter.ItemEnabled<T>() {
-    @Override
-    public boolean isEnabled(int position, T item) {
-        return // Calculate if item is enabled.
-    }
+  @Override
+  public boolean isEnabled(int position, T item) {
+    return // Calculate if item is enabled.
+  }
 });
 ```
 or by defining `app:itemEnabled="@{itemEnabled}"`in the `ListView` in you layout file.
@@ -142,10 +172,10 @@ You can set a callback to give a page title for each item in the list with
 
 ```java
 adapter.setPageTitles(new PageTitles<T>() {
-    @Override
-    public CharSequence getPageTitle(int position, T item) {
-        return "Page Title";
-    }
+  @Override
+  public CharSequence getPageTitle(int position, T item) {
+    return "Page Title";
+  }
 });
 ```
 or by defining `app:pageTitles="@{pageTitles}"` in the `ViewPager` in your layout file.
@@ -175,43 +205,18 @@ and after those events and get access to the item view's binding.
 
 ```java
 public class MyRecyclerViewAdapter<T> extends BindingRecyclerViewAdapter<T> {
-    public LoggingRecyclerViewAdapter(@NonNull ItemViewArg<T> arg) {
-      super(arg);
-    }
 
-    @Override
-    public ViewDataBinding onCreateBinding(LayoutInflater inflater, @LayoutRes int layoutId, ViewGroup viewGroup) {
-        ViewDataBinding binding = super.onCreateBinding(inflater, layoutId, viewGroup);
-        Log.d(TAG, "created binding: " + binding);
-        return binding;
-    }
-
-    @Override
-    public void onBindBinding(ViewDataBinding binding, int bindingVariable, @LayoutRes int layoutId, int position, T item) {
-        super.onBindBinding(binding, bindingVariable, layoutId, position, item);
-        Log.d(TAG, "bound binding: " + binding + " at position: " + position);
-    }
-}
-```
-
-```xml
-<android.support.v7.widget.RecyclerView
-  android:layout_width="match_parent"
-  android:layout_height="match_parent"
-  app:layoutManager="@{LayoutManagers.linear()}"
-  app:items="@{viewModel.items}"
-  app:itemView="@{viewModel.itemView}"
-  app:adapter='@{"com.example.MyRecyclerViewAdapter"}'/>
-```
-
-You can also use a factory instead of the class name. This allows you to not have reflection and
-gives you more control over it's construction.
-
-```java
-public static final BindingRecyclerViewAdapterFactory MY_FACTORY = new BindingRecyclerViewAdapterFactory() {
   @Override
-  public <T> BindingRecyclerViewAdapter<T> create(RecyclerView recyclerView, ItemViewArg<T> arg) {
-    return new MyRecyclerViewAdapter<>(arg);
+  public ViewDataBinding onCreateBinding(LayoutInflater inflater, @LayoutRes int layoutId, ViewGroup viewGroup) {
+    ViewDataBinding binding = super.onCreateBinding(inflater, layoutId, viewGroup);
+    Log.d(TAG, "created binding: " + binding);
+    return binding;
+  }
+
+  @Override
+  public void onBindBinding(ViewDataBinding binding, int bindingVariable, @LayoutRes int layoutId, int position, T item) {
+    super.onBindBinding(binding, bindingVariable, layoutId, position, item);
+    Log.d(TAG, "bound binding: " + binding + " at position: " + position);
   }
 }
 ```
@@ -223,31 +228,35 @@ public static final BindingRecyclerViewAdapterFactory MY_FACTORY = new BindingRe
   app:layoutManager="@{LayoutManagers.linear()}"
   app:items="@{viewModel.items}"
   app:itemView="@{viewModel.itemView}"
-  app:adapter="@{MY_FACTORY}"/>
+  app:adapter="@{viewModel.adapter}"/>
 ```
 
-## Selector Helpers
+Note: databinding will re-evaluate expressions in your layout each time there is a data source 
+change. If you are using a custom adapter you should ensure you are returning the same instance each 
+time or your scroll position etc will not be preserved.
 
-There are a few classes to help with common implementations of `ItemViewSelector`.
 
-`ItemViewClassSelector` selects an item view based on the class of the item in the list.
+## OnItemBind helpers
+
+There are a few classes to help with common implementations of `OnItemBind`.
+
+`OnItemBindClass` binds an item based on the class of the item in the list.
 
 ```java
-selector = ItemViewClassSelector.builder()
-  .put(String.class, BR.name, R.layout.item_name)
-  .put(Footer.class, ItemView.BINDING_VARIABLE_NONE, R.layout.item_footer)
-  .build();
+itemBind = new OnItemBindClass<>()
+  .map(String.class, BR.name, R.layout.item_name)
+  .map(Footer.class, ItemBinding.VAR_NONE, R.layout.item_footer);
 ```
 
-`ItemViewModelSelector` delegates to the items in the list themselves to determine the item view.
+`OnItemBindModel` delegates to the items in the list themselves to determine the binding.
 
 ```java
-selector = new ItemViewModelSelector<Model>();
+itemBind = new OnItemBindModel<Model>();
 
-public class Model implements ItemViewModel {
+public class Model implements ItemBindingModel {
   @Override
-  public void itemView(ItemView itemView) {
-    itemView.set(BR.name, R.layout.item_name);
+  public void onItemBind(ItemBinding itemBinding) {
+    itemBinding.set(BR.name, R.layout.item_name);
   }
 }
 ```
@@ -263,9 +272,9 @@ manage these lists yourself since you have to take into account all items when u
 ```java
 ObservableList<String> data = new ObservableArrayList<>();
 MergeObservableList<String> list = new MergeObservableList<>()
-    .insertItem("Header")
-    .insertList(data)
-    .insertItem("Footer");
+  .insertItem("Header")
+  .insertList(data)
+  .insertItem("Footer");
 
 data.addAll(Arrays.asList("One", "Two"));
 // list => ["Header", "One", "Two", "Footer"]

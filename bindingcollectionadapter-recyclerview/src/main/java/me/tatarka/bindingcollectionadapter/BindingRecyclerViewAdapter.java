@@ -5,43 +5,42 @@ import android.databinding.ObservableList;
 import android.databinding.OnRebindCallback;
 import android.databinding.ViewDataBinding;
 import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
 
 /**
- * A {@link RecyclerView.Adapter} that binds items to layouts using the given {@link ItemView} or
- * {@link ItemViewSelector}. If you give it an {@link ObservableList} it will also updated itself
- * based on changes to that list.
+ * A {@link RecyclerView.Adapter} that binds items to layouts using the given {@link ItemBinding}.
+ * If you give it an {@link ObservableList} it will also updated itself based on changes to that
+ * list.
  */
 public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<ViewHolder> implements BindingCollectionAdapter<T> {
     private static final Object DATA_INVALIDATION = new Object();
 
-    @NonNull
-    private final ItemViewArg<T> itemViewArg;
+    private ItemBinding<T> itemBinding;
     private final WeakReferenceOnListChangedCallback<T> callback = new WeakReferenceOnListChangedCallback<>(this);
     private List<T> items;
     private LayoutInflater inflater;
-    private ItemIds<T> itemIds;
+    private ItemIds<? super T> itemIds;
     private ViewHolderFactory viewHolderFactory;
     // Currently attached recyclerview, we don't have to listen to notifications if null.
     @Nullable
     private RecyclerView recyclerView;
+    
 
-    public BindingRecyclerViewAdapter(@NonNull ItemViewArg<T> arg) {
-        this.itemViewArg = arg;
+    @Override
+    public void setItemBinding(ItemBinding<T> itemBinding) {
+        this.itemBinding = itemBinding;
     }
 
     @Override
-    public ItemViewArg<T> getItemViewArg() {
-        return itemViewArg;
+    public ItemBinding<T> getItemBinding() {
+        return itemBinding;
     }
 
     @Override
@@ -74,12 +73,8 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<ViewHold
     }
 
     @Override
-    public void onBindBinding(ViewDataBinding binding, int bindingVariable, @LayoutRes int layoutRes, int position, T item) {
-        if (bindingVariable != ItemView.BINDING_VARIABLE_NONE) {
-            boolean result = binding.setVariable(bindingVariable, item);
-            if (!result) {
-                Utils.throwMissingVariable(binding, bindingVariable, layoutRes);
-            }
+    public void onBindBinding(ViewDataBinding binding, int variableId, @LayoutRes int layoutRes, int position, T item) {
+        if (itemBinding.bind(binding, item)) {
             binding.executePendingBindings();
         }
     }
@@ -138,8 +133,8 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<ViewHold
             return new BindingViewHolder(binding);
         }
     }
-
-    private static class BindingViewHolder extends RecyclerView.ViewHolder {
+    
+    private static class BindingViewHolder extends ViewHolder {
         public BindingViewHolder(ViewDataBinding binding) {
             super(binding.getRoot());
         }
@@ -149,7 +144,7 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<ViewHold
     public final void onBindViewHolder(ViewHolder viewHolder, int position) {
         T item = items.get(position);
         ViewDataBinding binding = DataBindingUtil.getBinding(viewHolder.itemView);
-        onBindBinding(binding, itemViewArg.bindingVariable(), itemViewArg.layoutRes(), position, item);
+        onBindBinding(binding, itemBinding.variableId(), itemBinding.layoutRes(), position, item);
     }
 
     @Override
@@ -177,17 +172,19 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<ViewHold
 
     @Override
     public int getItemViewType(int position) {
-        itemViewArg.select(position, items.get(position));
-        return itemViewArg.layoutRes();
+        itemBinding.onItemBind(position, items.get(position));
+        return itemBinding.layoutRes();
     }
 
     /**
      * Set the item id's for the items. If not null, this will set {@link
      * android.support.v7.widget.RecyclerView.Adapter#setHasStableIds(boolean)} to true.
      */
-    public void setItemIds(@Nullable ItemIds<T> itemIds) {
-        this.itemIds = itemIds;
-        setHasStableIds(itemIds != null);
+    public void setItemIds(@Nullable ItemIds<? super T> itemIds) {
+        if (this.itemIds != itemIds) {
+            this.itemIds = itemIds;
+            setHasStableIds(itemIds != null);
+        }
     }
 
     /**
@@ -207,11 +204,7 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<ViewHold
     public long getItemId(int position) {
         return itemIds == null ? position : itemIds.getItemId(position, items.get(position));
     }
-    
-    public interface ViewHolderFactory {
-        ViewHolder createViewHolder(ViewDataBinding binding);
-    }
-    
+
     private static class WeakReferenceOnListChangedCallback<T> extends ObservableList.OnListChangedCallback<ObservableList<T>> {
         final WeakReference<BindingRecyclerViewAdapter<T>> adapterRef;
 
@@ -274,5 +267,9 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<ViewHold
 
     public interface ItemIds<T> {
         long getItemId(int position, T item);
+    }
+    
+    public interface ViewHolderFactory {
+        RecyclerView.ViewHolder createViewHolder(ViewDataBinding binding);
     }
 }

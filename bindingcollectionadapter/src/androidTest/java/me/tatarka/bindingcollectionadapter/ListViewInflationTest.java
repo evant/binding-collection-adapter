@@ -37,9 +37,9 @@ public class ListViewInflationTest {
     @UiThreadTest
     public void listView() {
         List<String> items = Arrays.asList("one", "two", "three");
-        TestHelpers.ViewModel viewModel = new TestHelpers.ViewModel.Builder(items, ItemView.of(BR.item, R.layout.item)).build();
+        TestHelpers.ViewModel viewModel = new TestHelpers.ViewModel.Builder(items, ItemBinding.<String>of(me.tatarka.bindingcollectionadapter.BR.item, R.layout.item)).build();
         ViewDataBinding binding = DataBindingUtil.inflate(inflater, R.layout.list_view, null, false);
-        binding.setVariable(BR.viewModel, viewModel);
+        binding.setVariable(me.tatarka.bindingcollectionadapter.BR.viewModel, viewModel);
         binding.executePendingBindings();
 
         ListView listView = (ListView) binding.getRoot();
@@ -53,9 +53,9 @@ public class ListViewInflationTest {
     @UiThreadTest
     public void listViewSelector() {
         List<String> items = Arrays.asList("one", "two", "three");
-        TestHelpers.ViewModel viewModel = new TestHelpers.ViewModel.Builder(items, ItemView.of(BR.item, R.layout.item)).build();
+        TestHelpers.ViewModel viewModel = new TestHelpers.ViewModel.Builder(items, ItemBinding.<String>of(me.tatarka.bindingcollectionadapter.BR.item, R.layout.item)).build();
         ViewDataBinding binding = DataBindingUtil.inflate(inflater, R.layout.list_view_selector, null, false);
-        binding.setVariable(BR.viewModel, viewModel);
+        binding.setVariable(me.tatarka.bindingcollectionadapter.BR.viewModel, viewModel);
         binding.executePendingBindings();
 
         ListView listView = (ListView) binding.getRoot();
@@ -70,9 +70,9 @@ public class ListViewInflationTest {
     public void listViewItemIds() {
         List<String> items = Arrays.asList("one", "two", "three");
         List<Long> itemIds = Arrays.asList(1L, 2L, 3L);
-        TestHelpers.ViewModel viewModel = new TestHelpers.ViewModel.Builder(items, ItemView.of(BR.item, R.layout.item)).itemIds(itemIds).build();
+        TestHelpers.ViewModel viewModel = new TestHelpers.ViewModel.Builder(items, ItemBinding.<String>of(me.tatarka.bindingcollectionadapter.BR.item, R.layout.item)).itemIds(itemIds).build();
         ViewDataBinding binding = DataBindingUtil.inflate(inflater, R.layout.list_view_id, null, false);
-        binding.setVariable(BR.viewModel, viewModel);
+        binding.setVariable(me.tatarka.bindingcollectionadapter.BR.viewModel, viewModel);
         binding.executePendingBindings();
 
         ListView listView = (ListView) binding.getRoot();
@@ -87,9 +87,9 @@ public class ListViewInflationTest {
     public void listViewItemIsEnabled() {
         List<String> items = Arrays.asList("one", "two", "three");
         List<Boolean> itemIsEnabled = Arrays.asList(true, true, false);
-        TestHelpers.ViewModel viewModel = new TestHelpers.ViewModel.Builder(items, ItemView.of(BR.item, R.layout.item)).itemIsEnabled(itemIsEnabled).build();
+        TestHelpers.ViewModel viewModel = new TestHelpers.ViewModel.Builder(items, ItemBinding.<String>of(me.tatarka.bindingcollectionadapter.BR.item, R.layout.item)).itemIsEnabled(itemIsEnabled).build();
         ViewDataBinding binding = DataBindingUtil.inflate(inflater, R.layout.list_view_is_enabled, null, false);
-        binding.setVariable(BR.viewModel, viewModel);
+        binding.setVariable(me.tatarka.bindingcollectionadapter.BR.viewModel, viewModel);
         binding.executePendingBindings();
 
         ListView listView = (ListView) binding.getRoot();
@@ -103,25 +103,9 @@ public class ListViewInflationTest {
     @UiThreadTest
     public void listViewAdapter() {
         List<String> items = Arrays.asList("one", "two", "three");
-        TestHelpers.ViewModel viewModel = new TestHelpers.ViewModel.Builder(items, ItemView.of(BR.item, R.layout.item)).build();
+        TestHelpers.ViewModel viewModel = new TestHelpers.ViewModel.Builder(items, ItemBinding.<String>of(me.tatarka.bindingcollectionadapter.BR.item, R.layout.item)).build();
         ViewDataBinding binding = DataBindingUtil.inflate(inflater, R.layout.list_view_adapter, null, false);
-        binding.setVariable(BR.viewModel, viewModel);
-        binding.executePendingBindings();
-
-        ListView listView = (ListView) binding.getRoot();
-        @SuppressWarnings("unchecked")
-        BindingListViewAdapter<String> adapter = (BindingListViewAdapter<String>) listView.getAdapter();
-
-        assertThat(adapter).isInstanceOf(TestHelpers.MyBindingListViewAdapter.class);
-    }
-
-    @Test
-    @UiThreadTest
-    public void listViewAdapterFactory() {
-        List<String> items = Arrays.asList("one", "two", "three");
-        TestHelpers.ViewModel viewModel = new TestHelpers.ViewModel.Builder(items, ItemView.of(BR.item, R.layout.item)).build();
-        ViewDataBinding binding = DataBindingUtil.inflate(inflater, R.layout.list_view_factory_adapter, null, false);
-        binding.setVariable(BR.viewModel, viewModel);
+        binding.setVariable(me.tatarka.bindingcollectionadapter.BR.viewModel, viewModel);
         binding.executePendingBindings();
 
         ListView listView = (ListView) binding.getRoot();
@@ -136,9 +120,9 @@ public class ListViewInflationTest {
     public void listViewAdapterItemIds() {
         List<String> items = Arrays.asList("one", "two", "three");
         List<Long> itemIds = Arrays.asList(1L, 2L, 3L);
-        TestHelpers.ViewModel viewModel = new TestHelpers.ViewModel.Builder(items, ItemView.of(BR.item, R.layout.item)).itemIds(itemIds).build();
+        TestHelpers.ViewModel viewModel = new TestHelpers.ViewModel.Builder(items, ItemBinding.<String>of(me.tatarka.bindingcollectionadapter.BR.item, R.layout.item)).itemIds(itemIds).build();
         ViewDataBinding binding = DataBindingUtil.inflate(inflater, R.layout.list_view_adapter_id, null, false);
-        binding.setVariable(BR.viewModel, viewModel);
+        binding.setVariable(me.tatarka.bindingcollectionadapter.BR.viewModel, viewModel);
         binding.executePendingBindings();
 
         ListView listView = (ListView) binding.getRoot();

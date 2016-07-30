@@ -24,8 +24,9 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             app:itemIds="@{viewModel.itemIds}"
-            app:itemView="@{viewModel.singleItemView}"
-            app:items="@{viewModel.items}" />
+            app:itemBinding="@{viewModel.multipleItems}"
+            app:itemTypeCount="@{viewModel.multipleItems.itemTypeCount}"
+            app:items="@{viewModel.headerFooterItems}" />
 
         <LinearLayout
             style="?buttonBarStyle"
@@ -38,7 +39,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:onClickListener="@{listeners.addItem}"
+                android:onClickListener="@{() -> listeners.onAddItem()}"
                 android:text="Add Item" />
 
             <Button
@@ -47,7 +48,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:onClickListener="@{listeners.removeItem}"
+                android:onClickListener="@{() -> listeners.onRemoveItem()}"
                 android:text="Remove Item" />
         </LinearLayout>
     </LinearLayout>

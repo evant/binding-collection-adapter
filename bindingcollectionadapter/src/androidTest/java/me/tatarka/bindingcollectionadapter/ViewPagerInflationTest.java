@@ -37,7 +37,7 @@ public class ViewPagerInflationTest {
     @UiThreadTest
     public void testRecyclerView() {
         List<String> items = Arrays.asList("one", "two", "three");
-        TestHelpers.ViewModel viewModel = new TestHelpers.ViewModel.Builder(items, ItemView.of(BR.item, R.layout.item)).build();
+        TestHelpers.ViewModel viewModel = new TestHelpers.ViewModel.Builder(items, ItemBinding.<String>of(BR.item, R.layout.item)).build();
         ViewDataBinding binding = DataBindingUtil.inflate(inflater, R.layout.view_pager, null, false);
         binding.setVariable(BR.viewModel, viewModel);
         binding.executePendingBindings();
@@ -53,7 +53,7 @@ public class ViewPagerInflationTest {
     @UiThreadTest
     public void testRecyclerViewAdapter() {
         List<String> items = Arrays.asList("one", "two", "three");
-        TestHelpers.ViewModel viewModel = new TestHelpers.ViewModel.Builder(items, ItemView.of(BR.item, R.layout.item)).build();
+        TestHelpers.ViewModel viewModel = new TestHelpers.ViewModel.Builder(items, ItemBinding.<String>of(BR.item, R.layout.item)).build();
         ViewDataBinding binding = DataBindingUtil.inflate(inflater, R.layout.view_pager_adapter, null, false);
         binding.setVariable(BR.viewModel, viewModel);
         binding.executePendingBindings();

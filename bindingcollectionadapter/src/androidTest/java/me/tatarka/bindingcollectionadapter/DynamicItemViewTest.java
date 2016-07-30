@@ -12,7 +12,6 @@ import android.view.LayoutInflater;
 import android.widget.ListView;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,9 +21,9 @@ import java.util.List;
 
 import me.tatarka.bindingcollectionadapter.test.R;
 
+import static me.tatarka.bindingcollectionadapter.test.R.layout.item;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Ignore
 @RunWith(AndroidJUnit4.class)
 public class DynamicItemViewTest {
 
@@ -40,15 +39,15 @@ public class DynamicItemViewTest {
 
     @Test
     @UiThreadTest
-    public void dynamicItemViewInListView() {
+    public void dynamicItemBindingInListView() {
         List<String> items = Arrays.asList("one", "two", "three");
-        TestHelpers.ViewModel viewModel = new TestHelpers.ViewModel.Builder(items, ItemView.of(BR.item, R.layout.item)).build();
+        TestHelpers.ViewModel viewModel = new TestHelpers.ViewModel.Builder(items, ItemBinding.<String>of(BR.item, item)).build();
 
         ViewDataBinding binding = DataBindingUtil.inflate(inflater, R.layout.list_view, null, false);
         binding.setVariable(BR.viewModel, viewModel);
         binding.executePendingBindings();
 
-        TestHelpers.ViewModel newViewModel = new TestHelpers.ViewModel.Builder(items, ItemView.of(BR.item, R.layout.item2)).build();
+        TestHelpers.ViewModel newViewModel = new TestHelpers.ViewModel.Builder(items, ItemBinding.<String>of(BR.item, R.layout.item2)).build();
         binding.setVariable(BR.viewModel, newViewModel);
         binding.executePendingBindings();
 
@@ -56,15 +55,15 @@ public class DynamicItemViewTest {
         @SuppressWarnings("unchecked")
         BindingCollectionAdapter<String> adapter = (BindingCollectionAdapter<String>) listView.getAdapter();
 
-        assertThat(adapter.getItemViewArg().layoutRes()).isEqualTo(R.layout.item2);
+        assertThat(adapter.getItemBinding().layoutRes()).isEqualTo(R.layout.item2);
     }
 
     @Test
     @UiThreadTest
-    public void adapterDoesntChangeForSameItemViewInListView() {
+    public void adapterDoesntChangeForSameItemBindingInListView() {
         ObservableList<String> items = new ObservableArrayList<>();
         items.addAll(Arrays.asList("one", "two", "three"));
-        TestHelpers.ViewModel viewModel = new TestHelpers.ViewModel.Builder(items, ItemView.of(BR.item, R.layout.item)).build();
+        TestHelpers.ViewModel viewModel = new TestHelpers.ViewModel.Builder(items, ItemBinding.<String>of(BR.item, item)).build();
 
         ViewDataBinding binding = DataBindingUtil.inflate(inflater, R.layout.list_view, null, false);
         binding.setVariable(BR.viewModel, viewModel);
@@ -84,19 +83,19 @@ public class DynamicItemViewTest {
 
     @Test
     @UiThreadTest
-    public void adapterDoesntChangeForSameItemViewSelectorInListView() {
+    public void adapterDoesntChangeForSameItemBindingSelectorInListView() {
         ObservableList<String> items = new ObservableArrayList<>();
         items.addAll(Arrays.asList("one", "two", "three"));
-        ItemViewSelector<String> itemView = new BaseItemViewSelector<String>() {
+        ItemBinding<String> itemBinding = ItemBinding.of(new OnItemBind<String>() {
             @Override
-            public void select(ItemView itemView, int position, String item) {
-                itemView.set(BR.item, R.layout.item);
+            public void onItemBind(ItemBinding itemBinding, int position, String item) {
+                itemBinding.set(me.tatarka.bindingcollectionadapter.BR.item, position);
             }
-        };
-        TestHelpers.ViewModel viewModel = new TestHelpers.ViewModel.Builder(items, itemView).build();
+        });
+        TestHelpers.ViewModel viewModel = new TestHelpers.ViewModel.Builder(items, itemBinding).build();
 
         ViewDataBinding binding = DataBindingUtil.inflate(inflater, R.layout.list_view, null, false);
-        binding.setVariable(BR.viewModel, viewModel);
+        binding.setVariable(me.tatarka.bindingcollectionadapter.BR.viewModel, viewModel);
         binding.executePendingBindings();
 
         ListView listView1 = (ListView) binding.getRoot();
@@ -113,22 +112,22 @@ public class DynamicItemViewTest {
 
     @Test
     @UiThreadTest
-    public void dynamicItemViewInViewPager() {
+    public void dynamicItemBindingInViewPager() {
         List<String> items = Arrays.asList("one", "two", "three");
-        TestHelpers.ViewModel viewModel = new TestHelpers.ViewModel.Builder(items, ItemView.of(BR.item, R.layout.item)).build();
+        TestHelpers.ViewModel viewModel = new TestHelpers.ViewModel.Builder(items, ItemBinding.<String>of(me.tatarka.bindingcollectionadapter.BR.item, item)).build();
 
         ViewDataBinding binding = DataBindingUtil.inflate(inflater, R.layout.view_pager_adapter, null, false);
-        binding.setVariable(BR.viewModel, viewModel);
+        binding.setVariable(me.tatarka.bindingcollectionadapter.BR.viewModel, viewModel);
         binding.executePendingBindings();
 
-        TestHelpers.ViewModel newViewModel = new TestHelpers.ViewModel.Builder(items, ItemView.of(BR.item, R.layout.item2)).build();
-        binding.setVariable(BR.viewModel, newViewModel);
+        TestHelpers.ViewModel newViewModel = new TestHelpers.ViewModel.Builder(items, ItemBinding.<String>of(me.tatarka.bindingcollectionadapter.BR.item, R.layout.item2)).build();
+        binding.setVariable(me.tatarka.bindingcollectionadapter.BR.viewModel, newViewModel);
         binding.executePendingBindings();
 
         ViewPager viewPager = (ViewPager) binding.getRoot();
         @SuppressWarnings("unchecked")
         BindingCollectionAdapter<String> adapter = (BindingCollectionAdapter<String>) viewPager.getAdapter();
 
-        assertThat(adapter.getItemViewArg().layoutRes()).isEqualTo(R.layout.item2);
+        assertThat(adapter.getItemBinding().layoutRes()).isEqualTo(R.layout.item2);
     }
 }

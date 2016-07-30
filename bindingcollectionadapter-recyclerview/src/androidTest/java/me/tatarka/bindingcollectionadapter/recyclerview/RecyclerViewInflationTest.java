@@ -8,6 +8,7 @@ import android.support.test.runner.AndroidJUnit4;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 
+import me.tatarka.bindingcollectionadapter.ItemBinding;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -17,7 +18,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import me.tatarka.bindingcollectionadapter.BindingRecyclerViewAdapter;
-import me.tatarka.bindingcollectionadapter.ItemView;
 import me.tatarka.bindingcollectionadapter.recyclerview.test.R;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -39,7 +39,7 @@ public class RecyclerViewInflationTest {
     @UiThreadTest
     public void recyclerView() {
         List<String> items = Arrays.asList("one", "two", "three");
-        TestHelpers.ViewModel viewModel = new TestHelpers.ViewModel(items, ItemView.of(BR.item, R.layout.item));
+        TestHelpers.ViewModel viewModel = new TestHelpers.ViewModel(items, ItemBinding.<String>of(BR.item, R.layout.item));
         ViewDataBinding binding = DataBindingUtil.inflate(inflater, R.layout.recycler_view, null, false);
         binding.setVariable(BR.viewModel, viewModel);
         binding.executePendingBindings();
@@ -55,7 +55,7 @@ public class RecyclerViewInflationTest {
     @UiThreadTest
     public void recyclerViewAdapter() {
         List<String> items = Arrays.asList("one", "two", "three");
-        TestHelpers.ViewModel viewModel = new TestHelpers.ViewModel(items, ItemView.of(BR.item, R.layout.item));
+        TestHelpers.ViewModel viewModel = new TestHelpers.ViewModel(items, ItemBinding.<String>of(BR.item, R.layout.item));
         ViewDataBinding binding = DataBindingUtil.inflate(inflater, R.layout.recycler_view_adapter, null, false);
         binding.setVariable(BR.viewModel, viewModel);
         binding.executePendingBindings();

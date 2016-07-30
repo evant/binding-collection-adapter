@@ -70,7 +70,7 @@ class Utils {
     }
 
     /**
-     * Attempt to get the name by using reflection on the generated BR class. Unfortunately, we 
+     * Attempt to get the name by using reflection on the generated BR class. Unfortunately, we
      * don't know BR's package name so this may fail if it's not the same as the apps package name.
      */
     private static String getBindingVariableByBR(Context context, int bindingVariable) throws Exception {
@@ -100,11 +100,11 @@ class Utils {
      * Constructs a binding adapter class from it's class name using reflection.
      */
     @SuppressWarnings("unchecked")
-    static <T, A extends BindingCollectionAdapter<T>> A createClass(String className, ItemViewArg<T> arg) {
+    static <T, A extends BindingCollectionAdapter<T>> A createClass(Class<? extends BindingCollectionAdapter> adapterClass, ItemBinding<T> itemBinding) {
         try {
-            return (A) Class.forName(className).getConstructor(ItemViewArg.class).newInstance(arg);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            return (A) adapterClass.getConstructor(ItemBinding.class).newInstance(itemBinding);
+        } catch (Exception e1) {
+            throw new RuntimeException(e1);
         }
     }
 }

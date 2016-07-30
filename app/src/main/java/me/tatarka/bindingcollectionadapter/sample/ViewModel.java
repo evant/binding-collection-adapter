@@ -2,18 +2,37 @@ package me.tatarka.bindingcollectionadapter.sample;
 
 import android.databinding.ObservableArrayList;
 import android.databinding.ObservableList;
+import android.databinding.ViewDataBinding;
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import me.tatarka.bindingcollectionadapter.BindingListViewAdapter;
+import me.tatarka.bindingcollectionadapter.BindingRecyclerViewAdapter;
 import me.tatarka.bindingcollectionadapter.BindingViewPagerAdapter;
-import me.tatarka.bindingcollectionadapter.ItemView;
-import me.tatarka.bindingcollectionadapter.ItemViewSelector;
+import me.tatarka.bindingcollectionadapter.ItemBinding;
+import me.tatarka.bindingcollectionadapter.collections.MergeObservableList;
+import me.tatarka.bindingcollectionadapter.itembindings.OnItemBindClass;
 
 /**
  * Created by evan on 5/31/15.
  */
 public class ViewModel {
     private final boolean checkable;
+
     public final ObservableList<ItemViewModel> items = new ObservableArrayList<>();
+
+    /**
+     * Items merged with a header on top and footer on bottom.
+     */
+    public final MergeObservableList<Object> headerFooterItems = new MergeObservableList<>()
+            .insertItem("Header")
+            .insertList(items)
+            .insertItem("Footer");
+
+    /**
+     * Custom adapter that logs calls.
+     */
+    public final LoggingRecyclerViewAdapter<Object> adapter = new LoggingRecyclerViewAdapter<>();
 
     public ViewModel(boolean checkable) {
         this.checkable = checkable;
@@ -23,38 +42,37 @@ public class ViewModel {
     }
 
     /**
-     * ItemView of a single type
+     * Binds a homogeneous list of items to a layout.
      */
-    public final ItemView singleItemView = ItemView.of(BR.item, R.layout.item);
+    public final ItemBinding<ItemViewModel> singleItem = ItemBinding.of(BR.item, R.layout.item);
 
     /**
-     * ItemView of drop down type
+     * Binds multiple items types to different layouts based on class. This could have also be
+     * written manually as
+     * <pre>{@code
+     * public final OnItemBind<Object> multipleItems = new OnItemBind<Object>() {
+     *     @Override
+     *     public void onItemBind(ItemBinding itemBinding, int position, Object item) {
+     *         if (String.class.equals(item.getClass())) {
+     *             itemBinding.set(BR.item, R.layout.item_header_footer);
+     *         } else if (ItemViewModel.class.equals(item.getClass())) {
+     *             itemBinding.set(BR.item, R.layout.item);
+     *         }
+     *     }
+     * };
+     * }</pre>
      */
-    public final ItemView dropDownItemView = ItemView.of(BR.item, R.layout.item_dropdown);
+    public final OnItemBindClass<Object> multipleItems = new OnItemBindClass<>()
+            .map(String.class, BR.item, R.layout.item_header_footer)
+            .map(ItemViewModel.class, BR.item, R.layout.item);
 
     /**
-     * ItemView of multiple types based on the data.
+     * Define stable item ids. These are just based on position because the items happen to not
+     * every move around.
      */
-    public final ItemViewSelector<ItemViewModel> multipleItemViews = new ItemViewSelector<ItemViewModel>() {
+    public final BindingListViewAdapter.ItemIds<Object> itemIds = new BindingListViewAdapter.ItemIds<Object>() {
         @Override
-        public void select(ItemView itemView, int position, ItemViewModel item) {
-            itemView.setBindingVariable(BR.item)
-                    .setLayoutRes(position == 0 ? R.layout.item_header : R.layout.item);
-        }
-
-        // Only needed if you are using in a ListView
-        @Override
-        public int viewTypeCount() {
-            return 2;
-        }
-    };
-
-    /**
-     * Define stable item ids
-     */
-    public final BindingListViewAdapter.ItemIds<ItemViewModel> itemIds = new BindingListViewAdapter.ItemIds<ItemViewModel>() {
-        @Override
-        public long getItemId(int position, ItemViewModel item) {
+        public long getItemId(int position, Object item) {
             return position;
         }
     };
@@ -68,6 +86,22 @@ public class ViewModel {
             return "Item " + (item.getIndex() + 1);
         }
     };
+
+    /**
+     * Custom view holders for RecyclerView
+     */
+    public final BindingRecyclerViewAdapter.ViewHolderFactory viewHolder = new BindingRecyclerViewAdapter.ViewHolderFactory() {
+        @Override
+        public RecyclerView.ViewHolder createViewHolder(ViewDataBinding binding) {
+            return new MyAwesomeViewHolder(binding.getRoot());
+        }
+    };
+    
+    private static class MyAwesomeViewHolder extends RecyclerView.ViewHolder {
+        public MyAwesomeViewHolder(View itemView) {
+            super(itemView);
+        }
+    }
 
     public void addItem() {
         items.add(new ItemViewModel(items.size(), checkable));

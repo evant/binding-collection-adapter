@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
-    
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <data>
-        
-        <variable 
-            name="viewModel" 
+
+        <import type="me.tatarka.bindingcollectionadapter.TestHelpers" />
+
+        <variable
+            name="viewModel"
             type="me.tatarka.bindingcollectionadapter.TestHelpers.ViewModel" />
     </data>
 
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:items="@{viewModel.items}"
-        app:itemView="@{viewModel.itemView}"
-        app:adapter='@{"me.tatarka.bindingcollectionadapter.TestHelpers$MyBindingListViewAdapter"}' />
+        app:itemBinding="@{viewModel.itemBinding}"
+        app:adapter="@{viewModel.listAdapter}"
+        app:items="@{viewModel.items}" />
 </layout>

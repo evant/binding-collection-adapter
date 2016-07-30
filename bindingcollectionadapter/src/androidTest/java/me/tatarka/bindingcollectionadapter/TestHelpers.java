@@ -9,21 +9,20 @@ import android.widget.AdapterView;
 import java.util.Iterator;
 import java.util.List;
 
-import me.tatarka.bindingcollectionadapter.factories.BindingAdapterViewFactory;
-import me.tatarka.bindingcollectionadapter.factories.BindingViewPagerAdapterFactory;
-
 public class TestHelpers {
 
     public static class ViewModel {
         public final List<String> items;
-        public final ItemViewArg<?> itemView;
-        public final ItemViewSelector<String> itemViewSelector;
+        public final ItemBinding<String> itemBinding;
         public final BindingListViewAdapter.ItemIds<String> itemIds;
         public final BindingListViewAdapter.ItemIsEnabled<String> itemIsEnabled;
 
-        private ViewModel(List<String> items, ItemViewArg<?> itemViewArg, final List<Long> itemIds, final List<Boolean> itemIsEnabled) {
+        public final BindingListViewAdapter<String> listAdapter = new MyBindingListViewAdapter<>(1);
+        public final BindingViewPagerAdapter<String> pagerAdapter = new MyBindingViewPagerAdapter<>();
+
+        private ViewModel(List<String> items, ItemBinding<String> itemBinding, final List<Long> itemIds, final List<Boolean> itemIsEnabled) {
             this.items = items;
-            this.itemView = itemViewArg;
+            this.itemBinding = itemBinding;
             if (itemIds != null) {
                 this.itemIds = new BindingListViewAdapter.ItemIds<String>() {
                     @Override
@@ -44,29 +43,17 @@ public class TestHelpers {
             } else {
                 this.itemIsEnabled = null;
             }
-            this.itemViewSelector = new BaseItemViewSelector<String>() {
-                @Override
-                public void select(ItemView itemView, int position, String item) {
-                    itemView.set(itemView.bindingVariable(), itemView.layoutRes());
-                }
-            };
         }
 
         public static class Builder {
             private List<String> items;
-            private ItemViewArg<?> itemViewArg;
+            private ItemBinding<String> itemBinding;
             private List<Long> itemIds;
             private List<Boolean> itemIsEnabled;
 
-            public Builder(List<String> items, ItemView itemView) {
+            public Builder(List<String> items, ItemBinding<String> itemBinding) {
                 this.items = items;
-                this.itemViewArg = ItemViewArg.of(itemView);
-            }
-
-            public Builder(List<String> items, ItemViewSelector<?> itemView) {
-                this.items = items;
-                this.itemViewArg = ItemViewArg.of(itemView);
-
+                this.itemBinding = itemBinding;
             }
 
             public Builder itemIds(List<Long> itemIds) {
@@ -80,35 +67,18 @@ public class TestHelpers {
             }
 
             public ViewModel build() {
-                return new ViewModel(items, itemViewArg, itemIds, itemIsEnabled);
+                return new ViewModel(items, itemBinding, itemIds, itemIsEnabled);
             }
         }
     }
 
-    public static final BindingAdapterViewFactory MY_LIST_VIEW_ADAPTER_FACTORY = new BindingAdapterViewFactory() {
-        @Override
-        public <T> BindingListViewAdapter<T> create(AdapterView adapterView, ItemViewArg<T> arg) {
-            return new MyBindingListViewAdapter<>(arg);
-        }
-    };
-
     public static class MyBindingListViewAdapter<T> extends BindingListViewAdapter<T> {
-        public MyBindingListViewAdapter(@NonNull ItemViewArg<T> arg) {
-            super(arg);
+        public MyBindingListViewAdapter(int itemTypeCount) {
+            super(itemTypeCount);
         }
     }
 
-    public static final BindingViewPagerAdapterFactory MY_VIEW_PAGER_ADAPTER_FACTORY = new BindingViewPagerAdapterFactory() {
-        @Override
-        public <T> BindingViewPagerAdapter<T> create(ViewPager viewPager, ItemViewArg<T> arg) {
-            return new MyBindingViewPagerAdapter<>(arg);
-        }
-    };
-
     public static class MyBindingViewPagerAdapter<T> extends BindingViewPagerAdapter<T> {
-        public MyBindingViewPagerAdapter(@NonNull ItemViewArg<T> arg) {
-            super(arg);
-        }
     }
 
     public static <T> Iterable<T> iterable(final BindingListViewAdapter<T> adapter) {

@@ -49,15 +49,25 @@ public class FragmentViewPagerView extends Fragment {
         @Override
         public void onAddItem() {
             super.onAddItem();
-            PagerAdapter adapter = binding.pager.getAdapter();
-            binding.tabs.setTabsFromPagerAdapter(adapter);
+            updateTabs();
         }
 
         @Override
         public void onRemoveItem() {
             super.onRemoveItem();
+            updateTabs();
+        }
+        
+        private void updateTabs() {
+            // We can't use tabs.setTabsFromPagerAdapter() because it will reset the current item to 0.
+            binding.tabs.removeAllTabs();
             PagerAdapter adapter = binding.pager.getAdapter();
-            binding.tabs.setTabsFromPagerAdapter(adapter);
+            for (int i = 0; i < adapter.getCount() ; i++) {
+                binding.tabs.addTab(
+                        binding.tabs.newTab().setText(adapter.getPageTitle(i)),
+                        i == binding.pager.getCurrentItem()
+                ); 
+            }
         }
     }
 }

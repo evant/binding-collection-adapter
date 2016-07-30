@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import me.tatarka.bindingcollectionadapter.sample.databinding.ListViewBinding;
 import me.tatarka.bindingcollectionadapter.sample.databinding.SpinnerViewBinding;
 
 /**

@@ -4,6 +4,8 @@
 
     <data>
 
+        <import type="me.tatarka.bindingcollectionadapter.sample.R" />
+
         <variable
             name="viewModel"
             type="me.tatarka.bindingcollectionadapter.sample.ViewModel" />
@@ -27,9 +29,9 @@
                 android:id="@+id/list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:dropDownItemView="@{viewModel.dropDownItemView}"
+                app:itemDropDownLayout="@{R.layout.item_dropdown}"
                 app:itemIds="@{viewModel.itemIds}"
-                app:itemView="@{viewModel.singleItemView}"
+                app:itemBinding="@{viewModel.singleItem}"
                 app:items="@{viewModel.items}" />
         </FrameLayout>
 
@@ -44,7 +46,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:onClickListener="@{listeners.addItem}"
+                android:onClickListener="@{() -> listeners.onAddItem()}"
                 android:text="Add Item" />
 
             <Button
@@ -53,7 +55,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:onClickListener="@{listeners.removeItem}"
+                android:onClickListener="@{() -> listeners.onRemoveItem()}"
                 android:text="Remove Item" />
         </LinearLayout>
     </LinearLayout>

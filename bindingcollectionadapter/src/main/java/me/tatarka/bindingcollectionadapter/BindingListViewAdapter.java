@@ -15,41 +15,45 @@ import java.lang.ref.WeakReference;
 import java.util.List;
 
 /**
- * A {@link BaseAdapter} that binds items to layouts using the given {@link ItemView} or {@link
- * ItemViewSelector}. If you give it an {@link ObservableList} it will also updated itself based on
- * changes to that list.
+ * A {@link BaseAdapter} that binds items to layouts using the given {@link ItemBinding} If you give
+ * it an {@link ObservableList} it will also updated itself based on changes to that list.
  */
 public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCollectionAdapter<T> {
-    @NonNull
-    private final ItemViewArg<T> itemViewArg;
-    @Nullable
-    private ItemView dropDownItemView;
+    private final int itemTypeCount;
+    private ItemBinding<T> itemBinding;
+    @LayoutRes
+    private int dropDownItemLayout;
     @NonNull
     private final WeakReferenceOnListChangedCallback<T> callback = new WeakReferenceOnListChangedCallback<>(this);
     private List<T> items;
     private int[] layouts;
     private LayoutInflater inflater;
-    private ItemIds<T> itemIds;
-    private ItemIsEnabled<T> itemIsEnabled;
+    private ItemIds<? super T> itemIds;
+    private ItemIsEnabled<? super T> itemIsEnabled;
 
     /**
-     * Constructs a new instance with the given {@link ItemViewArg}.
+     * Constructs a new instance with the given item count.
      */
-    public BindingListViewAdapter(@NonNull ItemViewArg<T> arg) {
-        this.itemViewArg = arg;
+    public BindingListViewAdapter(int itemTypeCount) {
+        this.itemTypeCount = itemTypeCount;
     }
 
     @Override
-    public ItemViewArg<T> getItemViewArg() {
-        return itemViewArg;
+    public void setItemBinding(ItemBinding<T> itemBinding) {
+        this.itemBinding = itemBinding;
+    }
+
+    @Override
+    public ItemBinding<T> getItemBinding() {
+        return itemBinding;
     }
 
     /**
-     * Set a different {@link ItemView} to show for {@link #getDropDownView(int, View, ViewGroup)}.
-     * If this is null, it will default to {@link #getView(int, View, ViewGroup)}.
+     * Set a different layout to show for {@link #getDropDownView(int, View, ViewGroup)}. If this is
+     * null, it will default to {@link #getView(int, View, ViewGroup)}.
      */
-    public void setDropDownItemView(@Nullable ItemView itemView) {
-        this.dropDownItemView = itemView;
+    public void setDropDownItemLayout(@LayoutRes int layoutRes) {
+        dropDownItemLayout = layoutRes;
     }
 
     @Override
@@ -67,7 +71,6 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
         notifyDataSetChanged();
     }
 
-
     @Override
     public T getAdapterItem(int position) {
         return items.get(position);
@@ -79,12 +82,8 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
     }
 
     @Override
-    public void onBindBinding(ViewDataBinding binding, int bindingVariable, @LayoutRes int layoutRes, int position, T item) {
-        if (bindingVariable != ItemView.BINDING_VARIABLE_NONE) {
-            boolean result = binding.setVariable(bindingVariable, item);
-            if (!result) {
-                Utils.throwMissingVariable(binding, bindingVariable, layoutRes);
-            }
+    public void onBindBinding(ViewDataBinding binding, int variableId, @LayoutRes int layoutRes, int position, T item) {
+        if (itemBinding.bind(binding, item)) {
             binding.executePendingBindings();
         }
     }
@@ -93,14 +92,14 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
      * Set the item id's for the items. If not null, this will make {@link #hasStableIds()} return
      * true.
      */
-    public void setItemIds(@Nullable ItemIds<T> itemIds) {
+    public void setItemIds(@Nullable ItemIds<? super T> itemIds) {
         this.itemIds = itemIds;
     }
 
     /**
      * Sets {@link #isEnabled(int)} for the items.
      */
-    public void setItemIsEnabled(@Nullable ItemIsEnabled<T> itemIsEnabled) {
+    public void setItemIsEnabled(@Nullable ItemIsEnabled<? super T> itemIsEnabled) {
         this.itemIsEnabled = itemIsEnabled;
     }
 
@@ -141,7 +140,7 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
         }
 
         T item = items.get(position);
-        onBindBinding(binding, itemViewArg.bindingVariable(), layoutRes, position, item);
+        onBindBinding(binding, itemBinding.variableId(), layoutRes, position, item);
 
         return binding.getRoot();
     }
@@ -152,10 +151,10 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
             inflater = LayoutInflater.from(parent.getContext());
         }
 
-        if (dropDownItemView == null) {
+        if (dropDownItemLayout == 0) {
             return super.getDropDownView(position, convertView, parent);
         } else {
-            int layoutRes = dropDownItemView.layoutRes();
+            int layoutRes = dropDownItemLayout;
             ViewDataBinding binding;
             if (convertView == null) {
                 binding = onCreateBinding(inflater, layoutRes, parent);
@@ -164,7 +163,7 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
             }
 
             T item = items.get(position);
-            onBindBinding(binding, dropDownItemView.bindingVariable(), layoutRes, position, item);
+            onBindBinding(binding, itemBinding.variableId(), layoutRes, position, item);
 
             return binding.getRoot();
         }
@@ -174,18 +173,18 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
     public int getItemViewType(int position) {
         ensureLayoutsInit();
         T item = items.get(position);
-        itemViewArg.select(position, item);
+        itemBinding.onItemBind(position, item);
 
         int firstEmpty = 0;
         for (int i = 0; i < layouts.length; i++) {
-            if (itemViewArg.layoutRes() == layouts[i]) {
+            if (itemBinding.layoutRes() == layouts[i]) {
                 return i;
             }
             if (layouts[i] == 0) {
                 firstEmpty = i;
             }
         }
-        layouts[firstEmpty] = itemViewArg.layoutRes();
+        layouts[firstEmpty] = itemBinding.layoutRes();
         return firstEmpty;
     }
 
@@ -200,7 +199,7 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
     }
 
     private int ensureLayoutsInit() {
-        int count = itemViewArg.viewTypeCount();
+        int count = itemTypeCount;
         if (layouts == null) {
             layouts = new int[count];
         }
