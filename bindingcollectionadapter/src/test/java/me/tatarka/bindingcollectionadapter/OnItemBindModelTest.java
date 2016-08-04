@@ -17,16 +17,16 @@ public class OnItemBindModelTest {
 
     @Test
     public void selectsBasedOnItem() {
-        OnItemBindModel<ItemBindingModel> selector = new OnItemBindModel<>();
-        ItemView itemBinding = new ItemView();
+        OnItemBindModel<ItemBindingModel> onItemBind = new OnItemBindModel<>();
+        ItemBinding<ItemBindingModel> itemBinding = ItemBinding.of(onItemBind);
         List<ItemBindingModel> list = Arrays.asList(new ItemBindingModelOne(), new ItemBindingModelTwo());
-        selector.select(itemBinding, 0, list.get(0));
+        itemBinding.onItemBind(0, list.get(0));
         
-        assertThat(itemBinding.bindingVariable()).isEqualTo(0);
+        assertThat(itemBinding.variableId()).isEqualTo(0);
         assertThat(itemBinding.layoutRes()).isEqualTo(1);
         
-        selector.select(itemBinding, 1, list.get(1));
-        assertThat(itemBinding.bindingVariable()).isEqualTo(2);
+        itemBinding.onItemBind(1, list.get(1));
+        assertThat(itemBinding.variableId()).isEqualTo(2);
         assertThat(itemBinding.layoutRes()).isEqualTo(3);
     }
 

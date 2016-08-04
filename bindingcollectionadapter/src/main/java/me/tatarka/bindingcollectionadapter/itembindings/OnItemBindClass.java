@@ -44,11 +44,14 @@ public class OnItemBindClass<T> implements OnItemBind<T> {
 
     @Override
     public void onItemBind(ItemBinding itemBinding, int position, T item) {
-        int[] values = itemBindingMap.get(item.getClass());
-        if (values != null) {
-            itemBinding.set(values[0], values[1]);
-        } else {
-            throw new IllegalArgumentException("Missing class for item " + item);
+        for (int i = 0; i < itemBindingMap.size(); i++) {
+            Class<? extends T> key = itemBindingMap.keyAt(i);
+            if (key.isInstance(item)) {
+                int[] values = itemBindingMap.valueAt(i);
+                itemBinding.set(values[0], values[1]);
+                return;
+            }
         }
+        throw new IllegalArgumentException("Missing class for item " + item);
     }
 }
