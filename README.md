@@ -117,7 +117,7 @@ public interface OnItemClickListener {
 }
 
 OnItemClickListener listener = ...;
-ItemBinding<Item> itemBinding = ItemBinding.of(BR.item, R.layout.item)
+ItemBinding<Item> itemBinding = ItemBinding.<Item>of(BR.item, R.layout.item)
     .bindExtra(BR.listener, listener);
 ```
 
