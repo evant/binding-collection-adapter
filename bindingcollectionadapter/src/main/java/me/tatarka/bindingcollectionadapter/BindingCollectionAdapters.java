@@ -3,6 +3,7 @@ package me.tatarka.bindingcollectionadapter;
 import android.databinding.BindingAdapter;
 import android.databinding.BindingConversion;
 import android.support.annotation.LayoutRes;
+import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.widget.AdapterView;
 
@@ -41,8 +42,8 @@ public class BindingCollectionAdapters {
 
     // ViewPager
     @SuppressWarnings("unchecked")
-    @BindingAdapter(value = {"itemBinding", "items", "adapter", "pageTitles"}, requireAll = false)
-    public static <T> void setAdapter(ViewPager viewPager, ItemBinding<T> itemBinding, List items, BindingViewPagerAdapter<T> adapter, BindingViewPagerAdapter.PageTitles<T> pageTitles) {
+    @BindingAdapter(value = {"itemBinding", "items", "adapter", "pageTitles", "tabLayout"}, requireAll = false)
+    public static <T> void setAdapter(ViewPager viewPager, ItemBinding<T> itemBinding, List items, BindingViewPagerAdapter<T> adapter, BindingViewPagerAdapter.PageTitles<T> pageTitles , BindingTabLayout tabLayout) {
         if (itemBinding == null) {
             throw new IllegalArgumentException("onItemBind must not be null");
         }
@@ -60,6 +61,9 @@ public class BindingCollectionAdapters {
 
         if (oldAdapter != adapter) {
             viewPager.setAdapter(adapter);
+        }
+        if (tabLayout != null) {
+            tabLayout.setupWithViewPager(viewPager);
         }
     }
     
