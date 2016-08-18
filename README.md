@@ -303,11 +303,11 @@ DiffObservableList<Item> list = new DiffObservableList(new DiffObservableList.Ca
     }
 });
 
-list.update(Arrays.asList(new Item("1", ""a"), new Item("2", "b1")));
+list.update(Arrays.asList(new Item("1", "a"), new Item("2", "b1")));
 list.update(Arrays.asList(new Item("2", "b2"), new Item("3", "c"), new Item("4", "d"));
 ```
 
-With larges lists diffing might be too costly to run on the main thread. In that case you can
+With large lists diffing might be too costly to run on the main thread. In that case you can
 calculate the diff on a background thread.
 
 ```java
