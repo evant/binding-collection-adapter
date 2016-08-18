@@ -6,8 +6,8 @@ Easy way to bind collections to listviews and recyclerviews with the new [Androi
 ## Download
 
 ```groovy
-compile 'me.tatarka.bindingcollectionadapter:bindingcollectionadapter:2.0.0-beta1'
-compile 'me.tatarka.bindingcollectionadapter:bindingcollectionadapter-recyclerview:2.0.0-beta1'
+compile 'me.tatarka.bindingcollectionadapter:bindingcollectionadapter:2.0.0-beta2'
+compile 'me.tatarka.bindingcollectionadapter:bindingcollectionadapter-recyclerview:2.0.0-beta2'
 ```
 requires at least android gradle plugin `1.5.0`.
 
@@ -280,6 +280,44 @@ data.addAll(Arrays.asList("One", "Two"));
 // list => ["Header", "One", "Two", "Footer"]
 data.remove("One");
 // list => ["Header", "Two", "Footer"]
+```
+
+## DiffObservableList
+
+Say you want to update list 'a' to list 'b' and you don't want to calculate what has changed between
+the two manually.
+
+`DiffObservableList` builds off of [DiffUtil](https://developer.android.com/reference/android/support/v7/util/DiffUtil.html)
+to automatically calculate the changes between two lists.
+
+```java
+DiffObservableList<Item> list = new DiffObservableList(new DiffObservableList.Callback<Item>() {
+    @Override
+    public boolean areItemsTheSame(Item oldItem, Item newItem) {
+        return oldItem.id.equals(newItem.id);
+    }
+
+    @Override
+    public boolean areContentsTheSame(Item oldItem, Item newItem) {
+        return oldItem.value.equals(newItem.value);
+    }
+});
+
+list.update(Arrays.asList(new Item("1", ""a"), new Item("2", "b1")));
+list.update(Arrays.asList(new Item("2", "b2"), new Item("3", "c"), new Item("4", "d"));
+```
+
+With larges lists diffing might be too costly to run on the main thread. In that case you can
+calculate the diff on a background thread.
+
+```java
+DiffObservableList<Item> list = new DiffObservableList(...);
+
+// On background thread:
+DiffUtil.DiffResult diffResult = list.calculateDiff(newItems);
+
+// On main thread:
+list.update(newItems, diffResult);
 ```
 
 ## Known Issues

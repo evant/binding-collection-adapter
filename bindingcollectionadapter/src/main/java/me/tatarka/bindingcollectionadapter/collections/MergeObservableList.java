@@ -174,7 +174,7 @@ public class MergeObservableList<T> extends AbstractList<T> implements Observabl
         return size;
     }
 
-    private class ListChangeCallback extends OnListChangedCallback {
+    class ListChangeCallback extends OnListChangedCallback {
 
         @Override
         public void onChanged(ObservableList sender) {
