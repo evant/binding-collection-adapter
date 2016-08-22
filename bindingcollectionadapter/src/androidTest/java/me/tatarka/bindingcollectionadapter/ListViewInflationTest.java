@@ -6,7 +6,9 @@ import android.support.test.annotation.UiThreadTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.ListView;
+import android.widget.WrapperListAdapter;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -131,5 +133,26 @@ public class ListViewInflationTest {
 
         assertThat(adapter).isInstanceOf(TestHelpers.MyBindingListViewAdapter.class);
         assertThat(TestHelpers.iterableIds(adapter)).containsExactlyElementsOf(itemIds);
+    }
+
+    @Test
+    @UiThreadTest
+    public void listViewHeaderAdapter() {
+        List<String> items = Arrays.asList("one", "two", "three");
+        TestHelpers.ViewModel viewModel = new TestHelpers.ViewModel.Builder(items, ItemBinding.<String>of(me.tatarka.bindingcollectionadapter.BR.item, R.layout.item)).build();
+        ViewDataBinding binding = DataBindingUtil.inflate(inflater, R.layout.list_view, null, false);
+        binding.setVariable(me.tatarka.bindingcollectionadapter.BR.viewModel, viewModel);
+        binding.executePendingBindings();
+        // addHeaderView must be called after the adapter is set.
+        ((ListView) binding.getRoot()).addHeaderView(new View(binding.getRoot().getContext()));
+        // Trigger rebind to exercise the case when the adapter it wrapped in a HeaderListViewAdapter
+        binding.setVariable(me.tatarka.bindingcollectionadapter.BR.viewModel, viewModel);
+        binding.executePendingBindings();
+
+        ListView listView = (ListView) binding.getRoot();
+        @SuppressWarnings("unchecked")
+        BindingListViewAdapter<String> adapter = (BindingListViewAdapter<String>) ((WrapperListAdapter) listView.getAdapter()).getWrappedAdapter();
+
+        assertThat(TestHelpers.iterable(adapter)).containsExactlyElementsOf(items);
     }
 }

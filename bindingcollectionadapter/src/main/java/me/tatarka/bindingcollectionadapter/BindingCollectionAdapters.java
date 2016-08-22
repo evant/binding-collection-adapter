@@ -4,8 +4,12 @@ import android.databinding.BindingAdapter;
 import android.databinding.BindingConversion;
 import android.support.annotation.LayoutRes;
 import android.support.v4.view.ViewPager;
+import android.widget.Adapter;
 import android.widget.AdapterView;
+import android.widget.WrapperListAdapter;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -19,7 +23,7 @@ public class BindingCollectionAdapters {
         if (itemBinding == null) {
             throw new IllegalArgumentException("onItemBind must not be null");
         }
-        BindingListViewAdapter<T> oldAdapter = (BindingListViewAdapter<T>) adapterView.getAdapter();
+        BindingListViewAdapter<T> oldAdapter = (BindingListViewAdapter<T>) unwrapAdapter(adapterView.getAdapter());
         if (adapter == null) {
             if (oldAdapter == null) {
                 int count = itemTypeCount != null ? itemTypeCount : 1;
@@ -37,6 +41,16 @@ public class BindingCollectionAdapters {
         if (oldAdapter != adapter) {
             adapterView.setAdapter(adapter);
         }
+    }
+
+    /**
+     * Unwraps any {@link android.widget.WrapperListAdapter}, commonly {@link
+     * android.widget.HeaderViewListAdapter}.
+     */
+    private static Adapter unwrapAdapter(Adapter adapter) {
+        return adapter instanceof WrapperListAdapter
+                ? unwrapAdapter(((WrapperListAdapter) adapter).getWrappedAdapter())
+                : adapter;
     }
 
     // ViewPager
@@ -62,7 +76,7 @@ public class BindingCollectionAdapters {
             viewPager.setAdapter(adapter);
         }
     }
-    
+
     @BindingConversion
     public static <T> ItemBinding<T> toItemBinding(OnItemBind<T> onItemBind) {
         return ItemBinding.of(onItemBind);
