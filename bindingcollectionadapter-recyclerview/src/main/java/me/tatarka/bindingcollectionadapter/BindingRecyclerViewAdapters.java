@@ -14,7 +14,7 @@ public class BindingRecyclerViewAdapters {
     @BindingAdapter(value = {"itemBinding", "items", "adapter", "itemIds", "viewHolder"}, requireAll = false)
     public static <T> void setAdapter(RecyclerView recyclerView, ItemBinding<T> itemBinding, List<T> items, BindingRecyclerViewAdapter<T> adapter, BindingRecyclerViewAdapter.ItemIds<? super T> itemIds, BindingRecyclerViewAdapter.ViewHolderFactory viewHolderFactory) {
         if (itemBinding == null) {
-            throw new IllegalArgumentException("onItemBind must not be null");
+            throw new IllegalArgumentException("itemBinding must not be null");
         }
         BindingRecyclerViewAdapter oldAdapter = (BindingRecyclerViewAdapter) recyclerView.getAdapter();
         if (adapter == null) {
