@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import me.tatarka.bindingcollectionadapter.BindingFragmentViewPagerAdapter;
 import me.tatarka.bindingcollectionadapter.sample.databinding.ListViewBinding;
 
 /**
@@ -19,8 +20,14 @@ public class FragmentListView extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRetainInstance(true);
-        viewModel = new ViewModel(true);
+//        setRetainInstance(true);
+        Bundle bundle = getArguments();
+        if((bundle != null)&&(bundle.getSerializable(BindingFragmentViewPagerAdapter.KEY_ARG_INPUT) != null)){
+            viewModel = new ViewModel(true,(Integer) bundle.getSerializable(BindingFragmentViewPagerAdapter.KEY_ARG_INPUT));
+        }
+        else{
+            viewModel = new ViewModel(true);
+        }
     }
 
     @Nullable

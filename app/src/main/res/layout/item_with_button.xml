@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="itemViewModel" type="me.tatarka.bindingcollectionadapter.sample.fragmentitem.childfragment.viewmodel.ItemViewModel" />
+
+        <import type="android.view.View" />
+    </data>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/item"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?selectableItemBackground"
+            android:longClickable="@{itemViewModel.checkable}"
+            android:onLongClickListener="@{itemViewModel.listener.onLongClickListener}"
+            android:onClickListener="@{itemViewModel.listener.onClickListener}"
+            android:tag="@{itemViewModel}"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/TextAppearance.AppCompat.Body1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="16dp"
+                android:text="@{itemViewModel.bookName}"
+                tools:text="Item 1" />
+            <ImageButton
+                android:id="@+id/ibt_add"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center_vertical"
+                android:background="@null"
+                android:src="@drawable/ic_add"
+                android:clickable="true"
+                android:onClickListener="@{itemViewModel.listener.onClickListener}"
+                android:tag="@{itemViewModel}"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_margin="5dp"
+                android:gravity="center"
+                android:minEms="3"
+                android:textSize="12dp"
+                android:textColor="#000000"
+                android:text="@{String.valueOf(itemViewModel.bookCount)}"/>
+            <ImageButton
+                android:id="@+id/ibt_reduce"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center_vertical"
+                android:background="@null"
+                android:src="@drawable/ic_reduce"
+                android:clickable="true"
+                android:onClickListener="@{itemViewModel.listener.onClickListener}"
+                android:tag="@{itemViewModel}"/>
+
+            <ImageView
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_action_check"
+                android:visibility="@{itemViewModel.checked ? View.VISIBLE : View.INVISIBLE}" />
+        </LinearLayout>
+    </LinearLayout>
+</layout>
