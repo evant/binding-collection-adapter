@@ -13,11 +13,15 @@ import me.tatarka.bindingcollectionadapter.ItemViewSelector;
  */
 public class ViewModel {
     private final boolean checkable;
+
     public final ObservableList<ItemViewModel> items = new ObservableArrayList<>();
 
     public ViewModel(boolean checkable) {
+        this(checkable,3);
+    }
+    public ViewModel(boolean checkable,int initialItemCount) {
         this.checkable = checkable;
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < initialItemCount; i++) {
             items.add(new ItemViewModel(i, checkable));
         }
     }
@@ -25,12 +29,12 @@ public class ViewModel {
     /**
      * ItemView of a single type
      */
-    public final ItemView singleItemView = ItemView.of(BR.item, R.layout.item);
+    public final ItemView singleItemView = ItemView.of(me.tatarka.bindingcollectionadapter.sample.BR.item, R.layout.item);
 
     /**
      * ItemView of drop down type
      */
-    public final ItemView dropDownItemView = ItemView.of(BR.item, R.layout.item_dropdown);
+    public final ItemView dropDownItemView = ItemView.of(me.tatarka.bindingcollectionadapter.sample.BR.item, R.layout.item_dropdown);
 
     /**
      * ItemView of multiple types based on the data.
@@ -38,7 +42,7 @@ public class ViewModel {
     public final ItemViewSelector<ItemViewModel> multipleItemViews = new ItemViewSelector<ItemViewModel>() {
         @Override
         public void select(ItemView itemView, int position, ItemViewModel item) {
-            itemView.setBindingVariable(BR.item)
+            itemView.setBindingVariable(me.tatarka.bindingcollectionadapter.sample.BR.item)
                     .setLayoutRes(position == 0 ? R.layout.item_header : R.layout.item);
         }
 

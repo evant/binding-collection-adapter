@@ -16,4 +16,7 @@
     <item
         android:id="@+id/action_spinner"
         android:title="Spinner" />
+    <item
+        android:id="@+id/action_fragment"
+        android:title="Fragment" />
 </menu>

@@ -2,13 +2,16 @@ package me.tatarka.bindingcollectionadapter;
 
 import android.databinding.BindingAdapter;
 import android.databinding.BindingConversion;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.widget.AdapterView;
 
 import java.util.List;
 
 import me.tatarka.bindingcollectionadapter.factories.BindingAdapterViewFactory;
+import me.tatarka.bindingcollectionadapter.factories.BindingFragmentViewPagerAdapterFactory;
 import me.tatarka.bindingcollectionadapter.factories.BindingViewPagerAdapterFactory;
+import me.tatarka.bindingcollectionadapter.viewmodels.FragmentItemViewModel;
 
 /**
  * All the BindingAdapters so that you can set your adapters and items directly in your layout.
@@ -62,6 +65,24 @@ public class BindingCollectionAdapters {
         }
     }
 
+    @SuppressWarnings("unchecked")
+    @BindingAdapter(value = { "fragItems","fragManager","adapter"}, requireAll = false)
+    public static <T extends FragmentItemViewModel> void setAdapter(ViewPager viewPager, List<T> fragItems, FragmentManager fm,BindingFragmentViewPagerAdapterFactory factory) {
+        if (fm == null) {
+            throw new IllegalArgumentException("fragment manager must not be null");
+        }
+        if (factory == null) {
+            factory = BindingFragmentViewPagerAdapterFactory.DEFAULT;
+        }
+        BindingFragmentViewPagerAdapter<T> adapter = (BindingFragmentViewPagerAdapter<T>) viewPager.getAdapter();
+        if (adapter == null) {
+            adapter = factory.create(viewPager, fm);
+            adapter.setItems(fragItems);
+            viewPager.setAdapter(adapter);
+        } else {
+            adapter.setItems(fragItems);
+        }
+    }
     @BindingConversion
     public static ItemViewArg toItemViewArg(ItemView itemView) {
         return ItemViewArg.of(itemView);

@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import me.tatarka.bindingcollectionadapter.sample.databinding.ActivityMainBinding;
+import me.tatarka.bindingcollectionadapter.sample.fragmentitem.FragmentFragmentViewPagerView;
 
 public class MainActivity extends AppCompatActivity {
     private static final String STATE_TITLE = "title";
@@ -44,10 +45,13 @@ public class MainActivity extends AppCompatActivity {
                         fragment = new FragmentRecyclerView();
                         break;
                     case R.id.action_viewpager:
-                        fragment = new FragmentViewPagerView();
+                        fragment = new me.tatarka.bindingcollectionadapter.sample.FragmentViewPagerView();
                         break;
                     case R.id.action_spinner:
                         fragment = new FragmentSpinnerView();
+                        break;
+                    case R.id.action_fragment :
+                        fragment = new FragmentFragmentViewPagerView();
                         break;
                     default:
                         binding.drawerLayout.closeDrawers();
