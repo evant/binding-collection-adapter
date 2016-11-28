@@ -31,43 +31,9 @@ public class FragmentViewPagerView extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = ViewpagerViewBinding.inflate(inflater, container, false);
         binding.setViewModel(viewModel);
-        binding.setListeners(new PagerListeners(viewModel));
+        binding.setListeners(new Listeners(viewModel));
         binding.executePendingBindings();
-
-        PagerAdapter adapter = binding.pager.getAdapter();
-        binding.tabs.setTabsFromPagerAdapter(adapter);
-        binding.tabs.setOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(binding.pager));
-        binding.pager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(binding.tabs));
         return binding.getRoot();
     }
 
-    private class PagerListeners extends Listeners {
-        public PagerListeners(ViewModel viewModel) {
-            super(viewModel);
-        }
-
-        @Override
-        public void onAddItem() {
-            super.onAddItem();
-            updateTabs();
-        }
-
-        @Override
-        public void onRemoveItem() {
-            super.onRemoveItem();
-            updateTabs();
-        }
-        
-        private void updateTabs() {
-            // We can't use tabs.setTabsFromPagerAdapter() because it will reset the current item to 0.
-            binding.tabs.removeAllTabs();
-            PagerAdapter adapter = binding.pager.getAdapter();
-            for (int i = 0; i < adapter.getCount() ; i++) {
-                binding.tabs.addTab(
-                        binding.tabs.newTab().setText(adapter.getPageTitle(i)),
-                        i == binding.pager.getCurrentItem()
-                ); 
-            }
-        }
-    }
 }

@@ -18,7 +18,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <android.support.design.widget.TabLayout
+        <me.tatarka.bindingcollectionadapter.BindingTabLayout
             android:id="@+id/tabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -31,7 +31,8 @@
             android:layout_weight="1"
             app:itemBinding="@{viewModel.singleItem}"
             app:items="@{viewModel.items}"
-            app:pageTitles="@{viewModel.pageTitles}" />
+            app:pageTitles="@{viewModel.pageTitles}"
+            app:tabLayout="@{tabs}"/>
 
         <LinearLayout
             style="?buttonBarStyle"

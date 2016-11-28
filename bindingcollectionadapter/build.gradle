@@ -49,6 +49,7 @@ dependencies {
     androidTestCompile 'com.android.support.test:rules:0.5'
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2'
     androidTestCompile 'com.squareup.assertj:assertj-android:1.1.0'
+    compile 'com.android.support:design:23.1.1'
 }
 
 apply from: '../publish.gradle'
