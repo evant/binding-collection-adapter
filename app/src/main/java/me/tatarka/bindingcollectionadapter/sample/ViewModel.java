@@ -6,12 +6,14 @@ import android.databinding.ViewDataBinding;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import me.tatarka.bindingcollectionadapter.BindingListViewAdapter;
-import me.tatarka.bindingcollectionadapter.BindingRecyclerViewAdapter;
-import me.tatarka.bindingcollectionadapter.BindingViewPagerAdapter;
-import me.tatarka.bindingcollectionadapter.ItemBinding;
-import me.tatarka.bindingcollectionadapter.collections.MergeObservableList;
-import me.tatarka.bindingcollectionadapter.itembindings.OnItemBindClass;
+import me.tatarka.bindingcollectionadapter2.BindingListViewAdapter;
+import me.tatarka.bindingcollectionadapter2.BindingRecyclerViewAdapter;
+import me.tatarka.bindingcollectionadapter2.BindingViewPagerAdapter;
+import me.tatarka.bindingcollectionadapter2.ItemBinding;
+import me.tatarka.bindingcollectionadapter2.collections.MergeObservableList;
+import me.tatarka.bindingcollectionadapter2.itembindings.OnItemBindClass;
+import me.tatarka.bindingcollectionadapter.sample.BR;
+import me.tatarka.bindingcollectionadapter.sample.R;
 
 /**
  * Created by evan on 5/31/15.

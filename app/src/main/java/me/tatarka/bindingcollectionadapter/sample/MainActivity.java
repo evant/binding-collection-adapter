@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import me.tatarka.bindingcollectionadapter.sample.databinding.ActivityMainBinding;
+import me.tatarka.bindingcollectionadapter.sample.R;
 
 public class MainActivity extends AppCompatActivity {
     private static final String STATE_TITLE = "title";

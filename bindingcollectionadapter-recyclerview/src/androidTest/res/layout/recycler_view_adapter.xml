@@ -3,11 +3,11 @@
     
     <data>
         
-        <import type="me.tatarka.bindingcollectionadapter.LayoutManagers" />
+        <import type="me.tatarka.bindingcollectionadapter2.LayoutManagers" />
         
         <variable 
             name="viewModel" 
-            type="me.tatarka.bindingcollectionadapter.recyclerview.TestHelpers.ViewModel" />
+            type="me.tatarka.bindingcollectionadapter2.recyclerview.TestHelpers.ViewModel" />
     </data>
 
     <android.support.v7.widget.RecyclerView

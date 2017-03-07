@@ -4,11 +4,11 @@
 
     <data>
 
-        <import type="me.tatarka.bindingcollectionadapter.TestHelpers" />
+        <import type="me.tatarka.bindingcollectionadapter2.TestHelpers" />
 
         <variable
             name="viewModel"
-            type="me.tatarka.bindingcollectionadapter.TestHelpers.ViewModel" />
+            type="me.tatarka.bindingcollectionadapter2.TestHelpers.ViewModel" />
     </data>
 
     <ListView

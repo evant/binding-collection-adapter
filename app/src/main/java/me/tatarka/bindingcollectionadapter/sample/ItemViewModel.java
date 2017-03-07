@@ -4,6 +4,8 @@ import android.databinding.BaseObservable;
 import android.databinding.Bindable;
 import android.view.View;
 
+import me.tatarka.bindingcollectionadapter.sample.BR;
+
 /**
  * Created by evan on 6/14/15.
  */
