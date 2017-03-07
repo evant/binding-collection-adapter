@@ -2,11 +2,15 @@ package collections;
 
 import android.databinding.ListChangeRegistry;
 import android.databinding.ObservableList;
+import android.support.annotation.MainThread;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.util.ListUpdateCallback;
 
 import java.util.AbstractList;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * An {@link ObservableList} that uses {@link DiffUtil} to calculate and dispatch it's change
@@ -14,7 +18,8 @@ import java.util.List;
  */
 public class DiffObservableList<T> extends AbstractList<T> implements ObservableList<T> {
 
-    private List<T> list;
+    private final Object LIST_LOCK = new Object();
+    private List<T> list = Collections.emptyList();
     private final Callback<T> callback;
     private final boolean detectMoves;
     private final ListChangeRegistry listeners = new ListChangeRegistry();
@@ -48,10 +53,18 @@ public class DiffObservableList<T> extends AbstractList<T> implements Observable
      * list into the given one.
      */
     public DiffUtil.DiffResult calculateDiff(final List<T> newItems) {
+        final ArrayList<T> frozenList;
+        synchronized (LIST_LOCK) {
+            frozenList = new ArrayList<>(list);
+        }
+        return doCalculateDiff(frozenList, newItems);
+    }
+
+    private DiffUtil.DiffResult doCalculateDiff(final List<T> oldItems, final List<T> newItems) {
         return DiffUtil.calculateDiff(new DiffUtil.Callback() {
             @Override
             public int getOldListSize() {
-                return size();
+                return oldItems.size();
             }
 
             @Override
@@ -61,14 +74,14 @@ public class DiffObservableList<T> extends AbstractList<T> implements Observable
 
             @Override
             public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-                T oldItem = get(oldItemPosition);
+                T oldItem = oldItems.get(oldItemPosition);
                 T newItem = newItems.get(newItemPosition);
                 return callback.areItemsTheSame(oldItem, newItem);
             }
 
             @Override
             public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-                T oldItem = get(oldItemPosition);
+                T oldItem = oldItems.get(oldItemPosition);
                 T newItem = newItems.get(newItemPosition);
                 return callback.areContentsTheSame(oldItem, newItem);
             }
@@ -82,8 +95,11 @@ public class DiffObservableList<T> extends AbstractList<T> implements Observable
      * @param newItems   The items to set this list to.
      * @param diffResult The diff results to dispatch change notifications.
      */
+    @MainThread
     public void update(List<T> newItems, DiffUtil.DiffResult diffResult) {
-        list = newItems;
+        synchronized (LIST_LOCK) {
+            list = newItems;
+        }
         diffResult.dispatchUpdatesTo(listCallback);
     }
 
@@ -97,10 +113,13 @@ public class DiffObservableList<T> extends AbstractList<T> implements Observable
      *
      * @param newItems The items to set this list to.
      */
+    @MainThread
     public void update(List<T> newItems) {
-        DiffUtil.DiffResult diffResult = calculateDiff(newItems);
-        update(newItems, diffResult);
+        DiffUtil.DiffResult diffResult = doCalculateDiff(list, newItems);
+        list = newItems;
+        diffResult.dispatchUpdatesTo(listCallback);
     }
+
 
     @Override
     public void addOnListChangedCallback(OnListChangedCallback<? extends ObservableList<T>> listener) {
@@ -114,15 +133,12 @@ public class DiffObservableList<T> extends AbstractList<T> implements Observable
 
     @Override
     public T get(int i) {
-        if (list == null) {
-            throw new IndexOutOfBoundsException("Index: " + i + ", Size: 0");
-        }
         return list.get(i);
     }
 
     @Override
     public int size() {
-        return list != null ? list.size() : 0;
+        return list.size();
     }
 
     /**
