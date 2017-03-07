@@ -1,19 +1,19 @@
 # BindingCollectionAdapter
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/me.tatarka.bindingcollectionadapter/bindingcollectionadapter/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/me.tatarka.bindingcollectionadapter/bindingcollectionadapter)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/me.tatarka.bindingcollectionadapter2/bindingcollectionadapter/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/me.tatarka.bindingcollectionadapter2/bindingcollectionadapter)
 
 Easy way to bind collections to listviews and recyclerviews with the new [Android Data Binding framework](https://developer.android.com/tools/data-binding/guide.html).
 
 ## Download
 
 ```groovy
-compile 'me.tatarka.bindingcollectionadapter:bindingcollectionadapter:2.0.0-beta2'
-compile 'me.tatarka.bindingcollectionadapter:bindingcollectionadapter-recyclerview:2.0.0-beta2'
+compile 'me.tatarka.bindingcollectionadapter2:bindingcollectionadapter:2.0.0'
+compile 'me.tatarka.bindingcollectionadapter2:bindingcollectionadapter-recyclerview:2.0.0'
 ```
 requires at least android gradle plugin `1.5.0`.
 
 ## Usage
 
-You need to provide your items and an `ItemView` to bind to the layout. You should use an
+You need to provide your items and an `ItemBinding` to bind to the layout. You should use an
 `ObservableList` to automatically update your view based on list changes. However, you can
 use any `List` if you don't need that functionality.
 
@@ -24,7 +24,7 @@ public class ViewModel {
 }
 ```
 
-Then bind it to the collection view with `app:items` and `app:itemView`. There are also some
+Then bind it to the collection view with `app:items` and `app:itemBinding`. There are also some
 convenience factories to attach a `LayoutManager` to a `RecyclerView` with `app:layoutManager`.
 
 ```xml
@@ -66,7 +66,7 @@ convenience factories to attach a `LayoutManager` to a `RecyclerView` with `app:
 ```
 
 In your item layout, the collection item will be bound to the variable with the
-name you passed into the `ItemView`.
+name you passed into the `ItemBinding`.
 
 ```xml
 <!-- item.xml -->
@@ -93,7 +93,7 @@ it to the view with `app:itemBinding`.
 public final OnItemBind<String> onItemBind = new OnItemBind<String>() {
   @Override
   public void onItemBind(ItemBinding itemBinding, int position, String item) {
-    itemView.set(BR.item, position == 0 ? R.layout.item_header : R.layout.item);
+    itemBinding.set(BR.item, position == 0 ? R.layout.item_header : R.layout.item);
   }
 };
 ```
@@ -227,7 +227,7 @@ public class MyRecyclerViewAdapter<T> extends BindingRecyclerViewAdapter<T> {
   android:layout_height="match_parent"
   app:layoutManager="@{LayoutManagers.linear()}"
   app:items="@{viewModel.items}"
-  app:itemView="@{viewModel.itemView}"
+  app:itemBinding="@{viewModel.itemBinding}"
   app:adapter="@{viewModel.adapter}"/>
 ```
 
