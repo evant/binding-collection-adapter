@@ -1,3 +1,17 @@
+### 2.0.1
+- Fixed package of DiffObservableList
+
+### 2.0.0
+- Changed package name to not conflict with 1.x
+- Fixed potential synchronization issue in DiffObservableList
+
+### 2.0.0-beta3
+- Fixed crash when binding a ListView with headers and/or footers.
+
+### 2.0.0-beta2
+-  Added DiffObservableList. This wraps DiffUtil allowing you to easily update your list with a new
+version and it will automatically find the change updates for animation.
+
 ### 2.0.0-beta1
 This is a complete refactor to simplify and improve naming of components.
 - Replaced `ItemView`, `ItemViewSelector`, and `ItemViewArg` with `ItemBinding` and `OnItemBind`.
