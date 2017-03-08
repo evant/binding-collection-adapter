@@ -8,7 +8,7 @@ import org.junit.runners.JUnit4;
 
 import java.util.Arrays;
 
-import collections.DiffObservableList;
+import me.tatarka.bindingcollectionadapter2.collections.DiffObservableList;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;

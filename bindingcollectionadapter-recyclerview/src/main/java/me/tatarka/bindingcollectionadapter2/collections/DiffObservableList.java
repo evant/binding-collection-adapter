@@ -1,4 +1,4 @@
-package collections;
+package me.tatarka.bindingcollectionadapter2.collections;
 
 import android.databinding.ListChangeRegistry;
 import android.databinding.ObservableList;
@@ -10,7 +10,6 @@ import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * An {@link ObservableList} that uses {@link DiffUtil} to calculate and dispatch it's change
