@@ -86,7 +86,7 @@ name you passed into the `ItemBinding`.
 
 ## Multiple View Types
 
-You can use multiple view types by using a `ItemViewSelector` instead. You can still bind
+You can use multiple view types by using `OnItemBind` instead. You can still bind
 it to the view with `app:itemBinding`.
 
 ```java
@@ -98,7 +98,7 @@ public final OnItemBind<String> onItemBind = new OnItemBind<String>() {
 };
 ```
 
-If you are binding to a ListView, you should also provide the number of item types you have with
+If you are binding to a ListView, you must also provide the number of item types you have with
 `app:itemTypeCount="@{2}`.
 
 Note that `onItemBind` is called many times so you should not do any complex processing in there. If 
