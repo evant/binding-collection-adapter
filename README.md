@@ -33,7 +33,7 @@ convenience factories to attach a `LayoutManager` to a `RecyclerView` with `app:
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
       <import type="com.example.R" />
-      <import type="me.tatarka.bindingcollectionadapter.LayoutManagers" />
+      <import type="me.tatarka.bindingcollectionadapter2.LayoutManagers" />
       <variable name="viewModel" type="com.example.ViewModel"/>
     </data>
 
