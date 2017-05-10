@@ -89,6 +89,14 @@ public final class ItemBinding<T> {
         return this;
     }
 
+    public final ItemBinding<T> clearExtra() {
+        if (extraBindings != null) {
+            extraBindings.clear();
+            extraBindings = null;
+        }
+        return this;
+    }
+
     /**
      * Returns the current variable id of this binding.
      */
