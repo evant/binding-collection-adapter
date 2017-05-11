@@ -71,26 +71,8 @@ public class OnItemBindClass<T> implements OnItemBind<T> {
 
     @Override
     public void onItemBind(ItemBinding itemBinding, int position, T item) {
-        itemBinding.clearExtras();
-        if (itemExtraBindingMap != null && !itemExtraBindingMap.isEmpty()) {
-            for (int i = 0; i < itemExtraBindingMap.size(); i++) {
-                Class<? extends T> key = itemExtraBindingMap.keyAt(i);
-                if (key.isInstance(item)) {
-                    SparseArray<Object> extraBindings = itemExtraBindingMap.valueAt(i);
-                    if (extraBindings != null) {
-                        for (int j = 0, size = extraBindings.size(); j < size; j++) {
-                            int variableId = extraBindings.keyAt(j);
-                            Object value = extraBindings.valueAt(j);
-                            if (value instanceof PropertyResolver) {
-                                value = ((PropertyResolver<T>) value).resolve(item);
-                            }
-                            itemBinding.bindExtra(variableId, value);
-                        }
-                    }
-                    break;
-                }
-            }
-        }
+        onItemBindExtra(itemBinding, position, item);
+
         for (int i = 0; i < itemBindingMap.size(); i++) {
             Class<? extends T> key = itemBindingMap.keyAt(i);
             if (key.isInstance(item)) {
@@ -100,6 +82,36 @@ public class OnItemBindClass<T> implements OnItemBind<T> {
             }
         }
         throw new IllegalArgumentException("Missing class for item " + item);
+    }
+
+    public void onItemBindExtra(ItemBinding itemBinding, int position, T item) {
+        SparseArray<Object> extraBindings = null;
+        if (itemExtraBindingMap != null && !itemExtraBindingMap.isEmpty()) {
+            for (int i = 0; i < itemExtraBindingMap.size(); i++) {
+                Class<? extends T> key = itemExtraBindingMap.keyAt(i);
+                if (key.isInstance(item) && extraBindings == null) {
+                    extraBindings = itemExtraBindingMap.valueAt(i);
+                } else {
+                    SparseArray<Object> toRemove = itemExtraBindingMap.valueAt(i);
+                    if (toRemove != null && toRemove.size() > 0) {
+                        for (int j = 0, size = toRemove.size(); j < size; j++) {
+                            int variableId = toRemove.keyAt(j);
+                            itemBinding.removeExtra(variableId);
+                        }
+                    }
+                }
+            }
+            if (extraBindings != null) {
+                for (int j = 0, size = extraBindings.size(); j < size; j++) {
+                    int variableId = extraBindings.keyAt(j);
+                    Object value = extraBindings.valueAt(j);
+                    if (value instanceof OnItemBindClass.PropertyResolver) {
+                        value = ((PropertyResolver<T>) value).resolve(item);
+                    }
+                    itemBinding.bindExtra(variableId, value);
+                }
+            }
+        }
     }
 
     public interface PropertyResolver<T> {

@@ -89,12 +89,24 @@ public final class ItemBinding<T> {
         return this;
     }
 
+    /**
+     * Clear extra variables.
+     */
     public final ItemBinding<T> clearExtras() {
         if (extraBindings != null) {
             extraBindings.clear();
             extraBindings = null;
         }
         return this;
+    }
+
+    /**
+     * Remove an extra variable with the given variable id.
+     */
+    public void removeExtra(int variableId) {
+        if (extraBindings != null) {
+            extraBindings.remove(variableId);
+        }
     }
 
     /**
