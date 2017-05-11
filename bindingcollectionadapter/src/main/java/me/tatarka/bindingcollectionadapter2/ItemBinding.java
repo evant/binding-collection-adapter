@@ -89,7 +89,7 @@ public final class ItemBinding<T> {
         return this;
     }
 
-    public final ItemBinding<T> clearExtra() {
+    public final ItemBinding<T> clearExtras() {
         if (extraBindings != null) {
             extraBindings.clear();
             extraBindings = null;

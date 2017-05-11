@@ -27,8 +27,7 @@ public class OnItemBindClass<T> implements OnItemBind<T> {
     }
 
     /**
-     * Maps the given class to the given variableId and layout. This is an exact match, no
-     * inheritance it taken into account.
+     * Maps the given class to the given variableId and layout. This is assignment-compatible match with the object represented by Class.
      */
     public OnItemBindClass<T> map(@NonNull Class<? extends T> itemClass, int variableId, @LayoutRes int layoutRes) {
         itemBindingMap.put(itemClass, new int[]{variableId, layoutRes});
@@ -36,8 +35,7 @@ public class OnItemBindClass<T> implements OnItemBind<T> {
     }
 
     /**
-     * Maps the given class to the given variableId and extra variable. This is an exact match, no
-     * inheritance it taken into account.
+     * Maps the given class to the given variableId and extra variable. This is assignment-compatible match with the object represented by Class.
      */
     public OnItemBindClass<T> mapExtra(@NonNull Class<? extends T> itemClass, int variableId, Object value) {
         SparseArray<Object> extra = null;
@@ -56,8 +54,7 @@ public class OnItemBindClass<T> implements OnItemBind<T> {
     }
 
     /**
-     * Maps the given class to the given variableId and extra variable. This is an exact match, no
-     * inheritance it taken into account.
+     * Maps the given class to the given variableId and extra variable. This is assignment-compatible match with the object represented by Class.
      */
     public <E extends T> OnItemBindClass<T> mapExtra(@NonNull Class<E> itemClass, int variableId, PropertyResolver<E> value) {
         return mapExtra(itemClass, variableId, (Object) value);
@@ -74,7 +71,7 @@ public class OnItemBindClass<T> implements OnItemBind<T> {
 
     @Override
     public void onItemBind(ItemBinding itemBinding, int position, T item) {
-        itemBinding.clearExtra();
+        itemBinding.clearExtras();
         if (itemExtraBindingMap != null && !itemExtraBindingMap.isEmpty()) {
             for (int i = 0; i < itemExtraBindingMap.size(); i++) {
                 Class<? extends T> key = itemExtraBindingMap.keyAt(i);
