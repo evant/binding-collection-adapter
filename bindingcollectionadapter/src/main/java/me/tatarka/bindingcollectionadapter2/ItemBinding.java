@@ -18,6 +18,7 @@ public final class ItemBinding<T> {
      */
     public static final int VAR_NONE = 0;
     private static final int VAR_INVALID = -1;
+    private static final int LAYOUT_NONE = 0;
 
     /**
      * Constructs an instance with the given variable id and layout.
@@ -41,29 +42,54 @@ public final class ItemBinding<T> {
 
     private final OnItemBind<T> onItemBind;
     private int variableId;
+    private int defaultVariableId = VAR_INVALID;
     @LayoutRes
     private int layoutRes;
+    @LayoutRes
+    private int defaultLayoutRes = LAYOUT_NONE;
     private SparseArray<Object> extraBindings;
+    private SparseArray<Object> tempExtraBindings;
 
     private ItemBinding(OnItemBind<T> onItemBind) {
         this.onItemBind = onItemBind;
     }
 
     /**
+     * Set the variable id and layout.
+     */
+    public final ItemBinding<T> set(int variableId, @LayoutRes int layoutRes) {
+        return variableId(variableId).layoutRes(layoutRes);
+    }
+
+    /**
+     * Set the variable id.
+     */
+    public final ItemBinding<T> variableId(int variableId) {
+        this.variableId = defaultVariableId = variableId;
+        return this;
+    }
+
+    /**
+     * Set the layout.
+     */
+    public final ItemBinding<T> layoutRes(@LayoutRes int layoutRes) {
+        this.layoutRes = defaultLayoutRes = layoutRes;
+        return this;
+    }
+
+    /**
      * Set the variable id and layout. This is normally called in {@link
      * OnItemBind#onItemBind(ItemBinding, int, Object)}.
      */
-    public final ItemBinding<T> set(int variableId, @LayoutRes int layoutRes) {
-        this.variableId = variableId;
-        this.layoutRes = layoutRes;
-        return this;
+    public final ItemBinding<T> reset(int variableId, @LayoutRes int layoutRes) {
+        return resetVariableId(variableId).resetLayoutRes(layoutRes);
     }
 
     /**
      * Set the variable id. This is normally called in {@link OnItemBind#onItemBind(ItemBinding,
      * int, Object)}.
      */
-    public final ItemBinding<T> variableId(int variableId) {
+    public final ItemBinding<T> resetVariableId(int variableId) {
         this.variableId = variableId;
         return this;
     }
@@ -72,7 +98,7 @@ public final class ItemBinding<T> {
      * Set the layout. This is normally called in {@link OnItemBind#onItemBind(ItemBinding, int,
      * Object)}.
      */
-    public final ItemBinding<T> layoutRes(@LayoutRes int layoutRes) {
+    public final ItemBinding<T> resetLayoutRes(@LayoutRes int layoutRes) {
         this.layoutRes = layoutRes;
         return this;
     }
@@ -90,23 +116,33 @@ public final class ItemBinding<T> {
     }
 
     /**
+     * Bind an extra variable to the view with the given variable id. This is normally
+     * called in {@link OnItemBind#onItemBind(ItemBinding, int, Object)}.
+     */
+    public final ItemBinding<T> rebindExtra(int variableId, Object value) {
+        if (tempExtraBindings == null) {
+            tempExtraBindings = new SparseArray<>(1);
+        }
+        tempExtraBindings.put(variableId, value);
+        return this;
+    }
+
+    /**
      * Clear extra variables.
      */
     public final ItemBinding<T> clearExtras() {
-        if (extraBindings != null) {
-            extraBindings.clear();
-            extraBindings = null;
-        }
+        extraBindings = null;
         return this;
     }
 
     /**
      * Remove an extra variable with the given variable id.
      */
-    public void removeExtra(int variableId) {
+    public ItemBinding<T> removeExtra(int variableId) {
         if (extraBindings != null) {
             extraBindings.remove(variableId);
         }
+        return this;
     }
 
     /**
@@ -140,13 +176,14 @@ public final class ItemBinding<T> {
      */
     public void onItemBind(int position, T item) {
         if (onItemBind != null) {
-            variableId = VAR_INVALID;
-            layoutRes = 0;
+            variableId = defaultVariableId;
+            layoutRes = defaultLayoutRes;
+            tempExtraBindings = null;
             onItemBind.onItemBind(this, position, item);
             if (variableId == VAR_INVALID) {
                 throw new IllegalStateException("variableId not set in onItemBind()");
             }
-            if (layoutRes == 0) {
+            if (layoutRes == LAYOUT_NONE) {
                 throw new IllegalStateException("layoutRes not set in onItemBind()");
             }
         }
@@ -166,6 +203,12 @@ public final class ItemBinding<T> {
         if (!result) {
             Utils.throwMissingVariable(binding, variableId, layoutRes);
         }
+        applyExtraBindings(binding, extraBindings);
+        applyExtraBindings(binding, tempExtraBindings);
+        return true;
+    }
+
+    private void applyExtraBindings(ViewDataBinding binding, SparseArray<Object> extraBindings) {
         if (extraBindings != null) {
             for (int i = 0, size = extraBindings.size(); i < size; i++) {
                 int variableId = extraBindings.keyAt(i);
@@ -175,6 +218,5 @@ public final class ItemBinding<T> {
                 }
             }
         }
-        return true;
     }
 }

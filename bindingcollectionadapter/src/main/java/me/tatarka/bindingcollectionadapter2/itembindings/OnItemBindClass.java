@@ -3,7 +3,6 @@ package me.tatarka.bindingcollectionadapter2.itembindings;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.v4.util.SimpleArrayMap;
-import android.util.SparseArray;
 
 import me.tatarka.bindingcollectionadapter2.BindingListViewAdapter;
 import me.tatarka.bindingcollectionadapter2.ItemBinding;
@@ -19,8 +18,7 @@ import me.tatarka.bindingcollectionadapter2.OnItemBind;
  */
 public class OnItemBindClass<T> implements OnItemBind<T> {
 
-    private final SimpleArrayMap<Class<? extends T>, int[]> itemBindingMap;
-    private SimpleArrayMap<Class<? extends T>, SparseArray<Object>> itemExtraBindingMap;
+    private final SimpleArrayMap<Class<? extends T>, Object> itemBindingMap;
 
     public OnItemBindClass() {
         this.itemBindingMap = new SimpleArrayMap<>();
@@ -35,29 +33,11 @@ public class OnItemBindClass<T> implements OnItemBind<T> {
     }
 
     /**
-     * Maps the given class to the given variableId and extra variable. This is assignment-compatible match with the object represented by Class.
+     * Maps the given class to the given variableId and layout. This is assignment-compatible match with the object represented by Class.
      */
-    public OnItemBindClass<T> mapExtra(@NonNull Class<? extends T> itemClass, int variableId, Object value) {
-        SparseArray<Object> extra = null;
-        if (itemExtraBindingMap == null) {
-            itemExtraBindingMap = new SimpleArrayMap<>();
-        } else {
-            extra = itemExtraBindingMap.get(itemClass);
-        }
-        if (extra == null) {
-            extra = new SparseArray<>(1);
-        }
-        extra.put(variableId, value);
-
-        itemExtraBindingMap.put(itemClass, extra);
+    public <E extends T> OnItemBindClass<T> map(@NonNull Class<E> itemClass, OnItemBind<E> onItemBind) {
+        itemBindingMap.put(itemClass, onItemBind);
         return this;
-    }
-
-    /**
-     * Maps the given class to the given variableId and extra variable. This is assignment-compatible match with the object represented by Class.
-     */
-    public <E extends T> OnItemBindClass<T> mapExtra(@NonNull Class<E> itemClass, int variableId, PropertyResolver<E> value) {
-        return mapExtra(itemClass, variableId, (Object) value);
     }
 
     /**
@@ -71,50 +51,24 @@ public class OnItemBindClass<T> implements OnItemBind<T> {
 
     @Override
     public void onItemBind(ItemBinding itemBinding, int position, T item) {
-        onItemBindExtra(itemBinding, position, item);
-
         for (int i = 0; i < itemBindingMap.size(); i++) {
             Class<? extends T> key = itemBindingMap.keyAt(i);
             if (key.isInstance(item)) {
-                int[] values = itemBindingMap.valueAt(i);
-                itemBinding.set(values[0], values[1]);
+                onTypedItemBind(itemBinding, position, item, itemBindingMap.valueAt(i));
                 return;
             }
         }
         throw new IllegalArgumentException("Missing class for item " + item);
     }
 
-    public void onItemBindExtra(ItemBinding itemBinding, int position, T item) {
-        SparseArray<Object> extraBindings = null;
-        if (itemExtraBindingMap != null && !itemExtraBindingMap.isEmpty()) {
-            for (int i = 0; i < itemExtraBindingMap.size(); i++) {
-                Class<? extends T> key = itemExtraBindingMap.keyAt(i);
-                if (key.isInstance(item) && extraBindings == null) {
-                    extraBindings = itemExtraBindingMap.valueAt(i);
-                } else {
-                    SparseArray<Object> toRemove = itemExtraBindingMap.valueAt(i);
-                    if (toRemove != null && toRemove.size() > 0) {
-                        for (int j = 0, size = toRemove.size(); j < size; j++) {
-                            int variableId = toRemove.keyAt(j);
-                            itemBinding.removeExtra(variableId);
-                        }
-                    }
-                }
-            }
-            if (extraBindings != null) {
-                for (int j = 0, size = extraBindings.size(); j < size; j++) {
-                    int variableId = extraBindings.keyAt(j);
-                    Object value = extraBindings.valueAt(j);
-                    if (value instanceof OnItemBindClass.PropertyResolver) {
-                        value = ((PropertyResolver<T>) value).resolve(item);
-                    }
-                    itemBinding.bindExtra(variableId, value);
-                }
-            }
+    @SuppressWarnings("unchecked")
+    private <E extends T> void onTypedItemBind(ItemBinding itemBinding, int position, E item, Object itemBind) {
+        if (itemBind instanceof OnItemBind) {
+            OnItemBind<E> values = (OnItemBind<E>) itemBind;
+            values.onItemBind(itemBinding, position, item);
+        } else {
+            int[] values = (int[]) itemBind;
+            itemBinding.reset(values[0], values[1]);
         }
-    }
-
-    public interface PropertyResolver<T> {
-        Object resolve(T t);
     }
 }
