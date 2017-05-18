@@ -4,6 +4,9 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.v4.util.SimpleArrayMap;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import me.tatarka.bindingcollectionadapter2.BindingListViewAdapter;
 import me.tatarka.bindingcollectionadapter2.ItemBinding;
 import me.tatarka.bindingcollectionadapter2.OnItemBind;
@@ -19,9 +22,11 @@ import me.tatarka.bindingcollectionadapter2.OnItemBind;
 public class OnItemBindClass<T> implements OnItemBind<T> {
 
     private final SimpleArrayMap<Class<? extends T>, Object> itemBindingMap;
+    private final List<Class> itemBindingIndexes;
 
     public OnItemBindClass() {
         this.itemBindingMap = new SimpleArrayMap<>();
+        this.itemBindingIndexes = new ArrayList<>(2);
     }
 
     /**
@@ -29,6 +34,7 @@ public class OnItemBindClass<T> implements OnItemBind<T> {
      */
     public OnItemBindClass<T> map(@NonNull Class<? extends T> itemClass, int variableId, @LayoutRes int layoutRes) {
         itemBindingMap.put(itemClass, new int[]{variableId, layoutRes});
+        itemBindingIndexes.add(itemClass);
         return this;
     }
 
@@ -37,6 +43,7 @@ public class OnItemBindClass<T> implements OnItemBind<T> {
      */
     public <E extends T> OnItemBindClass<T> map(@NonNull Class<E> itemClass, OnItemBind<E> onItemBind) {
         itemBindingMap.put(itemClass, onItemBind);
+        itemBindingIndexes.add(itemClass);
         return this;
     }
 
@@ -51,10 +58,10 @@ public class OnItemBindClass<T> implements OnItemBind<T> {
 
     @Override
     public void onItemBind(ItemBinding itemBinding, int position, T item) {
-        for (int i = 0; i < itemBindingMap.size(); i++) {
-            Class<? extends T> key = itemBindingMap.keyAt(i);
+        for (int i = 0; i < itemBindingIndexes.size(); i++) {
+            Class<? extends T> key = itemBindingIndexes.get(i);
             if (key.isInstance(item)) {
-                onTypedItemBind(itemBinding, position, item, itemBindingMap.valueAt(i));
+                onTypedItemBind(itemBinding, position, item, itemBindingMap.get(key));
                 return;
             }
         }

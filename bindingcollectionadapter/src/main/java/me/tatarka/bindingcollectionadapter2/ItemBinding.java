@@ -171,6 +171,16 @@ public final class ItemBinding<T> {
     }
 
     /**
+     * Returns the current extra binding for the given variable id or null if one isn't present.
+     */
+    public final Object extraRebinding(int variableId) {
+        if (tempExtraBindings == null) {
+            return null;
+        }
+        return tempExtraBindings.get(variableId);
+    }
+
+    /**
      * Updates the state of the binding for the given item and position. This is called internally
      * by the binding collection adapters.
      */
