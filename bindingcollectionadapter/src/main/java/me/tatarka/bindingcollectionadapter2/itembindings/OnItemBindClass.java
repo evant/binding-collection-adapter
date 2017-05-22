@@ -22,6 +22,7 @@ import me.tatarka.bindingcollectionadapter2.OnItemBind;
 public class OnItemBindClass<T> implements OnItemBind<T> {
 
     private final SimpleArrayMap<Class<? extends T>, Object> itemBindingMap;
+    // to support ordinal mapping {@see OnItemBindClassTest#selectsBasedOnClassAndSubclass()}
     private final List<Class> itemBindingIndexes;
 
     public OnItemBindClass() {
@@ -56,6 +57,7 @@ public class OnItemBindClass<T> implements OnItemBind<T> {
         return itemBindingMap.size();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void onItemBind(ItemBinding itemBinding, int position, T item) {
         for (int i = 0; i < itemBindingIndexes.size(); i++) {
@@ -75,7 +77,7 @@ public class OnItemBindClass<T> implements OnItemBind<T> {
             values.onItemBind(itemBinding, position, item);
         } else {
             int[] values = (int[]) itemBind;
-            itemBinding.reset(values[0], values[1]);
+            itemBinding.set(values[0], values[1]);
         }
     }
 }
