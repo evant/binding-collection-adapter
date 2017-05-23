@@ -243,7 +243,7 @@ There are a few classes to help with common implementations of `OnItemBind`.
 `OnItemBindClass` binds an item based on the class of the item in the list.
 
 ```java
-OnItemBind itemBind = new OnItemBindClass<>()
+itemBind = new OnItemBindClass<>()
   .map(String.class, BR.name, R.layout.item_name)
   .map(Footer.class, ItemBinding.VAR_NONE, R.layout.item_footer)
   .map(Item.class, new OnItemBind<Item>() {
