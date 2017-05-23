@@ -21,7 +21,7 @@ import me.tatarka.bindingcollectionadapter2.OnItemBind;
  */
 public class OnItemBindClass<T> implements OnItemBind<T> {
 
-    private final SimpleArrayMap<Class<? extends T>, Object> itemBindingMap;
+    private final SimpleArrayMap<Class<? extends T>, OnItemBind<? extends T>> itemBindingMap;
     // to support ordinal mapping {@see OnItemBindClassTest#selectsBasedOnClassAndSubclass()}
     private final List<Class> itemBindingIndexes;
 
@@ -33,8 +33,8 @@ public class OnItemBindClass<T> implements OnItemBind<T> {
     /**
      * Maps the given class to the given variableId and layout. This is assignment-compatible match with the object represented by Class.
      */
-    public OnItemBindClass<T> map(@NonNull Class<? extends T> itemClass, int variableId, @LayoutRes int layoutRes) {
-        itemBindingMap.put(itemClass, new int[]{variableId, layoutRes});
+    public OnItemBindClass<T> map(@NonNull Class<? extends T> itemClass, final int variableId, @LayoutRes final int layoutRes) {
+        itemBindingMap.put(itemClass, itemBind(variableId, layoutRes));
         itemBindingIndexes.add(itemClass);
         return this;
     }
@@ -63,21 +63,21 @@ public class OnItemBindClass<T> implements OnItemBind<T> {
         for (int i = 0; i < itemBindingIndexes.size(); i++) {
             Class<? extends T> key = itemBindingIndexes.get(i);
             if (key.isInstance(item)) {
-                onTypedItemBind(itemBinding, position, item, itemBindingMap.get(key));
+                OnItemBind itemBind = itemBindingMap.get(key);
+                itemBind.onItemBind(itemBinding, position, item);
                 return;
             }
         }
         throw new IllegalArgumentException("Missing class for item " + item);
     }
 
-    @SuppressWarnings("unchecked")
-    private <E extends T> void onTypedItemBind(ItemBinding itemBinding, int position, E item, Object itemBind) {
-        if (itemBind instanceof OnItemBind) {
-            OnItemBind<E> values = (OnItemBind<E>) itemBind;
-            values.onItemBind(itemBinding, position, item);
-        } else {
-            int[] values = (int[]) itemBind;
-            itemBinding.set(values[0], values[1]);
-        }
+    @NonNull
+    private OnItemBind<T> itemBind(final int variableId, @LayoutRes final int layoutRes) {
+        return new OnItemBind<T>() {
+            @Override
+            public void onItemBind(ItemBinding itemBinding, int position, T item) {
+                itemBinding.set(variableId, layoutRes);
+            }
+        };
     }
 }
