@@ -2,10 +2,9 @@ package me.tatarka.bindingcollectionadapter2.itembindings;
 
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
-import android.support.v4.util.SimpleArrayMap;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import me.tatarka.bindingcollectionadapter2.BindingListViewAdapter;
 import me.tatarka.bindingcollectionadapter2.ItemBinding;
@@ -21,13 +20,10 @@ import me.tatarka.bindingcollectionadapter2.OnItemBind;
  */
 public class OnItemBindClass<T> implements OnItemBind<T> {
 
-    private final SimpleArrayMap<Class<? extends T>, OnItemBind<? extends T>> itemBindingMap;
-    // to support ordinal mapping {@see OnItemBindClassTest#selectsBasedOnClassAndSubclass()}
-    private final List<Class> itemBindingIndexes;
+    private final LinkedHashMap<Class<? extends T>, OnItemBind<? extends T>> itemBindingMap;
 
     public OnItemBindClass() {
-        this.itemBindingMap = new SimpleArrayMap<>();
-        this.itemBindingIndexes = new ArrayList<>(2);
+        this.itemBindingMap = new LinkedHashMap<>(2);
     }
 
     /**
@@ -35,7 +31,6 @@ public class OnItemBindClass<T> implements OnItemBind<T> {
      */
     public OnItemBindClass<T> map(@NonNull Class<? extends T> itemClass, final int variableId, @LayoutRes final int layoutRes) {
         itemBindingMap.put(itemClass, itemBind(variableId, layoutRes));
-        itemBindingIndexes.add(itemClass);
         return this;
     }
 
@@ -44,7 +39,6 @@ public class OnItemBindClass<T> implements OnItemBind<T> {
      */
     public <E extends T> OnItemBindClass<T> map(@NonNull Class<E> itemClass, OnItemBind<E> onItemBind) {
         itemBindingMap.put(itemClass, onItemBind);
-        itemBindingIndexes.add(itemClass);
         return this;
     }
 
@@ -60,10 +54,10 @@ public class OnItemBindClass<T> implements OnItemBind<T> {
     @SuppressWarnings("unchecked")
     @Override
     public void onItemBind(ItemBinding itemBinding, int position, T item) {
-        for (int i = 0; i < itemBindingIndexes.size(); i++) {
-            Class<? extends T> key = itemBindingIndexes.get(i);
+        for (Map.Entry<Class<? extends T>, OnItemBind<? extends T>> entry : itemBindingMap.entrySet()) {
+            Class<? extends T> key = entry.getKey();
             if (key.isInstance(item)) {
-                OnItemBind itemBind = itemBindingMap.get(key);
+                OnItemBind itemBind = entry.getValue();
                 itemBind.onItemBind(itemBinding, position, item);
                 return;
             }
