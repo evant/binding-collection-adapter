@@ -2,7 +2,9 @@ package me.tatarka.bindingcollectionadapter2.itembindings;
 
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
-import android.support.v4.util.SimpleArrayMap;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import me.tatarka.bindingcollectionadapter2.BindingListViewAdapter;
 import me.tatarka.bindingcollectionadapter2.ItemBinding;
@@ -18,18 +20,39 @@ import me.tatarka.bindingcollectionadapter2.OnItemBind;
  */
 public class OnItemBindClass<T> implements OnItemBind<T> {
 
-    private final SimpleArrayMap<Class<? extends T>, int[]> itemBindingMap;
+    private final List<Class<? extends T>> itemBindingClassList;
+    private final List<OnItemBind<? extends T>> itemBindingList;
 
     public OnItemBindClass() {
-        this.itemBindingMap = new SimpleArrayMap<>();
+        this.itemBindingClassList = new ArrayList<>(2);
+        this.itemBindingList = new ArrayList<>(2);
     }
 
     /**
-     * Maps the given class to the given variableId and layout. This is an exact match, no
-     * inheritance it taken into account.
+     * Maps the given class to the given variableId and layout. This is assignment-compatible match with the object represented by Class.
      */
-    public OnItemBindClass<T> map(@NonNull Class<? extends T> itemClass, int variableId, @LayoutRes int layoutRes) {
-        itemBindingMap.put(itemClass, new int[]{variableId, layoutRes});
+    public OnItemBindClass<T> map(@NonNull Class<? extends T> itemClass, final int variableId, @LayoutRes final int layoutRes) {
+        int index = itemBindingClassList.indexOf(itemClass);
+        if (index >= 0) {
+            itemBindingList.set(index, itemBind(variableId, layoutRes));
+        } else {
+            itemBindingClassList.add(itemClass);
+            itemBindingList.add(itemBind(variableId, layoutRes));
+        }
+        return this;
+    }
+
+    /**
+     * Maps the given class to the given {@link OnItemBind}. This is assignment-compatible match with the object represented by Class.
+     */
+    public <E extends T> OnItemBindClass<T> map(@NonNull Class<E> itemClass, OnItemBind<E> onItemBind) {
+        int index = itemBindingClassList.indexOf(itemClass);
+        if (index >= 0) {
+            itemBindingList.set(index, onItemBind);
+        } else {
+            itemBindingClassList.add(itemClass);
+            itemBindingList.add(onItemBind);
+        }
         return this;
     }
 
@@ -39,19 +62,30 @@ public class OnItemBindClass<T> implements OnItemBind<T> {
      * AdapterView}.
      */
     public int itemTypeCount() {
-        return itemBindingMap.size();
+        return itemBindingClassList.size();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void onItemBind(ItemBinding itemBinding, int position, T item) {
-        for (int i = 0; i < itemBindingMap.size(); i++) {
-            Class<? extends T> key = itemBindingMap.keyAt(i);
+        for (int i = 0; i < itemBindingClassList.size(); i++) {
+            Class<? extends T> key = itemBindingClassList.get(i);
             if (key.isInstance(item)) {
-                int[] values = itemBindingMap.valueAt(i);
-                itemBinding.set(values[0], values[1]);
+                OnItemBind itemBind = itemBindingList.get(i);
+                itemBind.onItemBind(itemBinding, position, item);
                 return;
             }
         }
         throw new IllegalArgumentException("Missing class for item " + item);
+    }
+
+    @NonNull
+    private OnItemBind<T> itemBind(final int variableId, @LayoutRes final int layoutRes) {
+        return new OnItemBind<T>() {
+            @Override
+            public void onItemBind(ItemBinding itemBinding, int position, T item) {
+                itemBinding.set(variableId, layoutRes);
+            }
+        };
     }
 }

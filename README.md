@@ -245,7 +245,16 @@ There are a few classes to help with common implementations of `OnItemBind`.
 ```java
 itemBind = new OnItemBindClass<>()
   .map(String.class, BR.name, R.layout.item_name)
-  .map(Footer.class, ItemBinding.VAR_NONE, R.layout.item_footer);
+  .map(Footer.class, ItemBinding.VAR_NONE, R.layout.item_footer)
+  .map(Item.class, new OnItemBind<Item>() {
+                       @Override
+                       public void onItemBind(ItemBinding itemBinding, int position, Item item) {
+                         itemBinding.clearExtras()
+                                    .set(BR.item, position == 0 ? R.layout.item_header : R.layout.item)
+                                    .bindExtra(BR.extra, (list.size() - 1) == position);
+                       }
+                     })
+  .map(Object.class, ItemBinding.VAR_NONE, R.layout.item_other);
 ```
 
 `OnItemBindModel` delegates to the items in the list themselves to determine the binding.

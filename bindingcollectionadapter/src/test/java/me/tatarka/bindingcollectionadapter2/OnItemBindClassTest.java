@@ -58,6 +58,31 @@ public class OnItemBindClassTest {
         assertThat(itemBinding.layoutRes()).isEqualTo(3);
     }
 
+    @Test
+    public void selectsBasedOnClassAndSubclass() {
+        OnItemBindClass<Object> onItemBind = new OnItemBindClass<>()
+                .map(B.class, 0, 1)
+                .map(A.class, 2, 3)
+                .map(Object.class, 4, 5);
+
+        ItemBinding<Object> itemBinding = ItemBinding.of(onItemBind);
+        List<Object> list = Arrays.asList(new B(), new A(), new C());
+        itemBinding.onItemBind(0, list.get(0));
+
+        assertThat(itemBinding.variableId()).isEqualTo(0);
+        assertThat(itemBinding.layoutRes()).isEqualTo(1);
+
+        itemBinding.onItemBind(1, list.get(1));
+
+        assertThat(itemBinding.variableId()).isEqualTo(2);
+        assertThat(itemBinding.layoutRes()).isEqualTo(3);
+
+        itemBinding.onItemBind(2, list.get(2));
+
+        assertThat(itemBinding.variableId()).isEqualTo(4);
+        assertThat(itemBinding.layoutRes()).isEqualTo(5);
+    }
+
     private static class A {
     }
 

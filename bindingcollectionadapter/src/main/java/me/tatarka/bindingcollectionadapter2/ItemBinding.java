@@ -18,6 +18,7 @@ public final class ItemBinding<T> {
      */
     public static final int VAR_NONE = 0;
     private static final int VAR_INVALID = -1;
+    private static final int LAYOUT_NONE = 0;
 
     /**
      * Constructs an instance with the given variable id and layout.
@@ -90,6 +91,28 @@ public final class ItemBinding<T> {
     }
 
     /**
+     * Clear all extra variables. This is normally called in {@link
+     * OnItemBind#onItemBind(ItemBinding, int, Object)}.
+     */
+    public final ItemBinding<T> clearExtras() {
+        if (extraBindings != null) {
+            extraBindings.clear();
+        }
+        return this;
+    }
+
+    /**
+     * Remove an extra variable with the given variable id. This is normally called in {@link
+     * OnItemBind#onItemBind(ItemBinding, int, Object)}.
+     */
+    public ItemBinding<T> removeExtra(int variableId) {
+        if (extraBindings != null) {
+            extraBindings.remove(variableId);
+        }
+        return this;
+    }
+
+    /**
      * Returns the current variable id of this binding.
      */
     public final int variableId() {
@@ -121,12 +144,12 @@ public final class ItemBinding<T> {
     public void onItemBind(int position, T item) {
         if (onItemBind != null) {
             variableId = VAR_INVALID;
-            layoutRes = 0;
+            layoutRes = LAYOUT_NONE;
             onItemBind.onItemBind(this, position, item);
             if (variableId == VAR_INVALID) {
                 throw new IllegalStateException("variableId not set in onItemBind()");
             }
-            if (layoutRes == 0) {
+            if (layoutRes == LAYOUT_NONE) {
                 throw new IllegalStateException("layoutRes not set in onItemBind()");
             }
         }
