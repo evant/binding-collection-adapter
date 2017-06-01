@@ -1,3 +1,6 @@
+### 2.1.0
+- Easily allow extras in `OnItemBindClass`.
+
 ### 2.0.1
 - Fixed package of DiffObservableList
 
