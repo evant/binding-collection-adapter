@@ -4,9 +4,9 @@ package me.tatarka.bindingcollectionadapter.sample;
  * Created by evan on 6/3/15.
  */
 public class Listeners {
-    private ViewModel viewModel;
+    private MyViewModel viewModel;
 
-    public Listeners(ViewModel viewModel) {
+    public Listeners(MyViewModel viewModel) {
         this.viewModel = viewModel;
     }
    

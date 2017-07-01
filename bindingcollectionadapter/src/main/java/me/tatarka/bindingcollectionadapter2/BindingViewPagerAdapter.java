@@ -14,13 +14,13 @@ import java.lang.ref.WeakReference;
 import java.util.List;
 
 /**
- * A {@link PagerAdapter} that binds items to layouts using the given {@link ItemView} or {@link
- * ItemViewSelector}. If you give it an {@link ObservableList} it will also updated itself based on
+ * A {@link PagerAdapter} that binds items to layouts using the given {@link ItemBinding} or {@link
+ * OnItemBind}. If you give it an {@link ObservableList} it will also updated itself based on
  * changes to that list.
  */
 public class BindingViewPagerAdapter<T> extends PagerAdapter implements BindingCollectionAdapter<T> {
     private ItemBinding<T> itemBinding;
-    private final WeakReferenceOnListChangedCallback<T> callback = new WeakReferenceOnListChangedCallback<>(this);
+    private WeakReferenceOnListChangedCallback<T> callback;
     private List<T> items;
     private LayoutInflater inflater;
     private PageTitles<T> pageTitles;
@@ -42,8 +42,10 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter implements BindingC
         }
         if (this.items instanceof ObservableList) {
             ((ObservableList<T>) this.items).removeOnListChangedCallback(callback);
+            callback = null;
         }
         if (items instanceof ObservableList) {
+            callback = new WeakReferenceOnListChangedCallback<T>(this, (ObservableList<T>) items);
             ((ObservableList<T>) items).addOnListChangedCallback(callback);
         }
         this.items = items;
@@ -128,8 +130,8 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter implements BindingC
     private static class WeakReferenceOnListChangedCallback<T> extends ObservableList.OnListChangedCallback<ObservableList<T>> {
         final WeakReference<BindingViewPagerAdapter<T>> adapterRef;
 
-        WeakReferenceOnListChangedCallback(BindingViewPagerAdapter<T> adapter) {
-            this.adapterRef = new WeakReference<>(adapter);
+        WeakReferenceOnListChangedCallback(BindingViewPagerAdapter<T> adapter, ObservableList<T> items) {
+            this.adapterRef = AdapterReferenceCollector.createRef(adapter, items, this);
         }
 
         @Override

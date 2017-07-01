@@ -23,8 +23,7 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
     private ItemBinding<T> itemBinding;
     @LayoutRes
     private int dropDownItemLayout;
-    @NonNull
-    private final WeakReferenceOnListChangedCallback<T> callback = new WeakReferenceOnListChangedCallback<>(this);
+    private WeakReferenceOnListChangedCallback<T> callback;
     private List<T> items;
     private int[] layouts;
     private LayoutInflater inflater;
@@ -63,8 +62,10 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
         }
         if (this.items instanceof ObservableList) {
             ((ObservableList<T>) this.items).removeOnListChangedCallback(callback);
+            callback = null;
         }
         if (items instanceof ObservableList) {
+            callback = new WeakReferenceOnListChangedCallback<>(this, (ObservableList<T>) items);
             ((ObservableList<T>) items).addOnListChangedCallback(callback);
         }
         this.items = items;
@@ -209,8 +210,8 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
     private static class WeakReferenceOnListChangedCallback<T> extends ObservableList.OnListChangedCallback<ObservableList<T>> {
         final WeakReference<BindingListViewAdapter<T>> adapterRef;
 
-        WeakReferenceOnListChangedCallback(BindingListViewAdapter<T> adapter) {
-            this.adapterRef = new WeakReference<>(adapter);
+        WeakReferenceOnListChangedCallback(BindingListViewAdapter<T> adapter, ObservableList<T> items) {
+            this.adapterRef = AdapterReferenceCollector.createRef(adapter, items, this);
         }
 
         @Override
