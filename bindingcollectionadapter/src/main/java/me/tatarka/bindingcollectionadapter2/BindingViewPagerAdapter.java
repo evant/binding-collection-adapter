@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.lang.ref.WeakReference;
 import java.util.List;
 
 /**
@@ -19,8 +18,10 @@ import java.util.List;
  * changes to that list.
  */
 public class BindingViewPagerAdapter<T> extends PagerAdapter implements BindingCollectionAdapter<T> {
+    private static final AdapterReferenceQueue ADAPTER_REF_QUEUE = new AdapterReferenceQueue();
+
     private ItemBinding<T> itemBinding;
-    private final WeakReferenceOnListChangedCallback<T> callback = new WeakReferenceOnListChangedCallback<>(this);
+    private final WeakReferenceOnListChangedCallback<T> callback = new WeakReferenceOnListChangedCallback<>(this, ADAPTER_REF_QUEUE);
     private List<T> items;
     private LayoutInflater inflater;
     private PageTitles<T> pageTitles;
@@ -37,6 +38,7 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter implements BindingC
 
     @Override
     public void setItems(@Nullable List<T> items) {
+        ADAPTER_REF_QUEUE.expungeStaleCallbacks();
         if (this.items == items) {
             return;
         }
@@ -47,6 +49,7 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter implements BindingC
             ((ObservableList<T>) items).addOnListChangedCallback(callback);
         }
         this.items = items;
+        callback.adapterRef.setItems(items);
         notifyDataSetChanged();
     }
 
@@ -126,10 +129,10 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter implements BindingC
     }
 
     private static class WeakReferenceOnListChangedCallback<T> extends ObservableList.OnListChangedCallback<ObservableList<T>> {
-        final WeakReference<BindingViewPagerAdapter<T>> adapterRef;
+        final AdapterReference<BindingViewPagerAdapter<T>, T> adapterRef;
 
-        WeakReferenceOnListChangedCallback(BindingViewPagerAdapter<T> adapter) {
-            this.adapterRef = new WeakReference<>(adapter);
+        WeakReferenceOnListChangedCallback(BindingViewPagerAdapter<T> adapter, AdapterReferenceQueue queue) {
+            this.adapterRef = new AdapterReference<>(adapter, queue, this);
         }
 
         @Override

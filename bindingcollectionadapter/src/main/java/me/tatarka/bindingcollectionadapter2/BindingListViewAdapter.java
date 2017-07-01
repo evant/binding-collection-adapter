@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
-import java.lang.ref.WeakReference;
 import java.util.List;
 
 /**
@@ -19,12 +18,14 @@ import java.util.List;
  * it an {@link ObservableList} it will also updated itself based on changes to that list.
  */
 public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCollectionAdapter<T> {
+    private static final AdapterReferenceQueue ADAPTER_REF_QUEUE = new AdapterReferenceQueue();
+
     private final int itemTypeCount;
     private ItemBinding<T> itemBinding;
     @LayoutRes
     private int dropDownItemLayout;
     @NonNull
-    private final WeakReferenceOnListChangedCallback<T> callback = new WeakReferenceOnListChangedCallback<>(this);
+    private final WeakReferenceOnListChangedCallback<T> callback = new WeakReferenceOnListChangedCallback<>(this, ADAPTER_REF_QUEUE);
     private List<T> items;
     private int[] layouts;
     private LayoutInflater inflater;
@@ -58,6 +59,7 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
 
     @Override
     public void setItems(@Nullable List<T> items) {
+        ADAPTER_REF_QUEUE.expungeStaleCallbacks();
         if (this.items == items) {
             return;
         }
@@ -68,6 +70,7 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
             ((ObservableList<T>) items).addOnListChangedCallback(callback);
         }
         this.items = items;
+        callback.adapterRef.setItems(items);
         notifyDataSetChanged();
     }
 
@@ -207,10 +210,10 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
     }
 
     private static class WeakReferenceOnListChangedCallback<T> extends ObservableList.OnListChangedCallback<ObservableList<T>> {
-        final WeakReference<BindingListViewAdapter<T>> adapterRef;
+        final AdapterReference<BindingListViewAdapter<T>, T> adapterRef;
 
-        WeakReferenceOnListChangedCallback(BindingListViewAdapter<T> adapter) {
-            this.adapterRef = new WeakReference<>(adapter);
+        WeakReferenceOnListChangedCallback(BindingListViewAdapter<T> adapter, AdapterReferenceQueue queue) {
+            this.adapterRef = new AdapterReference<>(adapter, queue, this);
         }
 
         @Override
