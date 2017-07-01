@@ -7,6 +7,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.util.Arrays;
+
 import me.tatarka.bindingcollectionadapter2.collections.MergeObservableList;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -133,5 +135,57 @@ public class MergeObservableTest {
         verify(callback).onItemRangeInserted(list, 0, 1);
         verify(callback).onItemRangeInserted(list, 1, 1);
         verify(callback).onItemRangeChanged(list, 1, 1);
+    }
+
+    @Test
+    public void removingItemRemovesItFromTheList() {
+        MergeObservableList<String> list = new MergeObservableList<>();
+        list.insertItem("test1");
+        ObservableList.OnListChangedCallback callback = mock(ObservableList.OnListChangedCallback.class);
+        list.addOnListChangedCallback(callback);
+        list.removeItem("test1");
+
+        assertThat(list).isEmpty();
+        verify(callback).onItemRangeRemoved(list, 0, 1);
+    }
+
+    @Test
+    public void removingListRemovesItFromTheList() {
+        MergeObservableList<String> list = new MergeObservableList<>();
+        ObservableList<String> backingList = new ObservableArrayList<>();
+        backingList.addAll(Arrays.asList("test1", "test2"));
+        list.insertList(backingList);
+        ObservableList.OnListChangedCallback callback = mock(ObservableList.OnListChangedCallback.class);
+        list.addOnListChangedCallback(callback);
+        list.removeList(backingList);
+
+        assertThat(list).isEmpty();
+        verify(callback).onItemRangeRemoved(list, 0, 2);
+    }
+
+    @Test
+    public void removingAllRemovesInsertedItemFromTheList() {
+        MergeObservableList<String> list = new MergeObservableList<>();
+        list.insertItem("test1");
+        ObservableList.OnListChangedCallback callback = mock(ObservableList.OnListChangedCallback.class);
+        list.addOnListChangedCallback(callback);
+        list.removeAll();
+
+        assertThat(list).isEmpty();
+        verify(callback).onItemRangeRemoved(list, 0, 1);
+    }
+
+    @Test
+    public void removingAllRemovesInsertedListFromTheList() {
+        MergeObservableList<String> list = new MergeObservableList<>();
+        ObservableList<String> backingList = new ObservableArrayList<>();
+        backingList.addAll(Arrays.asList("test1", "test2"));
+        list.insertList(backingList);
+        ObservableList.OnListChangedCallback callback = mock(ObservableList.OnListChangedCallback.class);
+        list.addOnListChangedCallback(callback);
+        list.removeAll();
+
+        assertThat(list).isEmpty();
+        verify(callback).onItemRangeRemoved(list, 0, 2);
     }
 }

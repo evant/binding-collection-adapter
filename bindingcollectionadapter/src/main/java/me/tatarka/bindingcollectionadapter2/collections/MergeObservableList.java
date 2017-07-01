@@ -64,7 +64,7 @@ public class MergeObservableList<T> extends AbstractList<T> implements Observabl
         int size = 0;
         for (int i = 0, listsSize = lists.size(); i < listsSize; i++) {
             List<? extends T> list = lists.get(i);
-            if (list.size() == 1) {
+            if (!(list instanceof ObservableList)) {
                 Object item = list.get(0);
                 if ((object == null) ? (item == null) : object.equals(item)) {
                     lists.remove(i);
@@ -96,6 +96,25 @@ public class MergeObservableList<T> extends AbstractList<T> implements Observabl
             size += list.size();
         }
         return false;
+    }
+
+    /**
+     * Removes all items and lists from the merge list.
+     */
+    public void removeAll() {
+        int size = size();
+        if (size == 0) {
+            return;
+        }
+        for (int i = 0, listSize = lists.size(); i < listSize; i++) {
+            List<? extends T> list = lists.get(i);
+            if (list instanceof ObservableList) {
+                ((ObservableList) list).removeOnListChangedCallback(callback);
+            }
+        }
+        lists.clear();
+        modCount += 1;
+        listeners.notifyRemoved(this, 0, size);
     }
 
     /**
