@@ -1,5 +1,6 @@
 package me.tatarka.bindingcollectionadapter.sample;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -16,14 +17,14 @@ import me.tatarka.bindingcollectionadapter.sample.databinding.ViewpagerViewBindi
  */
 public class FragmentViewPagerView extends Fragment {
     private static final String TAG = "BindingViewPager";
-    private ViewModel viewModel;
+    private MyViewModel viewModel;
     private ViewpagerViewBinding binding;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRetainInstance(true);
-        viewModel = new ViewModel(false);
+        viewModel = ViewModelProviders.of(this).get(MyViewModel.class);
+        viewModel.setCheckable(false);
     }
 
     @Nullable
@@ -42,7 +43,7 @@ public class FragmentViewPagerView extends Fragment {
     }
 
     private class PagerListeners extends Listeners {
-        public PagerListeners(ViewModel viewModel) {
+        public PagerListeners(MyViewModel viewModel) {
             super(viewModel);
         }
 

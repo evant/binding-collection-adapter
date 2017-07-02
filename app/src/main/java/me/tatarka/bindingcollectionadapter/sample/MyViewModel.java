@@ -1,5 +1,6 @@
 package me.tatarka.bindingcollectionadapter.sample;
 
+import android.arch.lifecycle.ViewModel;
 import android.databinding.ObservableArrayList;
 import android.databinding.ObservableList;
 import android.databinding.ViewDataBinding;
@@ -12,14 +13,9 @@ import me.tatarka.bindingcollectionadapter2.BindingViewPagerAdapter;
 import me.tatarka.bindingcollectionadapter2.ItemBinding;
 import me.tatarka.bindingcollectionadapter2.collections.MergeObservableList;
 import me.tatarka.bindingcollectionadapter2.itembindings.OnItemBindClass;
-import me.tatarka.bindingcollectionadapter.sample.BR;
-import me.tatarka.bindingcollectionadapter.sample.R;
 
-/**
- * Created by evan on 5/31/15.
- */
-public class ViewModel {
-    private final boolean checkable;
+public class MyViewModel extends ViewModel {
+    private boolean checkable;
 
     public final ObservableList<ItemViewModel> items = new ObservableArrayList<>();
 
@@ -36,11 +32,14 @@ public class ViewModel {
      */
     public final LoggingRecyclerViewAdapter<Object> adapter = new LoggingRecyclerViewAdapter<>();
 
-    public ViewModel(boolean checkable) {
-        this.checkable = checkable;
+    public MyViewModel() {
         for (int i = 0; i < 3; i++) {
             items.add(new ItemViewModel(i, checkable));
         }
+    }
+
+    public void setCheckable(boolean checkable) {
+        this.checkable = checkable;
     }
 
     /**
@@ -98,7 +97,7 @@ public class ViewModel {
             return new MyAwesomeViewHolder(binding.getRoot());
         }
     };
-    
+
     private static class MyAwesomeViewHolder extends RecyclerView.ViewHolder {
         public MyAwesomeViewHolder(View itemView) {
             super(itemView);

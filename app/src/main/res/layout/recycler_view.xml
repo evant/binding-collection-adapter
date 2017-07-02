@@ -8,7 +8,7 @@
 
         <variable
             name="viewModel"
-            type="me.tatarka.bindingcollectionadapter.sample.ViewModel" />
+            type="me.tatarka.bindingcollectionadapter.sample.MyViewModel" />
 
         <variable
             name="listeners"

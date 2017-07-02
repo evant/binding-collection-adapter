@@ -1,5 +1,6 @@
 package me.tatarka.bindingcollectionadapter.sample;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -14,13 +15,13 @@ import me.tatarka.bindingcollectionadapter.sample.databinding.RecyclerViewBindin
  */
 public class FragmentRecyclerView extends Fragment {
     private static final String TAG = "BindingRecyclerView";
-    private ViewModel viewModel;
+    private MyViewModel viewModel;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRetainInstance(true);
-        viewModel = new ViewModel(true);
+        viewModel = ViewModelProviders.of(this).get(MyViewModel.class);
+        viewModel.setCheckable(true);
     }
 
     @Nullable

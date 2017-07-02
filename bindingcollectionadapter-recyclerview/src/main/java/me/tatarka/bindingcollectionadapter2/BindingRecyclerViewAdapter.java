@@ -23,7 +23,7 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<ViewHold
     private static final Object DATA_INVALIDATION = new Object();
 
     private ItemBinding<T> itemBinding;
-    private final WeakReferenceOnListChangedCallback<T> callback = new WeakReferenceOnListChangedCallback<>(this);
+    private WeakReferenceOnListChangedCallback<T> callback;
     private List<T> items;
     private LayoutInflater inflater;
     private ItemIds<? super T> itemIds;
@@ -53,8 +53,10 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<ViewHold
         if (recyclerView != null) {
             if (this.items instanceof ObservableList) {
                 ((ObservableList<T>) this.items).removeOnListChangedCallback(callback);
+                callback = null;
             }
             if (items instanceof ObservableList) {
+                callback = new WeakReferenceOnListChangedCallback<>(this, (ObservableList<T>) items);
                 ((ObservableList<T>) items).addOnListChangedCallback(callback);
             }
         }
@@ -82,6 +84,7 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<ViewHold
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         if (this.recyclerView == null && items != null && items instanceof ObservableList) {
+            callback = new WeakReferenceOnListChangedCallback<>(this, (ObservableList<T>) items);
             ((ObservableList<T>) items).addOnListChangedCallback(callback);
         }
         this.recyclerView = recyclerView;
@@ -91,6 +94,7 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<ViewHold
     public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
         if (this.recyclerView != null && items != null && items instanceof ObservableList) {
             ((ObservableList<T>) items).removeOnListChangedCallback(callback);
+            callback = null;
         }
         this.recyclerView = null;
     }
@@ -208,8 +212,8 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<ViewHold
     private static class WeakReferenceOnListChangedCallback<T> extends ObservableList.OnListChangedCallback<ObservableList<T>> {
         final WeakReference<BindingRecyclerViewAdapter<T>> adapterRef;
 
-        WeakReferenceOnListChangedCallback(BindingRecyclerViewAdapter<T> adapter) {
-            this.adapterRef = new WeakReference<>(adapter);
+        WeakReferenceOnListChangedCallback(BindingRecyclerViewAdapter<T> adapter, ObservableList<T> items) {
+            this.adapterRef = AdapterReferenceCollector.createRef(adapter, items, this);
         }
 
         @Override
