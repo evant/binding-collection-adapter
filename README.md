@@ -6,8 +6,8 @@ Easy way to bind collections to listviews and recyclerviews with the new [Androi
 ## Download
 
 ```groovy
-compile 'me.tatarka.bindingcollectionadapter2:bindingcollectionadapter:2.1.0'
-compile 'me.tatarka.bindingcollectionadapter2:bindingcollectionadapter-recyclerview:2.1.0'
+compile 'me.tatarka.bindingcollectionadapter2:bindingcollectionadapter:2.2.0'
+compile 'me.tatarka.bindingcollectionadapter2:bindingcollectionadapter-recyclerview:2.2.0'
 ```
 requires at least android gradle plugin `2.3.0`.
 

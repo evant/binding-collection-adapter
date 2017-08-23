@@ -1,3 +1,7 @@
+### 2.2.0
+- Added `MergeObservableList#removeAll()`.
+- Better method for getting the BR variable id in error messages.
+
 ### 2.1.0
 - Easily allow extras in `OnItemBindClass`.
 
