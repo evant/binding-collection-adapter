@@ -109,7 +109,7 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<ViewHold
         binding.addOnRebindCallback(new OnRebindCallback() {
             @Override
             public boolean onPreBind(ViewDataBinding binding) {
-                return recyclerView != null && recyclerView.isComputingLayout();
+                return recyclerView != null && !recyclerView.isComputingLayout();
             }
 
             @Override
