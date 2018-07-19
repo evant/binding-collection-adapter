@@ -1,9 +1,9 @@
 package me.tatarka.bindingcollectionadapter2;
 
-import android.databinding.BindingAdapter;
-import android.databinding.BindingConversion;
-import android.support.annotation.LayoutRes;
-import android.support.v4.view.ViewPager;
+import androidx.databinding.BindingAdapter;
+import androidx.databinding.BindingConversion;
+import androidx.annotation.LayoutRes;
+import androidx.viewpager.widget.ViewPager;
 import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.WrapperListAdapter;

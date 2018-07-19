@@ -1,8 +1,8 @@
 package me.tatarka.bindingcollectionadapter2.collections;
 
-import android.databinding.ListChangeRegistry;
-import android.databinding.ObservableList;
-import android.support.annotation.NonNull;
+import androidx.databinding.ListChangeRegistry;
+import androidx.databinding.ObservableList;
+import androidx.annotation.NonNull;
 
 import java.util.AbstractList;
 import java.util.ArrayList;

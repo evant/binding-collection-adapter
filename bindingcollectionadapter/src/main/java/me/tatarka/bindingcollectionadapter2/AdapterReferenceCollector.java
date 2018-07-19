@@ -1,6 +1,6 @@
 package me.tatarka.bindingcollectionadapter2;
 
-import android.databinding.ObservableList;
+import androidx.databinding.ObservableList;
 
 import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;

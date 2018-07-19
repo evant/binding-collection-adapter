@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         minSdkVersion 14
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -34,17 +34,17 @@ android {
 
 dependencies {
     compile project(':bindingcollectionadapter')
-    compile 'com.android.support:recyclerview-v7:26.1.0'
+    compile 'androidx.recyclerview:recyclerview:1.0.0-beta01'
 
     testCompile 'junit:junit:4.12'
     testCompile 'org.assertj:assertj-core:1.7.1'
     testCompile 'org.mockito:mockito-core:2.0.44-beta'
 
-    androidTestCompile 'com.android.support.test:runner:1.0.1'
-    androidTestCompile 'com.android.support.test:rules:1.0.1'
-    androidTestCompile 'com.android.support.test.espresso:espresso-core:3.0.1'
+    androidTestCompile 'androidx.test:runner:1.1.0-alpha3'
+    androidTestCompile 'androidx.test:rules:1.1.0-alpha3'
+    androidTestCompile 'androidx.test.espresso:espresso-core:3.1.0-alpha3'
     androidTestCompile 'com.squareup.assertj:assertj-android:1.1.0'
-    androidTestCompile 'com.android.support:support-compat:26.1.0'
+    androidTestCompile 'androidx.core:core:1.0.0-beta01'
 }
 
 apply from: '../publish.gradle'
