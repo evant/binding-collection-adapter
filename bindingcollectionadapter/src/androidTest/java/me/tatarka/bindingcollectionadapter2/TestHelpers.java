@@ -1,7 +1,7 @@
 package me.tatarka.bindingcollectionadapter2;
 
-import android.support.test.espresso.core.internal.deps.dagger.internal.Factory;
-import android.support.test.espresso.core.internal.deps.guava.base.Joiner;
+import androidx.test.espresso.core.internal.deps.dagger.internal.Factory;
+import androidx.test.espresso.core.internal.deps.guava.base.Joiner;
 
 import java.util.Iterator;
 import java.util.List;

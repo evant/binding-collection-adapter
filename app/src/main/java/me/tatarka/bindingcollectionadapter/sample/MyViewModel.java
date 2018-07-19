@@ -1,10 +1,10 @@
 package me.tatarka.bindingcollectionadapter.sample;
 
-import android.arch.lifecycle.ViewModel;
-import android.databinding.ObservableArrayList;
-import android.databinding.ObservableList;
-import android.databinding.ViewDataBinding;
-import android.support.v7.widget.RecyclerView;
+import androidx.lifecycle.ViewModel;
+import androidx.databinding.ObservableArrayList;
+import androidx.databinding.ObservableList;
+import androidx.databinding.ViewDataBinding;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 
 import me.tatarka.bindingcollectionadapter2.BindingListViewAdapter;

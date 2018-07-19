@@ -1,7 +1,7 @@
 package me.tatarka.bindingcollectionadapter.sample;
 
-import android.databinding.ViewDataBinding;
-import android.support.annotation.LayoutRes;
+import androidx.databinding.ViewDataBinding;
+import androidx.annotation.LayoutRes;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
