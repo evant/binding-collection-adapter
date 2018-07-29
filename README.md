@@ -11,11 +11,19 @@ compile 'me.tatarka.bindingcollectionadapter2:bindingcollectionadapter-recyclerv
 ```
 requires at least android gradle plugin `2.3.0`.
 
-If you want to try out [databinding v2](https://developer.android.com/topic/libraries/data-binding/index.html#enable_v2) you can use
+If you want to try out [databinding v2](https://developer.android.com/topic/libraries/data-binding/index.html#enable_v2) 
+you can use version `2.3.0-beta1`
 
 ```groovy
 compile 'me.tatarka.bindingcollectionadapter2:bindingcollectionadapter:2.3.0-beta1'
 compile 'me.tatarka.bindingcollectionadapter2:bindingcollectionadapter-recyclerview:2.3.0-beta1'
+```
+
+If you are using androidx use version `3.0.0-beta1`, this also uses databinding v2
+
+```groovy
+compile 'me.tatarka.bindingcollectionadapter2:bindingcollectionadapter:3.0.0-beta1'
+compile 'me.tatarka.bindingcollectionadapter2:bindingcollectionadapter-recyclerview:3.0.0-beta1'
 ```
 
 ## Usage
