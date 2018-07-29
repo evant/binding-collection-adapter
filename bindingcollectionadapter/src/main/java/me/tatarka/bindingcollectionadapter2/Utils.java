@@ -2,10 +2,10 @@ package me.tatarka.bindingcollectionadapter2;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.databinding.DataBindingUtil;
-import android.databinding.ViewDataBinding;
+import androidx.databinding.DataBindingUtil;
+import androidx.databinding.ViewDataBinding;
 import android.os.Looper;
-import android.support.annotation.LayoutRes;
+import androidx.annotation.LayoutRes;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -19,7 +19,7 @@ class Utils {
     private static final String TAG = "BCAdapters";
 
     /**
-     * Helper to throw an exception when {@link android.databinding.ViewDataBinding#setVariable(int,
+     * Helper to throw an exception when {@link androidx.databinding.ViewDataBinding#setVariable(int,
      * Object)} returns false.
      */
     static void throwMissingVariable(ViewDataBinding binding, int bindingVariable, @LayoutRes int layoutRes) {

@@ -1,7 +1,7 @@
 package me.tatarka.bindingcollectionadapter2;
 
-import android.databinding.ViewDataBinding;
-import android.support.annotation.LayoutRes;
+import androidx.databinding.ViewDataBinding;
+import androidx.annotation.LayoutRes;
 import android.util.SparseArray;
 
 /**

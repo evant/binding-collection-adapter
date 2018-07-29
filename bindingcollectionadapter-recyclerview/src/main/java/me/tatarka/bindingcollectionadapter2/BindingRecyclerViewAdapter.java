@@ -1,13 +1,13 @@
 package me.tatarka.bindingcollectionadapter2;
 
-import android.databinding.DataBindingUtil;
-import android.databinding.ObservableList;
-import android.databinding.OnRebindCallback;
-import android.databinding.ViewDataBinding;
-import android.support.annotation.LayoutRes;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.ViewHolder;
+import androidx.databinding.DataBindingUtil;
+import androidx.databinding.ObservableList;
+import androidx.databinding.OnRebindCallback;
+import androidx.databinding.ViewDataBinding;
+import androidx.annotation.LayoutRes;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -182,7 +182,7 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<ViewHold
 
     /**
      * Set the item id's for the items. If not null, this will set {@link
-     * android.support.v7.widget.RecyclerView.Adapter#setHasStableIds(boolean)} to true.
+     * RecyclerView.Adapter#setHasStableIds(boolean)} to true.
      */
     public void setItemIds(@Nullable ItemIds<? super T> itemIds) {
         if (this.itemIds != itemIds) {

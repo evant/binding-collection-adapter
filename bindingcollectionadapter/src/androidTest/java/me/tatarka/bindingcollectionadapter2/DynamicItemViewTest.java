@@ -1,13 +1,13 @@
 package me.tatarka.bindingcollectionadapter2;
 
-import android.databinding.DataBindingUtil;
-import android.databinding.ObservableArrayList;
-import android.databinding.ObservableList;
-import android.databinding.ViewDataBinding;
-import android.support.test.annotation.UiThreadTest;
-import android.support.test.rule.ActivityTestRule;
-import android.support.test.runner.AndroidJUnit4;
-import android.support.v4.view.ViewPager;
+import androidx.databinding.DataBindingUtil;
+import androidx.databinding.ObservableArrayList;
+import androidx.databinding.ObservableList;
+import androidx.databinding.ViewDataBinding;
+import androidx.test.annotation.UiThreadTest;
+import androidx.test.rule.ActivityTestRule;
+import androidx.test.runner.AndroidJUnit4;
+import androidx.viewpager.widget.ViewPager;
 import android.view.LayoutInflater;
 import android.widget.ListView;
 

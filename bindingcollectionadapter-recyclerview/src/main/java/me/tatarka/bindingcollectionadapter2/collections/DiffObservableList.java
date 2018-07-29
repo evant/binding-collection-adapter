@@ -1,10 +1,10 @@
 package me.tatarka.bindingcollectionadapter2.collections;
 
-import android.databinding.ListChangeRegistry;
-import android.databinding.ObservableList;
-import android.support.annotation.MainThread;
-import android.support.v7.util.DiffUtil;
-import android.support.v7.util.ListUpdateCallback;
+import androidx.databinding.ListChangeRegistry;
+import androidx.databinding.ObservableList;
+import androidx.annotation.MainThread;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ListUpdateCallback;
 
 import java.util.AbstractList;
 import java.util.ArrayList;
