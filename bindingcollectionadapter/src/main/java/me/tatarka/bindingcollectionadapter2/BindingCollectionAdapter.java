@@ -22,7 +22,6 @@ public interface BindingCollectionAdapter<T> {
      */
     void setItemBinding(ItemBinding<T> itemBinding);
 
-
     /**
      * Returns the {@link ItemBinding} that the adapter that was set.
      */

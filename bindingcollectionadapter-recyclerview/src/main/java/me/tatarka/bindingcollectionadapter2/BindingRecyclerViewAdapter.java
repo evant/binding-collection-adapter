@@ -1,17 +1,22 @@
 package me.tatarka.bindingcollectionadapter2;
 
+import android.arch.lifecycle.LifecycleOwner;
 import android.databinding.DataBindingUtil;
 import android.databinding.ObservableList;
 import android.databinding.OnRebindCallback;
 import android.databinding.ViewDataBinding;
+import android.support.annotation.CallSuper;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import java.lang.ref.WeakReference;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -31,11 +36,30 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<ViewHold
     // Currently attached recyclerview, we don't have to listen to notifications if null.
     @Nullable
     private RecyclerView recyclerView;
-    
+    @Nullable
+    private LifecycleOwner lifecycleOwner;
 
     @Override
     public void setItemBinding(ItemBinding<T> itemBinding) {
         this.itemBinding = itemBinding;
+    }
+
+    /**
+     * Sets the lifecycle owner of this adapter to work with {@code LiveData}.
+     * This is normally not necessary, but due to an androidx limitation, you need to set this if
+     * the containing view is <em>not</em> using databinding.
+     */
+    public void setLifecycleOwner(@Nullable LifecycleOwner lifecycleOwner) {
+        this.lifecycleOwner = lifecycleOwner;
+        if (recyclerView != null) {
+            for (int i = 0; i < recyclerView.getChildCount(); i++) {
+                View child = recyclerView.getChildAt(i);
+                ViewDataBinding binding = DataBindingUtil.getBinding(child);
+                if (binding != null) {
+                    binding.setLifecycleOwner(lifecycleOwner);
+                }
+            }
+        }
     }
 
     @Override
@@ -82,25 +106,29 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<ViewHold
     }
 
     @Override
-    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
-        if (this.recyclerView == null && items != null && items instanceof ObservableList) {
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
+        if (this.recyclerView == null && items instanceof ObservableList) {
             callback = new WeakReferenceOnListChangedCallback<>(this, (ObservableList<T>) items);
             ((ObservableList<T>) items).addOnListChangedCallback(callback);
         }
         this.recyclerView = recyclerView;
+        if (lifecycleOwner == null) {
+            lifecycleOwner = Utils.findLifecycleOwner(recyclerView);
+        }
     }
 
     @Override
-    public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
-        if (this.recyclerView != null && items != null && items instanceof ObservableList) {
+    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
+        if (this.recyclerView != null && items instanceof ObservableList) {
             ((ObservableList<T>) items).removeOnListChangedCallback(callback);
             callback = null;
         }
         this.recyclerView = null;
     }
 
+    @NonNull
     @Override
-    public final ViewHolder onCreateViewHolder(ViewGroup viewGroup, int layoutId) {
+    public final ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int layoutId) {
         if (inflater == null) {
             inflater = LayoutInflater.from(viewGroup.getContext());
         }
@@ -130,34 +158,39 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<ViewHold
      * Constructs a view holder for the given databinding. The default implementation is to use
      * {@link ViewHolderFactory} if provided, otherwise use a default view holder.
      */
-    public ViewHolder onCreateViewHolder(ViewDataBinding binding) {
+    @NonNull
+    public ViewHolder onCreateViewHolder(@NonNull ViewDataBinding binding) {
         if (viewHolderFactory != null) {
             return viewHolderFactory.createViewHolder(binding);
         } else {
             return new BindingViewHolder(binding);
         }
     }
-    
+
     private static class BindingViewHolder extends ViewHolder {
-        public BindingViewHolder(ViewDataBinding binding) {
+        BindingViewHolder(ViewDataBinding binding) {
             super(binding.getRoot());
         }
     }
 
     @Override
-    public final void onBindViewHolder(ViewHolder viewHolder, int position) {
-        T item = items.get(position);
-        ViewDataBinding binding = DataBindingUtil.getBinding(viewHolder.itemView);
-        onBindBinding(binding, itemBinding.variableId(), itemBinding.layoutRes(), position, item);
+    public final void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
+        // This won't be called by recyclerview since we are overriding the other overload, call
+        // the other overload here in case someone is calling this directly ex: in a test.
+        onBindViewHolder(viewHolder, position, Collections.emptyList());
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position, List<Object> payloads) {
+    @CallSuper
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull List<Object> payloads) {
+        ViewDataBinding binding = DataBindingUtil.getBinding(holder.itemView);
         if (isForDataBinding(payloads)) {
-            ViewDataBinding binding = DataBindingUtil.getBinding(holder.itemView);
             binding.executePendingBindings();
         } else {
-            super.onBindViewHolder(holder, position, payloads);
+            binding.setLifecycleOwner(lifecycleOwner);
+
+            T item = items.get(position);
+            onBindBinding(binding, itemBinding.variableId(), itemBinding.layoutRes(), position, item);
         }
     }
 
@@ -272,7 +305,7 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<ViewHold
     public interface ItemIds<T> {
         long getItemId(int position, T item);
     }
-    
+
     public interface ViewHolderFactory {
         RecyclerView.ViewHolder createViewHolder(ViewDataBinding binding);
     }

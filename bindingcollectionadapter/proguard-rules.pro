@@ -15,3 +15,6 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+# accessed with reflection
+-keepclassmembers androidx.databinding.ViewDataBinding { private mLifecycleOwner; }

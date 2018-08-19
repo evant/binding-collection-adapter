@@ -25,6 +25,7 @@ public class FragmentListView extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ListViewBinding binding = ListViewBinding.inflate(inflater, container, false);
+        binding.setLifecycleOwner(this);
         binding.setViewModel(viewModel);
         binding.setListeners(new Listeners(viewModel));
         binding.executePendingBindings();

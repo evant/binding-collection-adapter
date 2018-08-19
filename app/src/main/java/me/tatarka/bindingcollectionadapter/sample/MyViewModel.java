@@ -15,9 +15,9 @@ import me.tatarka.bindingcollectionadapter2.collections.MergeObservableList;
 import me.tatarka.bindingcollectionadapter2.itembindings.OnItemBindClass;
 
 public class MyViewModel extends ViewModel {
-    private boolean checkable;
 
     public final ObservableList<ItemViewModel> items = new ObservableArrayList<>();
+    private boolean checkable;
 
     /**
      * Items merged with a header on top and footer on bottom.
@@ -34,18 +34,23 @@ public class MyViewModel extends ViewModel {
 
     public MyViewModel() {
         for (int i = 0; i < 3; i++) {
-            items.add(new ItemViewModel(i, checkable));
+            items.add(new ItemViewModel(i));
         }
     }
 
     public void setCheckable(boolean checkable) {
         this.checkable = checkable;
+        for (ItemViewModel item : items) {
+            item.checkable = checkable;
+        }
     }
 
     /**
      * Binds a homogeneous list of items to a layout.
      */
     public final ItemBinding<ItemViewModel> singleItem = ItemBinding.of(BR.item, R.layout.item);
+
+    public final ItemBinding<ItemViewModel> pageItem = ItemBinding.of(BR.item, R.layout.item_page);
 
     /**
      * Binds multiple items types to different layouts based on class. This could have also be
@@ -105,7 +110,9 @@ public class MyViewModel extends ViewModel {
     }
 
     public void addItem() {
-        items.add(new ItemViewModel(items.size(), checkable));
+        ItemViewModel item = new ItemViewModel(items.size());
+        item.checkable = checkable;
+        items.add(item);
     }
 
     public void removeItem() {

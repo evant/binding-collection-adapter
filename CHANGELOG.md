@@ -1,3 +1,13 @@
+### Unreleased
+- LiveData support. This currently has a limitation that you need to call `setLifecycleOwner` on the
+adapter if the host view is not using databinding.
+
+### 3.0.0-beta1
+- Converted to use androidx, requires databinding v2.
+
+### 2.3.0-beta1
+- Compiled with [databinding v2](https://developer.android.com/topic/libraries/data-binding/start#preview-compiler).
+
 ### 2.2.0
 - Added `MergeObservableList#removeAll()`.
 - Better method for getting the BR variable id in error messages.

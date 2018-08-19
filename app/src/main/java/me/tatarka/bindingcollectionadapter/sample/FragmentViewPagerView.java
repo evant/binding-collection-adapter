@@ -24,20 +24,19 @@ public class FragmentViewPagerView extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewModel = ViewModelProviders.of(this).get(MyViewModel.class);
-        viewModel.setCheckable(false);
+        viewModel.setCheckable(true);
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = ViewpagerViewBinding.inflate(inflater, container, false);
+        binding.setLifecycleOwner(this);
         binding.setViewModel(viewModel);
         binding.setListeners(new PagerListeners(viewModel));
         binding.executePendingBindings();
 
-        PagerAdapter adapter = binding.pager.getAdapter();
-        binding.tabs.setTabsFromPagerAdapter(adapter);
-        binding.tabs.setOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(binding.pager));
+        binding.tabs.setupWithViewPager(binding.pager);
         binding.pager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(binding.tabs));
         return binding.getRoot();
     }
@@ -58,16 +57,16 @@ public class FragmentViewPagerView extends Fragment {
             super.onRemoveItem();
             updateTabs();
         }
-        
+
         private void updateTabs() {
             // We can't use tabs.setTabsFromPagerAdapter() because it will reset the current item to 0.
             binding.tabs.removeAllTabs();
             PagerAdapter adapter = binding.pager.getAdapter();
-            for (int i = 0; i < adapter.getCount() ; i++) {
+            for (int i = 0; i < adapter.getCount(); i++) {
                 binding.tabs.addTab(
                         binding.tabs.newTab().setText(adapter.getPageTitle(i)),
                         i == binding.pager.getCurrentItem()
-                ); 
+                );
             }
         }
     }

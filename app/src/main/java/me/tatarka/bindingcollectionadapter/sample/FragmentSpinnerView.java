@@ -28,6 +28,7 @@ public class FragmentSpinnerView extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         SpinnerViewBinding binding = SpinnerViewBinding.inflate(inflater, container, false);
+        binding.setLifecycleOwner(this);
         binding.setViewModel(viewModel);
         binding.setListeners(new Listeners(viewModel));
         binding.executePendingBindings();
