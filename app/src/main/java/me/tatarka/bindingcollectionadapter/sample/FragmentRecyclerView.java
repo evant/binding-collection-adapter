@@ -1,13 +1,13 @@
 package me.tatarka.bindingcollectionadapter.sample;
 
-import androidx.lifecycle.ViewModelProviders;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
 import me.tatarka.bindingcollectionadapter.sample.databinding.RecyclerViewBinding;
 
 /**
@@ -28,6 +28,7 @@ public class FragmentRecyclerView extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         RecyclerViewBinding binding = RecyclerViewBinding.inflate(inflater, container, false);
+        binding.setLifecycleOwner(this);
         binding.setViewModel(viewModel);
         binding.setListeners(new Listeners(viewModel));
         binding.executePendingBindings();

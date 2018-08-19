@@ -29,7 +29,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            app:itemBinding="@{viewModel.singleItem}"
+            app:itemBinding="@{viewModel.pageItem}"
             app:items="@{viewModel.items}"
             app:pageTitles="@{viewModel.pageTitles}" />
 

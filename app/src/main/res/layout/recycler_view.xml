@@ -30,8 +30,8 @@
             app:adapter="@{viewModel.adapter}"
             app:itemBinding="@{viewModel.multipleItems}"
             app:items="@{viewModel.headerFooterItems}"
-            app:viewHolder="@{viewModel.viewHolder}"
-            app:layoutManager="@{LayoutManagers.linear()}" />
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:viewHolder="@{viewModel.viewHolder}" />
 
         <LinearLayout
             style="?buttonBarStyle"

@@ -1,15 +1,15 @@
 package me.tatarka.bindingcollectionadapter2.collections;
 
-import androidx.databinding.ListChangeRegistry;
-import androidx.databinding.ObservableList;
-import androidx.annotation.MainThread;
-import androidx.recyclerview.widget.DiffUtil;
-import androidx.recyclerview.widget.ListUpdateCallback;
-
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import androidx.annotation.MainThread;
+import androidx.databinding.ListChangeRegistry;
+import androidx.databinding.ObservableList;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ListUpdateCallback;
 
 /**
  * An {@link ObservableList} that uses {@link DiffUtil} to calculate and dispatch it's change

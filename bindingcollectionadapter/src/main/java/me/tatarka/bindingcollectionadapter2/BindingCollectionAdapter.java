@@ -1,13 +1,14 @@
 package me.tatarka.bindingcollectionadapter2;
 
-import androidx.databinding.ObservableList;
-import androidx.databinding.ViewDataBinding;
-import androidx.annotation.LayoutRes;
-import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import java.util.List;
+
+import androidx.annotation.LayoutRes;
+import androidx.annotation.Nullable;
+import androidx.databinding.ObservableList;
+import androidx.databinding.ViewDataBinding;
 
 /**
  * Base interface for the binding collection adapters for various components.
@@ -21,7 +22,6 @@ public interface BindingCollectionAdapter<T> {
      * Sets the item biding for the adapter.
      */
     void setItemBinding(ItemBinding<T> itemBinding);
-
 
     /**
      * Returns the {@link ItemBinding} that the adapter that was set.

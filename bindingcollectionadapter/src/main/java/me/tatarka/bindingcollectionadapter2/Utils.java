@@ -2,10 +2,19 @@ package me.tatarka.bindingcollectionadapter2;
 
 import android.content.Context;
 import android.content.res.Resources;
+
+import androidx.annotation.MainThread;
+import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
+import androidx.databinding.Observable;
+import androidx.databinding.OnRebindCallback;
 import androidx.databinding.ViewDataBinding;
+
 import android.os.Looper;
+import android.view.View;
+
 import androidx.annotation.LayoutRes;
+import androidx.lifecycle.LifecycleOwner;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -18,6 +27,10 @@ import java.lang.reflect.Method;
 class Utils {
     private static final String TAG = "BCAdapters";
 
+    @Nullable
+    private static Field lifecycleOwnerField;
+    private static boolean fieldFaild;
+
     /**
      * Helper to throw an exception when {@link androidx.databinding.ViewDataBinding#setVariable(int,
      * Object)} returns false.
@@ -28,6 +41,46 @@ class Utils {
         String layoutName = resources.getResourceName(layoutRes);
         String bindingVariableName = DataBindingUtil.convertBrIdToString(bindingVariable);
         throw new IllegalStateException("Could not bind variable '" + bindingVariableName + "' in layout '" + layoutName + "'");
+    }
+
+    /**
+     * Returns the lifecycle owner associated with the given view. This currently requires the view
+     * to use databinding and uses reflection. This will hopefully be replaced with a better
+     * implementation once https://issuetracker.google.com/issues/112929938 gets implemented.
+     */
+    @Nullable
+    @MainThread
+    static LifecycleOwner findLifecycleOwner(View view) {
+        ViewDataBinding binding = DataBindingUtil.findBinding(view);
+        if (binding == null) {
+            return null;
+        }
+        return getLifecycleOwner(binding);
+    }
+
+    /**
+     * Returns the lifecycle owner from a {@code ViewDataBinding} using reflection.
+     */
+    @Nullable
+    @MainThread
+    private static LifecycleOwner getLifecycleOwner(ViewDataBinding binding) {
+        if (!fieldFaild && lifecycleOwnerField == null) {
+            try {
+                lifecycleOwnerField = ViewDataBinding.class.getDeclaredField("mLifecycleOwner");
+                lifecycleOwnerField.setAccessible(true);
+            } catch (NoSuchFieldException e) {
+                fieldFaild = true;
+                return null;
+            }
+        }
+        if (lifecycleOwnerField == null) {
+            return null;
+        }
+        try {
+            return (LifecycleOwner) lifecycleOwnerField.get(binding);
+        } catch (IllegalAccessException e) {
+            return null;
+        }
     }
 
     /**

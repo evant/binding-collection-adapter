@@ -33,14 +33,13 @@ android {
 }
 
 dependencies {
-    compile 'androidx.core:core:1.0.0-beta01'
-    compile 'androidx.legacy:legacy-support-core-ui:1.0.0-beta01'
+    compile 'androidx.core:core:1.0.0-rc01'
+    compile 'androidx.legacy:legacy-support-core-ui:1.0.0-rc01'
 
     testCompile 'junit:junit:4.12'
     testCompile 'org.assertj:assertj-core:1.7.1'
     testCompile 'org.mockito:mockito-core:2.18.3'
 
-    androidTestCompile fileTree(dir: 'testLibs', include: '*.jar')
     androidTestCompile 'androidx.test:runner:1.1.0-alpha4'
     androidTestCompile 'androidx.test:rules:1.1.0-alpha4'
     androidTestCompile 'androidx.test.espresso:espresso-core:3.1.0-alpha4'

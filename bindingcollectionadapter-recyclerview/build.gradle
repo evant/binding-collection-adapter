@@ -34,7 +34,7 @@ android {
 
 dependencies {
     compile project(':bindingcollectionadapter')
-    compile 'androidx.recyclerview:recyclerview:1.0.0-beta01'
+    compile 'androidx.recyclerview:recyclerview:1.0.0-rc01'
 
     testCompile 'junit:junit:4.12'
     testCompile 'org.assertj:assertj-core:1.7.1'
@@ -44,7 +44,7 @@ dependencies {
     androidTestCompile 'androidx.test:rules:1.1.0-alpha4'
     androidTestCompile 'androidx.test.espresso:espresso-core:3.1.0-alpha4'
     androidTestCompile 'com.squareup.assertj:assertj-android:1.1.0'
-    androidTestCompile 'androidx.core:core:1.0.0-beta01'
+    androidTestCompile 'androidx.core:core:1.0.0-rc01'
 }
 
 apply from: '../publish.gradle'

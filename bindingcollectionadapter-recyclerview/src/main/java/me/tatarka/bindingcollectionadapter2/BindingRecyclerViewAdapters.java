@@ -1,6 +1,8 @@
 package me.tatarka.bindingcollectionadapter2;
 
 import androidx.databinding.BindingAdapter;
+import androidx.databinding.DataBindingUtil;
+import androidx.databinding.ViewDataBinding;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
