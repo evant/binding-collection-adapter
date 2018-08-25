@@ -5,29 +5,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
-import me.tatarka.bindingcollectionadapter.sample.databinding.RecyclerViewBinding;
+import me.tatarka.bindingcollectionadapter.sample.databinding.DiffRecyclerViewBinding;
 
-/**
- * Created by evan on 5/31/15.
- */
-public class FragmentRecyclerView extends Fragment {
-    private static final String TAG = "BindingRecyclerView";
-    private MutableViewModel viewModel;
+public class FragmentDiffRecyclerView extends Fragment {
+    private ImmutableViewModel viewModel;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        viewModel = ViewModelProviders.of(this).get(MutableViewModel.class);
-        viewModel.setCheckable(true);
+        viewModel = ViewModelProviders.of(this).get(ImmutableViewModel.class);
     }
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        RecyclerViewBinding binding = RecyclerViewBinding.inflate(inflater, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        DiffRecyclerViewBinding binding = DiffRecyclerViewBinding.inflate(inflater, container, false);
         binding.setLifecycleOwner(this);
         binding.setViewModel(viewModel);
         binding.setListeners(viewModel);

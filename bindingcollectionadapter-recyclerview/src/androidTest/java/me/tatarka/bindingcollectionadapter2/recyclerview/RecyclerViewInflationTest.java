@@ -6,9 +6,11 @@ import androidx.test.annotation.UiThreadTest;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 
 import me.tatarka.bindingcollectionadapter2.ItemBinding;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -65,5 +67,21 @@ public class RecyclerViewInflationTest {
         BindingRecyclerViewAdapter<String> adapter = (BindingRecyclerViewAdapter<String>) recyclerView.getAdapter();
 
         assertThat(adapter).isInstanceOf(TestHelpers.MyBindingRecyclerViewAdapter.class);
+    }
+
+    @Test
+    @UiThreadTest
+    public void recyclerViewDiff() {
+        List<String> items = Arrays.asList("one", "two", "three");
+        TestHelpers.ViewModel viewModel = new TestHelpers.ViewModel(items, ItemBinding.<String>of(BR.item, R.layout.item));
+        ViewDataBinding binding = DataBindingUtil.inflate(inflater, R.layout.recycler_view_diff, null, false);
+        binding.setVariable(BR.viewModel, viewModel);
+        binding.executePendingBindings();
+
+        RecyclerView recyclerView = (RecyclerView) binding.getRoot();
+        @SuppressWarnings("unchecked")
+        BindingRecyclerViewAdapter<String> adapter = (BindingRecyclerViewAdapter<String>) recyclerView.getAdapter();
+
+        assertThat(TestHelpers.iterable(adapter)).containsExactlyElementsOf(items);
     }
 }

@@ -6,7 +6,11 @@
 
         <variable
             name="item"
-            type="me.tatarka.bindingcollectionadapter.sample.Item" />
+            type="me.tatarka.bindingcollectionadapter.sample.ImmutableItem" />
+
+        <variable
+            name="listeners"
+            type="me.tatarka.bindingcollectionadapter.sample.ImmutableListeners" />
 
         <import type="android.view.View" />
     </data>
@@ -15,8 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?selectableItemBackground"
-        android:longClickable="@{item.checkable}"
-        android:onLongClickListener="@{(v) -> item.onToggleChecked()}"
+        android:onLongClickListener="@{(v) -> listeners.onToggleChecked(item.index)}"
         android:orientation="horizontal">
 
         <TextView

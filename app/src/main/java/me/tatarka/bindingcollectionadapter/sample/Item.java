@@ -4,12 +4,12 @@ import androidx.annotation.MainThread;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-public class ItemViewModel {
+public class Item {
     public boolean checkable;
     private int index;
     private final MutableLiveData<Boolean> checked;
 
-    public ItemViewModel(int index) {
+    public Item(int index) {
         this.index = index;
         checked = new MutableLiveData<>();
         checked.setValue(false);

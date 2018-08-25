@@ -30,7 +30,7 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<ViewHold
 
     private ItemBinding<T> itemBinding;
     private WeakReferenceOnListChangedCallback<T> callback;
-    private List<T> items;
+    List<T> items;
     private LayoutInflater inflater;
     private ItemIds<? super T> itemIds;
     private ViewHolderFactory viewHolderFactory;

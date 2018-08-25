@@ -15,12 +15,12 @@ import me.tatarka.bindingcollectionadapter.sample.databinding.SpinnerViewBinding
  */
 public class FragmentSpinnerView extends Fragment {
     private static final String TAG = "BindingSpinner";
-    private MyViewModel viewModel;
+    private MutableViewModel viewModel;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        viewModel = ViewModelProviders.of(this).get(MyViewModel.class);
+        viewModel = ViewModelProviders.of(this).get(MutableViewModel.class);
         viewModel.setCheckable(false);
     }
 
@@ -30,7 +30,7 @@ public class FragmentSpinnerView extends Fragment {
         SpinnerViewBinding binding = SpinnerViewBinding.inflate(inflater, container, false);
         binding.setLifecycleOwner(this);
         binding.setViewModel(viewModel);
-        binding.setListeners(new Listeners(viewModel));
+        binding.setListeners(viewModel);
         binding.executePendingBindings();
         return binding.getRoot();
     }

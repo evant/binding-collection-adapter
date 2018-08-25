@@ -33,14 +33,14 @@ android {
 }
 
 dependencies {
-    compile 'androidx.appcompat:appcompat:1.0.0-rc01'
-    compile 'com.google.android.material:material:1.0.0-rc01'
-    compile 'androidx.legacy:legacy-support-v4:1.0.0-rc01'
-    compile 'androidx.recyclerview:recyclerview:1.0.0-rc01'
-    compile 'androidx.vectordrawable:vectordrawable-animated:1.0.0-rc01'
-    compile 'androidx.lifecycle:lifecycle-runtime:2.0.0-rc01'
-    compile 'androidx.lifecycle:lifecycle-extensions:2.0.0-rc01'
+    implementation 'androidx.appcompat:appcompat:1.0.0-rc02'
+    implementation 'com.google.android.material:material:1.0.0-rc02'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0-rc02'
+    implementation 'androidx.recyclerview:recyclerview:1.0.0-rc02'
+    implementation 'androidx.vectordrawable:vectordrawable-animated:1.0.0-rc02'
+    implementation 'androidx.lifecycle:lifecycle-runtime:2.0.0-rc01'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0-rc01'
     annotationProcessor "androidx.lifecycle:lifecycle-compiler:2.0.0-rc01"
-    compile project(':bindingcollectionadapter')
-    compile project(':bindingcollectionadapter-recyclerview')
+    implementation project(':bindingcollectionadapter')
+    implementation project(':bindingcollectionadapter-recyclerview')
 }

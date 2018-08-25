@@ -15,9 +15,9 @@ import me.tatarka.bindingcollectionadapter2.ItemBinding;
 import me.tatarka.bindingcollectionadapter2.collections.MergeObservableList;
 import me.tatarka.bindingcollectionadapter2.itembindings.OnItemBindClass;
 
-public class MyViewModel extends ViewModel {
+public class MutableViewModel extends ViewModel implements Listeners{
 
-    public final ObservableList<ItemViewModel> items = new ObservableArrayList<>();
+    public final ObservableList<Item> items = new ObservableArrayList<>();
     private boolean checkable;
 
     /**
@@ -33,15 +33,15 @@ public class MyViewModel extends ViewModel {
      */
     public final LoggingRecyclerViewAdapter<Object> adapter = new LoggingRecyclerViewAdapter<>();
 
-    public MyViewModel() {
+    public MutableViewModel() {
         for (int i = 0; i < 3; i++) {
-            items.add(new ItemViewModel(i));
+            items.add(new Item(i));
         }
     }
 
     public void setCheckable(boolean checkable) {
         this.checkable = checkable;
-        for (ItemViewModel item : items) {
+        for (Item item : items) {
             item.checkable = checkable;
         }
     }
@@ -49,9 +49,9 @@ public class MyViewModel extends ViewModel {
     /**
      * Binds a homogeneous list of items to a layout.
      */
-    public final ItemBinding<ItemViewModel> singleItem = ItemBinding.of(BR.item, R.layout.item);
+    public final ItemBinding<Item> singleItem = ItemBinding.of(BR.item, R.layout.item);
 
-    public final ItemBinding<ItemViewModel> pageItem = ItemBinding.of(BR.item, R.layout.item_page);
+    public final ItemBinding<Item> pageItem = ItemBinding.of(BR.item, R.layout.item_page);
 
     /**
      * Binds multiple items types to different layouts based on class. This could have also be
@@ -62,7 +62,7 @@ public class MyViewModel extends ViewModel {
      *     public void onItemBind(ItemBinding itemBinding, int position, Object item) {
      *         if (String.class.equals(item.getClass())) {
      *             itemBinding.set(BR.item, R.layout.item_header_footer);
-     *         } else if (ItemViewModel.class.equals(item.getClass())) {
+     *         } else if (Item.class.equals(item.getClass())) {
      *             itemBinding.set(BR.item, R.layout.item);
      *         }
      *     }
@@ -71,7 +71,7 @@ public class MyViewModel extends ViewModel {
      */
     public final OnItemBindClass<Object> multipleItems = new OnItemBindClass<>()
             .map(String.class, BR.item, R.layout.item_header_footer)
-            .map(ItemViewModel.class, BR.item, R.layout.item);
+            .map(Item.class, BR.item, R.layout.item);
 
     /**
      * Define stable item ids. These are just based on position because the items happen to not
@@ -87,9 +87,9 @@ public class MyViewModel extends ViewModel {
     /**
      * Define page titles for a ViewPager
      */
-    public final BindingViewPagerAdapter.PageTitles<ItemViewModel> pageTitles = new BindingViewPagerAdapter.PageTitles<ItemViewModel>() {
+    public final BindingViewPagerAdapter.PageTitles<Item> pageTitles = new BindingViewPagerAdapter.PageTitles<Item>() {
         @Override
-        public CharSequence getPageTitle(int position, ItemViewModel item) {
+        public CharSequence getPageTitle(int position, Item item) {
             return "Item " + (item.getIndex() + 1);
         }
     };
@@ -110,13 +110,15 @@ public class MyViewModel extends ViewModel {
         }
     }
 
-    public void addItem() {
-        ItemViewModel item = new ItemViewModel(items.size());
+    @Override
+    public void onAddItem() {
+        Item item = new Item(items.size());
         item.checkable = checkable;
         items.add(item);
     }
 
-    public void removeItem() {
+    @Override
+    public void onRemoveItem() {
         if (items.size() > 1) {
             items.remove(items.size() - 1);
         }
