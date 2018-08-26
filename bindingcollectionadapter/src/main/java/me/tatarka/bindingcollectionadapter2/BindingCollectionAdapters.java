@@ -1,14 +1,17 @@
 package me.tatarka.bindingcollectionadapter2;
 
-import android.databinding.BindingAdapter;
-import android.databinding.BindingConversion;
-import android.support.annotation.LayoutRes;
-import android.support.v4.view.ViewPager;
 import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.WrapperListAdapter;
 
 import java.util.List;
+
+import androidx.annotation.LayoutRes;
+import androidx.databinding.BindingAdapter;
+import androidx.databinding.BindingConversion;
+import androidx.databinding.DataBindingUtil;
+import androidx.databinding.ViewDataBinding;
+import androidx.viewpager.widget.ViewPager;
 
 /**
  * All the BindingAdapters so that you can set your adapters and items directly in your layout.

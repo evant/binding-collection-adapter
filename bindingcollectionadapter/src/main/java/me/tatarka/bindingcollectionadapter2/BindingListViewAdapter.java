@@ -1,11 +1,5 @@
 package me.tatarka.bindingcollectionadapter2;
 
-import android.databinding.DataBindingUtil;
-import android.databinding.ObservableList;
-import android.databinding.ViewDataBinding;
-import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +7,13 @@ import android.widget.BaseAdapter;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
+
+import androidx.annotation.LayoutRes;
+import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
+import androidx.databinding.ObservableList;
+import androidx.databinding.ViewDataBinding;
+import androidx.lifecycle.LifecycleOwner;
 
 /**
  * A {@link BaseAdapter} that binds items to layouts using the given {@link ItemBinding} If you give
@@ -29,6 +30,9 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
     private LayoutInflater inflater;
     private ItemIds<? super T> itemIds;
     private ItemIsEnabled<? super T> itemIsEnabled;
+    @Nullable
+    private LifecycleOwner lifecycleOwner;
+    private boolean failedToGetLifecycleOwner;
 
     /**
      * Constructs a new instance with the given item count.
@@ -40,6 +44,16 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
     @Override
     public void setItemBinding(ItemBinding<T> itemBinding) {
         this.itemBinding = itemBinding;
+    }
+
+    /**
+     * Sets the lifecycle owner of this adapter to work with {@link androidx.lifecycle.LiveData}.
+     * This is normally not necessary, but due to an androidx limitation, you need to set this if
+     * the containing view is <em>not</em> using databinding.
+     */
+    public void setLifecycleOwner(@Nullable LifecycleOwner lifecycleOwner) {
+        this.lifecycleOwner = lifecycleOwner;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -125,10 +139,12 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
     }
 
     @Override
-    public final View getView(int position, View convertView, @NonNull ViewGroup parent) {
+    public final View getView(int position, View convertView, ViewGroup parent) {
         if (inflater == null) {
             inflater = LayoutInflater.from(parent.getContext());
         }
+
+        tryGetLifecycleOwner(parent);
 
         int viewType = getItemViewType(position);
         int layoutRes = layouts[viewType];
@@ -140,10 +156,13 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
             binding = DataBindingUtil.getBinding(convertView);
         }
 
+        View view = binding.getRoot();
+        binding.setLifecycleOwner(lifecycleOwner);
+
         T item = items.get(position);
         onBindBinding(binding, itemBinding.variableId(), layoutRes, position, item);
 
-        return binding.getRoot();
+        return view;
     }
 
     @Override
@@ -151,6 +170,8 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
         if (inflater == null) {
             inflater = LayoutInflater.from(parent.getContext());
         }
+
+        tryGetLifecycleOwner(parent);
 
         if (dropDownItemLayout == 0) {
             return super.getDropDownView(position, convertView, parent);
@@ -163,10 +184,22 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
                 binding = DataBindingUtil.getBinding(convertView);
             }
 
+            View view = binding.getRoot();
+            binding.setLifecycleOwner(lifecycleOwner);
+
             T item = items.get(position);
             onBindBinding(binding, itemBinding.variableId(), layoutRes, position, item);
 
-            return binding.getRoot();
+            return view;
+        }
+    }
+
+    private void tryGetLifecycleOwner(ViewGroup parent) {
+        if (!failedToGetLifecycleOwner && lifecycleOwner == null) {
+            lifecycleOwner = Utils.findLifecycleOwner(parent);
+            if (lifecycleOwner == null) {
+                failedToGetLifecycleOwner = true;
+            }
         }
     }
 
@@ -207,7 +240,7 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
         return count;
     }
 
-    private static class WeakReferenceOnListChangedCallback<T> extends ObservableList.OnListChangedCallback<ObservableList<T>> {
+    static class WeakReferenceOnListChangedCallback<T> extends ObservableList.OnListChangedCallback<ObservableList<T>> {
         final WeakReference<BindingListViewAdapter<T>> adapterRef;
 
         WeakReferenceOnListChangedCallback(BindingListViewAdapter<T> adapter, ObservableList<T> items) {

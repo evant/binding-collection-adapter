@@ -1,6 +1,6 @@
 package me.tatarka.bindingcollectionadapter2;
 
-import android.databinding.ObservableList;
+import androidx.databinding.ObservableList;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

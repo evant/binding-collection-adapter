@@ -7,13 +7,12 @@ repositories {
 }
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion '25.0.3'
+    compileSdkVersion 28
 
     defaultConfig {
         applicationId "me.tatarka.bindingcollectionadapter.sample"
         minSdkVersion 14
-        targetSdkVersion 26
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
     }
@@ -24,8 +23,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
     dataBinding {
         enabled = true
@@ -33,15 +32,14 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:25.4.0'
-    compile 'com.android.support:design:25.4.0'
-    compile 'com.android.support:support-v4:25.4.0'
-    compile 'com.android.support:recyclerview-v7:25.4.0'
-
-    compile "android.arch.lifecycle:runtime:1.0.0-alpha3"
-    compile "android.arch.lifecycle:extensions:1.0.0-alpha3"
-    annotationProcessor "android.arch.lifecycle:compiler:1.0.0-alpha3"
-
+    compile 'androidx.appcompat:appcompat:1.0.0-rc01'
+    compile 'com.google.android.material:material:1.0.0-rc01'
+    compile 'androidx.legacy:legacy-support-v4:1.0.0-rc01'
+    compile 'androidx.recyclerview:recyclerview:1.0.0-rc01'
+    compile 'androidx.vectordrawable:vectordrawable-animated:1.0.0-rc01'
+    compile 'androidx.lifecycle:lifecycle-runtime:2.0.0-rc01'
+    compile 'androidx.lifecycle:lifecycle-extensions:2.0.0-rc01'
+    annotationProcessor "androidx.lifecycle:lifecycle-compiler:2.0.0-rc01"
     compile project(':bindingcollectionadapter')
     compile project(':bindingcollectionadapter-recyclerview')
 }

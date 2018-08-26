@@ -4,12 +4,11 @@ apply plugin: 'com.jfrog.bintray'
 apply plugin: 'signing'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion '25.0.2'
+    compileSdkVersion 28
 
     defaultConfig {
-        minSdkVersion 10
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        minSdkVersion 14
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -34,17 +33,16 @@ android {
 }
 
 dependencies {
-    //noinspection GradleDependency,GradleCompatible
-    compile 'com.android.support:support-v4:21.0.3'
+    compile 'androidx.core:core:1.0.0-rc01'
+    compile 'androidx.legacy:legacy-support-core-ui:1.0.0-rc01'
 
     testCompile 'junit:junit:4.12'
     testCompile 'org.assertj:assertj-core:1.7.1'
-    testCompile 'org.mockito:mockito-core:2.0.44-beta'
+    testCompile 'org.mockito:mockito-core:2.18.3'
 
-    androidTestCompile fileTree(dir: 'testLibs', include: '*.jar')
-    androidTestCompile 'com.android.support.test:runner:0.5'
-    androidTestCompile 'com.android.support.test:rules:0.5'
-    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2'
+    androidTestCompile 'androidx.test:runner:1.1.0-alpha4'
+    androidTestCompile 'androidx.test:rules:1.1.0-alpha4'
+    androidTestCompile 'androidx.test.espresso:espresso-core:3.1.0-alpha4'
     androidTestCompile 'com.squareup.assertj:assertj-android:1.1.0'
 }
 

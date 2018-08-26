@@ -1,17 +1,21 @@
 package me.tatarka.bindingcollectionadapter2;
 
-import android.databinding.DataBindingUtil;
-import android.databinding.ObservableList;
-import android.databinding.ViewDataBinding;
-import android.support.annotation.LayoutRes;
-import android.support.annotation.Nullable;
-import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
+
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
+import androidx.databinding.ObservableList;
+import androidx.databinding.ViewDataBinding;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.viewpager.widget.PagerAdapter;
 
 /**
  * A {@link PagerAdapter} that binds items to layouts using the given {@link ItemBinding} or {@link
@@ -24,10 +28,29 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter implements BindingC
     private List<T> items;
     private LayoutInflater inflater;
     private PageTitles<T> pageTitles;
+    @Nullable
+    private LifecycleOwner lifecycleOwner;
+    private boolean failedToGetLifecycleOwner;
+    private List<View> views = new ArrayList<>();
 
     @Override
     public void setItemBinding(ItemBinding<T> itemBinding) {
         this.itemBinding = itemBinding;
+    }
+
+    /**
+     * Sets the lifecycle owner of this adapter to work with {@link androidx.lifecycle.LiveData}.
+     * This is normally not necessary, but due to an androidx limitation, you need to set this if
+     * the containing view is <em>not</em> using databinding.
+     */
+    public void setLifecycleOwner(@Nullable LifecycleOwner lifecycleOwner) {
+        this.lifecycleOwner = lifecycleOwner;
+        for (View view : views) {
+            ViewDataBinding binding = DataBindingUtil.getBinding(view);
+            if (binding != null) {
+                binding.setLifecycleOwner(lifecycleOwner);
+            }
+        }
     }
 
     @Override
@@ -86,36 +109,54 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter implements BindingC
         return pageTitles == null ? null : pageTitles.getPageTitle(position, items.get(position));
     }
 
+    @NonNull
     @Override
-    public Object instantiateItem(ViewGroup container, int position) {
+    public Object instantiateItem(@NonNull ViewGroup container, int position) {
         if (inflater == null) {
             inflater = LayoutInflater.from(container.getContext());
         }
+
+        tryGetLifecycleOwner(container);
 
         T item = items.get(position);
         itemBinding.onItemBind(position, item);
 
         ViewDataBinding binding = onCreateBinding(inflater, itemBinding.layoutRes(), container);
+        View view = binding.getRoot();
+        binding.setLifecycleOwner(lifecycleOwner);
+
         onBindBinding(binding, itemBinding.variableId(), itemBinding.layoutRes(), position, item);
 
-        container.addView(binding.getRoot());
-        binding.getRoot().setTag(item);
-        return binding.getRoot();
+        container.addView(view);
+        view.setTag(item);
+        views.add(view);
+        return view;
+    }
+
+    private void tryGetLifecycleOwner(ViewGroup parent) {
+        if (!failedToGetLifecycleOwner && lifecycleOwner == null) {
+            lifecycleOwner = Utils.findLifecycleOwner(parent);
+            if (lifecycleOwner == null) {
+                failedToGetLifecycleOwner = true;
+            }
+        }
     }
 
     @Override
-    public void destroyItem(ViewGroup container, int position, Object object) {
-        container.removeView((View) object);
+    public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
+        View view = (View) object;
+        views.remove(view);
+        container.removeView(view);
     }
 
     @Override
-    public boolean isViewFromObject(View view, Object object) {
+    public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
         return view == object;
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public int getItemPosition(Object object) {
+    public int getItemPosition(@NonNull Object object) {
         T item = (T) ((View) object).getTag();
         if (items != null) {
             for (int i = 0; i < items.size(); i++) {

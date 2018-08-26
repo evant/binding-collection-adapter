@@ -1,7 +1,7 @@
 package me.tatarka.bindingcollectionadapter2.recyclerview;
 
-import android.support.test.espresso.core.deps.dagger.internal.Factory;
-import android.support.test.espresso.core.deps.guava.base.Joiner;
+import androidx.test.espresso.core.internal.deps.dagger.internal.Factory;
+import androidx.test.espresso.core.internal.deps.guava.base.Joiner;
 
 import java.util.Iterator;
 import java.util.List;
@@ -101,7 +101,7 @@ public class TestHelpers {
 
         @Override
         public String toString() {
-            return "[" + Joiner.on(',').join(this) + "]";
+            return "[" + Joiner.on(",").join(this) + "]";
         }
 
         abstract int getCount();

@@ -13,25 +13,25 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?selectableItemBackground"
+        android:layout_height="match_parent"
         android:longClickable="@{item.checkable}"
         android:onLongClickListener="@{(v) -> item.onToggleChecked()}"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
         <TextView
             style="@style/TextAppearance.AppCompat.Body1"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:padding="16dp"
             android:text='@{"Item " + (item.index + 1)}'
             tools:text="Item 1" />
 
-        <ImageView
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:src="@drawable/ic_action_check"
-            android:visibility="@{item.checked ? View.VISIBLE : View.GONE}" />
+        <CheckBox
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="@{item.checked}"
+            android:onCheckedChanged="@{(v, b) -> item.setChecked(b)}"
+            android:text="Checked"
+            android:visibility="@{item.checkable ? View.VISIBLE : View.GONE}" />
     </LinearLayout>
 </layout>

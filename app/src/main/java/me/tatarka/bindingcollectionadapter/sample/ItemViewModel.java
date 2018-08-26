@@ -1,40 +1,41 @@
 package me.tatarka.bindingcollectionadapter.sample;
 
-import android.databinding.BaseObservable;
-import android.databinding.Bindable;
-import android.view.View;
+import androidx.annotation.MainThread;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
-import me.tatarka.bindingcollectionadapter.sample.BR;
-
-/**
- * Created by evan on 6/14/15.
- */
-public class ItemViewModel extends BaseObservable {
-    public final boolean checkable;
-    @Bindable
+public class ItemViewModel {
+    public boolean checkable;
     private int index;
-    @Bindable
-    private boolean checked;
+    private final MutableLiveData<Boolean> checked;
 
-    public ItemViewModel(int index, boolean checkable) {
+    public ItemViewModel(int index) {
         this.index = index;
-        this.checkable = checkable;
+        checked = new MutableLiveData<>();
+        checked.setValue(false);
     }
 
     public int getIndex() {
         return index;
     }
 
-    public boolean isChecked() {
+    public LiveData<Boolean> isChecked() {
         return checked;
     }
-    
-    public boolean onToggleChecked(View v) {
+
+    public void setChecked(boolean value) {
+        if (!checkable) {
+            return;
+        }
+        checked.setValue(value);
+    }
+
+    @MainThread
+    public boolean onToggleChecked() {
         if (!checkable) {
             return false;
         }
-        checked = !checked;
-        notifyPropertyChanged(BR.checked);
+        checked.setValue(!checked.getValue());
         return true;
     }
 }
