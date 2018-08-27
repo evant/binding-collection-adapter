@@ -70,9 +70,6 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<ViewHold
 
     @Override
     public void setItems(@Nullable List<T> items) {
-        if (this.items == items) {
-            return;
-        }
         // If a recyclerview is listening, set up listeners. Otherwise wait until one is attached.
         // No need to make a sound if nobody is listening right?
         if (recyclerView != null) {
