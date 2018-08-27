@@ -39,8 +39,7 @@ public class ViewModel {
 }
 ```
 
-Then bind it to the collection view with `app:items` and `app:itemBinding`. There are also some
-convenience factories to attach a `LayoutManager` to a `RecyclerView` with `app:layoutManager`.
+Then bind it to the collection view with `app:items` and `app:itemBinding`.
 
 ```xml
 <!-- layout.xml -->
@@ -48,7 +47,6 @@ convenience factories to attach a `LayoutManager` to a `RecyclerView` with `app:
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
       <import type="com.example.R" />
-      <import type="me.tatarka.bindingcollectionadapter2.LayoutManagers" />
       <variable name="viewModel" type="com.example.ViewModel"/>
     </data>
 
@@ -58,10 +56,10 @@ convenience factories to attach a `LayoutManager` to a `RecyclerView` with `app:
       app:items="@{viewModel.items}"
       app:itemBinding="@{viewModel.itemBinding}"/>
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      app:layoutManager="@{LayoutManagers.linear()}"
+      app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
       app:items="@{viewModel.items}"
       app:itemBinding="@{viewModel.itemBinding}"/>
 
@@ -237,10 +235,10 @@ public class MyRecyclerViewAdapter<T> extends BindingRecyclerViewAdapter<T> {
 ```
 
 ```xml
-<android.support.v7.widget.RecyclerView
+<androidx.recyclerview.widget.RecyclerView
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  app:layoutManager="@{LayoutManagers.linear()}"
+  app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
   app:items="@{viewModel.items}"
   app:itemBinding="@{viewModel.itemBinding}"
   app:adapter="@{viewModel.adapter}"/>

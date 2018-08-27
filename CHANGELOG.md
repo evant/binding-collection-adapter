@@ -1,3 +1,7 @@
+### Unreleased
+- Removed `LayoutManagers`. RecyclerView has support setting the LayoutManager in xml using it's
+class name that doesn't rely on databinding.
+
 ### 3.0.0-beta3
 - Compile with AGP `3.2.0-rc02` for better compatibility.
 

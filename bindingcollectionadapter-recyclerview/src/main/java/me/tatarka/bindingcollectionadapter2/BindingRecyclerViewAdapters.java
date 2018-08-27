@@ -1,11 +1,9 @@
 package me.tatarka.bindingcollectionadapter2;
 
-import androidx.databinding.BindingAdapter;
-import androidx.databinding.DataBindingUtil;
-import androidx.databinding.ViewDataBinding;
-import androidx.recyclerview.widget.RecyclerView;
-
 import java.util.List;
+
+import androidx.databinding.BindingAdapter;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * @see {@link BindingCollectionAdapters}
@@ -34,10 +32,5 @@ public class BindingRecyclerViewAdapters {
         if (oldAdapter != adapter) {
             recyclerView.setAdapter(adapter);
         }
-    }
-
-    @BindingAdapter("layoutManager")
-    public static void setLayoutManager(RecyclerView recyclerView, LayoutManagers.LayoutManagerFactory layoutManagerFactory) {
-        recyclerView.setLayoutManager(layoutManagerFactory.create(recyclerView));
     }
 }
