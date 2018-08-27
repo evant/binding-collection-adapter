@@ -1,17 +1,7 @@
 package me.tatarka.bindingcollectionadapter2.recyclerview;
 
-import androidx.databinding.DataBindingUtil;
-import androidx.databinding.ObservableArrayList;
-import androidx.databinding.ObservableList;
-import androidx.databinding.ViewDataBinding;
-import androidx.test.annotation.UiThreadTest;
-import androidx.test.rule.ActivityTestRule;
-import androidx.test.runner.AndroidJUnit4;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 
-import me.tatarka.bindingcollectionadapter2.ItemBinding;
-import me.tatarka.bindingcollectionadapter2.OnItemBind;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -20,8 +10,18 @@ import org.junit.runner.RunWith;
 import java.util.Arrays;
 import java.util.List;
 
+import androidx.databinding.DataBindingUtil;
+import androidx.databinding.ObservableArrayList;
+import androidx.databinding.ObservableList;
+import androidx.databinding.ViewDataBinding;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.test.annotation.UiThreadTest;
+import androidx.test.rule.ActivityTestRule;
+import androidx.test.runner.AndroidJUnit4;
 import me.tatarka.bindingcollectionadapter2.BR;
 import me.tatarka.bindingcollectionadapter2.BindingCollectionAdapter;
+import me.tatarka.bindingcollectionadapter2.ItemBinding;
+import me.tatarka.bindingcollectionadapter2.OnItemBind;
 import me.tatarka.bindingcollectionadapter2.recyclerview.test.R;
 
 import static me.tatarka.bindingcollectionadapter2.recyclerview.test.R.layout.item;

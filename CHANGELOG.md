@@ -1,9 +1,15 @@
+### 3.0.0-beta3
+- Compile with AGP `3.2.0-rc02` for better compatibility.
+
 ### 3.0.0-beta2
 - LiveData support. This currently has a limitation that you need to call `setLifecycleOwner` on the
 adapter if the host view is not using databinding.
 
 ### 3.0.0-beta1
 - Converted to use androidx, requires databinding v2.
+
+### 2.3.0-beta3
+- Compile with AGP `3.2.0-rc02` for better compatibility.
 
 ### 2.3.0-beta2
 - LiveData support. This currently has a limitation that you need to call `setLifecycleOwner` on the

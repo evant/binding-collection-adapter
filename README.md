@@ -12,18 +12,18 @@ compile 'me.tatarka.bindingcollectionadapter2:bindingcollectionadapter-recyclerv
 requires at least android gradle plugin `2.3.0`.
 
 If you want to try out [databinding v2](https://developer.android.com/topic/libraries/data-binding/start#preview-compiler) 
-you can use version `2.3.0-beta2`
+you can use version `2.3.0-beta3`
 
 ```groovy
-compile 'me.tatarka.bindingcollectionadapter2:bindingcollectionadapter:2.3.0-beta2'
-compile 'me.tatarka.bindingcollectionadapter2:bindingcollectionadapter-recyclerview:2.3.0-beta2'
+compile 'me.tatarka.bindingcollectionadapter2:bindingcollectionadapter:2.3.0-beta3'
+compile 'me.tatarka.bindingcollectionadapter2:bindingcollectionadapter-recyclerview:2.3.0-beta3'
 ```
 
-If you are using androidx use version `3.0.0-beta2`, this also uses databinding v2
+If you are using androidx use version `3.0.0-beta3`, this also uses databinding v2
 
 ```groovy
-compile 'me.tatarka.bindingcollectionadapter2:bindingcollectionadapter:3.0.0-beta2'
-compile 'me.tatarka.bindingcollectionadapter2:bindingcollectionadapter-recyclerview:3.0.0-beta2'
+compile 'me.tatarka.bindingcollectionadapter2:bindingcollectionadapter:3.0.0-beta3'
+compile 'me.tatarka.bindingcollectionadapter2:bindingcollectionadapter-recyclerview:3.0.0-beta3'
 ```
 
 ## Usage
@@ -360,7 +360,7 @@ it to run immediately by calling `binding.executePendingBindings()`.
 
 ### LiveData not working
 
-Live data support has been added in `2.3.0-beta2` and `3.0.0-beta2` (androidx). For most cases it
+Live data support has been added in `2.3.0-beta3` and `3.0.0-beta3` (androidx). For most cases it
 should 'just work'. However, it uses a bit of reflection under the hood and you'll have to call
 `adapter.setLifecycleOwner(owner)` if your containing view does not use databinding. This will be
 fixed whenever [this issue](https://issuetracker.google.com/issues/112929938) gets resolved.
