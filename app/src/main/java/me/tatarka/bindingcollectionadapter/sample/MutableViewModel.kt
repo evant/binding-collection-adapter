@@ -33,9 +33,9 @@ class MutableViewModel : ViewModel(), Listeners {
     /**
      * Binds a homogeneous list of items to a layout.
      */
-    val singleItem = ItemBinding.of<MutableItem>(BR.item, R.layout.item)
+    val singleItem = itemBindingOf<MutableItem>(BR.item, R.layout.item)
 
-    val pageItem = ItemBinding.of<MutableItem>(BR.item, R.layout.item_page)
+    val pageItem = itemBindingOf<MutableItem>(BR.item, R.layout.item_page)
 
     /**
      * Binds multiple items types to different layouts based on class. This could have also be
@@ -52,11 +52,12 @@ class MutableViewModel : ViewModel(), Listeners {
      * };
     `</pre> *
      */
-    val multipleItems = OnItemBindClass<Any>()
-        .map(String::class.java, BR.item, R.layout.item_header_footer)
-        .map(MutableItem::class.java, BR.item, R.layout.item)
+    val multipleItems = OnItemBindClass<Any>().apply {
+        map<String>(BR.item, R.layout.item_header_footer)
+        map<MutableItem>(BR.item, R.layout.item)
+    }
 
-    val multipleItems2 = OnItemBind<Any> { itemBinding, _, item ->
+    val multipleItems2 = itemBindingOf<Any> { itemBinding, _, item ->
         when (item::class) {
             String::class -> itemBinding.set(BR.item, R.layout.item_header_footer)
             MutableItem::class -> itemBinding.set(BR.item, R.layout.item)

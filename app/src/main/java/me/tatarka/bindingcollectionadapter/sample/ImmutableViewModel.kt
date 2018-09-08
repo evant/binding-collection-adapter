@@ -5,13 +5,16 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.DiffUtil
-import me.tatarka.bindingcollectionadapter2.ItemBinding
 import me.tatarka.bindingcollectionadapter2.itembindings.OnItemBindClass
+import me.tatarka.bindingcollectionadapter2.map
+import me.tatarka.bindingcollectionadapter2.toItemBinding
 import java.util.*
 
 class ImmutableViewModel : ViewModel(), ImmutableListeners {
 
-    private val mutList = MutableLiveData<List<ImmutableItem>>()
+    private val mutList = MutableLiveData<List<ImmutableItem>>().apply {
+        value = (0 until 3).map { i -> ImmutableItem(index = i, checked = false) }
+    }
     private val headerFooterList =
         Transformations.map<List<ImmutableItem>, List<Any>>(mutList) { input ->
             val list = ArrayList<Any>(input.size + 2)
@@ -22,11 +25,10 @@ class ImmutableViewModel : ViewModel(), ImmutableListeners {
         }
     val list: LiveData<List<Any>> = headerFooterList
 
-    val multipleItems = ItemBinding.of(
-        OnItemBindClass<Any>()
-            .map(String::class.java, BR.item, R.layout.item_header_footer)
-            .map(ImmutableItem::class.java, BR.item, R.layout.item_immutable)
-    ).bindExtra(BR.listeners, this)
+    val multipleItems = OnItemBindClass<Any>().apply {
+        map<String>(BR.item, R.layout.item_header_footer)
+        map<ImmutableItem>(BR.item, R.layout.item_immutable)
+    }.toItemBinding().bindExtra(BR.listeners, this)
 
     val diff: DiffUtil.ItemCallback<Any> = object : DiffUtil.ItemCallback<Any>() {
         override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
@@ -38,14 +40,6 @@ class ImmutableViewModel : ViewModel(), ImmutableListeners {
         override fun areContentsTheSame(oldItem: Any, newItem: Any): Boolean {
             return oldItem == newItem
         }
-    }
-
-    init {
-        val items = ArrayList<ImmutableItem>(3)
-        for (i in 0..2) {
-            items.add(ImmutableItem(index = i, checked = false))
-        }
-        mutList.value = items
     }
 
     override fun onToggleChecked(index: Int): Boolean {
