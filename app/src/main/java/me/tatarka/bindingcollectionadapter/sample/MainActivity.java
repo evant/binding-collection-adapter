@@ -1,13 +1,18 @@
 package me.tatarka.bindingcollectionadapter.sample;
 
 import android.content.res.Configuration;
+
 import androidx.databinding.DataBindingUtil;
+
 import android.os.Bundle;
+
 import com.google.android.material.navigation.NavigationView;
+
 import androidx.fragment.app.Fragment;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.view.MenuItem;
 
 import me.tatarka.bindingcollectionadapter.sample.databinding.ActivityMainBinding;
@@ -15,7 +20,7 @@ import me.tatarka.bindingcollectionadapter.sample.R;
 
 public class MainActivity extends AppCompatActivity {
     private static final String STATE_TITLE = "title";
-    
+
     private ActivityMainBinding binding;
     private ActionBarDrawerToggle toggle;
 
@@ -43,6 +48,9 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.action_recyclerview:
                         fragment = new FragmentRecyclerView();
+                        break;
+                    case R.id.action_diff_recyclerview:
+                        fragment = new FragmentDiffRecyclerView();
                         break;
                     case R.id.action_viewpager:
                         fragment = new FragmentViewPagerView();

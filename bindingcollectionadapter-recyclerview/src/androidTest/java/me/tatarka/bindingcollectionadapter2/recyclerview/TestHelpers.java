@@ -1,5 +1,7 @@
 package me.tatarka.bindingcollectionadapter2.recyclerview;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.test.espresso.core.internal.deps.dagger.internal.Factory;
 import androidx.test.espresso.core.internal.deps.guava.base.Joiner;
 
@@ -17,6 +19,17 @@ public class TestHelpers {
         public final ItemBinding<String> itemBinding;
         public final BindingListViewAdapter.ItemIds<String> itemIds;
         public final MyBindingRecyclerViewAdapter<String> adapter = new MyBindingRecyclerViewAdapter<>();
+        public final DiffUtil.ItemCallback<String> diff = new DiffUtil.ItemCallback<String>() {
+            @Override
+            public boolean areItemsTheSame(@NonNull String oldItem, @NonNull String newItem) {
+                return oldItem.equals(newItem);
+            }
+
+            @Override
+            public boolean areContentsTheSame(@NonNull String oldItem, @NonNull String newItem) {
+                return true;
+            }
+        };
 
         public ViewModel(List<String> items, ItemBinding<String> itemBinding) {
             this(items, itemBinding, null);

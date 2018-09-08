@@ -22,13 +22,13 @@ import me.tatarka.bindingcollectionadapter.sample.databinding.ViewpagerViewBindi
  */
 public class FragmentViewPagerView extends Fragment {
     private static final String TAG = "BindingViewPager";
-    private MyViewModel viewModel;
+    private MutableViewModel viewModel;
     private ViewpagerViewBinding binding;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        viewModel = ViewModelProviders.of(this).get(MyViewModel.class);
+        viewModel = ViewModelProviders.of(this).get(MutableViewModel.class);
         viewModel.setCheckable(true);
     }
 
@@ -46,20 +46,22 @@ public class FragmentViewPagerView extends Fragment {
         return binding.getRoot();
     }
 
-    private class PagerListeners extends Listeners {
-        public PagerListeners(MyViewModel viewModel) {
-            super(viewModel);
+    private class PagerListeners implements Listeners {
+        private final Listeners delegate;
+
+        public PagerListeners(Listeners delegate) {
+            this.delegate = delegate;
         }
 
         @Override
         public void onAddItem() {
-            super.onAddItem();
+            delegate.onAddItem();
             updateTabs();
         }
 
         @Override
         public void onRemoveItem() {
-            super.onRemoveItem();
+            delegate.onRemoveItem();
             updateTabs();
         }
 

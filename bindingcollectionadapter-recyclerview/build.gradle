@@ -33,18 +33,18 @@ android {
 }
 
 dependencies {
-    compile project(':bindingcollectionadapter')
-    compile 'androidx.recyclerview:recyclerview:1.0.0-rc01'
+    implementation project(':bindingcollectionadapter')
+    implementation 'androidx.recyclerview:recyclerview:1.0.0-rc02'
 
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.assertj:assertj-core:1.7.1'
-    testCompile 'org.mockito:mockito-core:2.18.3'
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'org.assertj:assertj-core:3.6.2'
+    testImplementation 'org.mockito:mockito-core:2.19.0'
 
-    androidTestCompile 'androidx.test:runner:1.1.0-alpha4'
-    androidTestCompile 'androidx.test:rules:1.1.0-alpha4'
-    androidTestCompile 'androidx.test.espresso:espresso-core:3.1.0-alpha4'
-    androidTestCompile 'com.squareup.assertj:assertj-android:1.1.0'
-    androidTestCompile 'androidx.core:core:1.0.0-rc01'
+    androidTestImplementation 'androidx.test:runner:1.1.0-alpha4'
+    androidTestImplementation 'androidx.test:rules:1.1.0-alpha4'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-alpha4'
+    androidTestImplementation 'com.squareup.assertj:assertj-android:1.1.0'
+    androidTestImplementation 'androidx.core:core:1.0.0-rc02'
 }
 
 apply from: '../publish.gradle'

@@ -6,7 +6,7 @@
 
         <variable
             name="viewModel"
-            type="me.tatarka.bindingcollectionadapter.sample.MyViewModel" />
+            type="me.tatarka.bindingcollectionadapter.sample.MutableViewModel" />
 
         <variable
             name="listeners"

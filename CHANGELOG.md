@@ -1,6 +1,10 @@
 ### Unreleased
 - Removed `LayoutManagers`. RecyclerView has support setting the LayoutManager in xml using it's
 class name that doesn't rely on databinding.
+- Added `AsyncDiffObservableList` which is based on `AsyncListDiffer`. You should prefer this over
+`DiffObservableList` as it handles running the diff in a background thread for you.
+- Added a `app:diffConfig` binding for `RecyclerView`. If set, changes to the list will 
+automatically be diffed using `DiffObservableList`. This works nicely with `LiveData<List<Item>>`.
 
 ### 3.0.0-beta3
 - Compile with AGP `3.2.0-rc02` for better compatibility.

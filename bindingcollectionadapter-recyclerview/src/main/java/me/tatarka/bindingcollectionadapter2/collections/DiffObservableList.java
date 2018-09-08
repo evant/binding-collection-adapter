@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.List;
 
 import androidx.annotation.MainThread;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.databinding.ListChangeRegistry;
 import androidx.databinding.ObservableList;
 import androidx.recyclerview.widget.DiffUtil;
@@ -13,13 +15,14 @@ import androidx.recyclerview.widget.ListUpdateCallback;
 
 /**
  * An {@link ObservableList} that uses {@link DiffUtil} to calculate and dispatch it's change
- * updates.
+ * updates. Note: Consider using {@link AsyncDiffObservableList} instead as it will automatically
+ * diff in a background thread.
  */
 public class DiffObservableList<T> extends AbstractList<T> implements ObservableList<T> {
 
     private final Object LIST_LOCK = new Object();
     private List<T> list = Collections.emptyList();
-    private final Callback<T> callback;
+    private final DiffUtil.ItemCallback<T> callback;
     private final boolean detectMoves;
     private final ListChangeRegistry listeners = new ListChangeRegistry();
     private final ObservableListUpdateCallback listCallback = new ObservableListUpdateCallback();
@@ -28,8 +31,33 @@ public class DiffObservableList<T> extends AbstractList<T> implements Observable
      * Creates a new DiffObservableList of type T.
      *
      * @param callback The callback that controls the behavior of the DiffObservableList.
+     * @deprecated The same behavior can be obtained with {@link #DiffObservableList(DiffUtil.ItemCallback)},
+     * though you may consider using {@link AsyncDiffObservableList} instead.
      */
+    @Deprecated
     public DiffObservableList(Callback<T> callback) {
+        this(new ItemCallbackAdapter<>(callback), true);
+    }
+
+    /**
+     * Creates a new DiffObservableList of type T.
+     *
+     * @param callback    The callback that controls the behavior of the DiffObservableList.
+     * @param detectMoves True if DiffUtil should try to detect moved items, false otherwise.
+     * @deprecated The same behavior can be obtained with {@link #DiffObservableList(DiffUtil.ItemCallback, boolean)},
+     * though you may consider using {@link AsyncDiffObservableList} instead.
+     */
+    @Deprecated
+    public DiffObservableList(Callback<T> callback, boolean detectMoves) {
+        this(new ItemCallbackAdapter<>(callback), detectMoves);
+    }
+
+    /**
+     * Creates a new DiffObservableList of type T.
+     *
+     * @param callback The callback that controls the behavior of the DiffObservableList.
+     */
+    public DiffObservableList(DiffUtil.ItemCallback<T> callback) {
         this(callback, true);
     }
 
@@ -39,7 +67,7 @@ public class DiffObservableList<T> extends AbstractList<T> implements Observable
      * @param callback    The callback that controls the behavior of the DiffObservableList.
      * @param detectMoves True if DiffUtil should try to detect moved items, false otherwise.
      */
-    public DiffObservableList(Callback<T> callback, boolean detectMoves) {
+    public DiffObservableList(DiffUtil.ItemCallback<T> callback, boolean detectMoves) {
         this.callback = callback;
         this.detectMoves = detectMoves;
     }
@@ -75,14 +103,29 @@ public class DiffObservableList<T> extends AbstractList<T> implements Observable
             public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
                 T oldItem = oldItems.get(oldItemPosition);
                 T newItem = newItems.get(newItemPosition);
-                return callback.areItemsTheSame(oldItem, newItem);
+                if (oldItem != null && newItem != null) {
+                    return callback.areItemsTheSame(oldItem, newItem);
+                }
+                // If both items are null we consider them the same.
+                return oldItem == null && newItem == null;
             }
 
             @Override
             public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
                 T oldItem = oldItems.get(oldItemPosition);
                 T newItem = newItems.get(newItemPosition);
-                return callback.areContentsTheSame(oldItem, newItem);
+                if (oldItem != null && newItem != null) {
+                    return callback.areContentsTheSame(oldItem, newItem);
+                }
+                return true;
+            }
+
+            @Nullable
+            @Override
+            public Object getChangePayload(int oldItemPosition, int newItemPosition) {
+                T oldItem = oldItems.get(oldItemPosition);
+                T newItem = newItems.get(newItemPosition);
+                return callback.getChangePayload(oldItem, newItem);
             }
         }, detectMoves);
     }
@@ -142,7 +185,10 @@ public class DiffObservableList<T> extends AbstractList<T> implements Observable
 
     /**
      * A Callback class used by DiffUtil while calculating the diff between two lists.
+     *
+     * @deprecated Use {@link DiffUtil.ItemCallback} instead.
      */
+    @Deprecated
     public interface Callback<T> {
 
         /**
@@ -195,6 +241,24 @@ public class DiffObservableList<T> extends AbstractList<T> implements Observable
         @Override
         public void onMoved(int fromPosition, int toPosition) {
             listeners.notifyMoved(DiffObservableList.this, fromPosition, toPosition, 1);
+        }
+    }
+
+    static class ItemCallbackAdapter<T> extends DiffUtil.ItemCallback<T> {
+        final Callback<T> callback;
+
+        ItemCallbackAdapter(Callback<T> callback) {
+            this.callback = callback;
+        }
+
+        @Override
+        public boolean areItemsTheSame(@NonNull T oldItem, @NonNull T newItem) {
+            return callback.areItemsTheSame(oldItem, newItem);
+        }
+
+        @Override
+        public boolean areContentsTheSame(@NonNull T oldItem, @NonNull T newItem) {
+            return callback.areContentsTheSame(oldItem, newItem);
         }
     }
 }

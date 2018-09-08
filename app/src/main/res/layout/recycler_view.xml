@@ -4,11 +4,11 @@
 
     <data>
 
-        <import type="me.tatarka.bindingcollectionadapter.sample.ItemViewModel" />
+        <import type="me.tatarka.bindingcollectionadapter.sample.Item" />
 
         <variable
             name="viewModel"
-            type="me.tatarka.bindingcollectionadapter.sample.MyViewModel" />
+            type="me.tatarka.bindingcollectionadapter.sample.MutableViewModel" />
 
         <variable
             name="listeners"
