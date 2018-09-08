@@ -13,8 +13,6 @@
         <variable
             name="listeners"
             type="me.tatarka.bindingcollectionadapter.sample.Listeners" />
-
-        <import type="me.tatarka.bindingcollectionadapter2.LayoutManagers" />
     </data>
 
     <LinearLayout

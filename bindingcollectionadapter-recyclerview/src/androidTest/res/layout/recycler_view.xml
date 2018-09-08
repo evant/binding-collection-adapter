@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
-    
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <data>
-        
-        <import type="me.tatarka.bindingcollectionadapter2.LayoutManagers" />
-        
-        <variable 
-            name="viewModel" 
+
+        <variable
+            name="viewModel"
             type="me.tatarka.bindingcollectionadapter2.recyclerview.TestHelpers.ViewModel" />
     </data>
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:items="@{viewModel.items}"
         app:itemBinding="@{viewModel.itemBinding}"
-        app:layoutManager="@{LayoutManagers.linear()}" />
+        app:items="@{viewModel.items}"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 </layout>
