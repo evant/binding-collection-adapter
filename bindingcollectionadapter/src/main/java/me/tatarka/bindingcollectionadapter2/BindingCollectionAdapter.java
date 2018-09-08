@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import java.util.List;
 
 import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.ObservableList;
 import androidx.databinding.ViewDataBinding;
@@ -21,11 +22,14 @@ public interface BindingCollectionAdapter<T> {
     /**
      * Sets the item biding for the adapter.
      */
-    void setItemBinding(ItemBinding<T> itemBinding);
+    void setItemBinding(@NonNull ItemBinding<T> itemBinding);
 
     /**
      * Returns the {@link ItemBinding} that the adapter that was set.
+     *
+     * @throws NullPointerException if the item binding was not set.
      */
+    @NonNull
     ItemBinding<T> getItemBinding();
 
     /**
@@ -49,12 +53,13 @@ public interface BindingCollectionAdapter<T> {
      * {@code layoutId} and {@code viewGroup}. A subclass may override this and cast the result to a
      * specific layout binding to get at the generated view fields.
      */
-    ViewDataBinding onCreateBinding(LayoutInflater inflater, @LayoutRes int layoutRes, ViewGroup viewGroup);
+    @NonNull
+    ViewDataBinding onCreateBinding(@NonNull LayoutInflater inflater, @LayoutRes int layoutRes, @NonNull ViewGroup viewGroup);
 
     /**
      * Called to bind the given item to the binding. An implementation should simply set the item as
      * a variable on the binding. A subclass may override this and cast the binding to an
      * implementation specific layout binding to get at the generated view fields.
      */
-    void onBindBinding(ViewDataBinding binding, int variableId, @LayoutRes int layoutRes, int position, T item);
+    void onBindBinding(@NonNull ViewDataBinding binding, int variableId, @LayoutRes int layoutRes, int position, T item);
 }

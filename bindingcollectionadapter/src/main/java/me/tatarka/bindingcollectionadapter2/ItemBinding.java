@@ -1,8 +1,11 @@
 package me.tatarka.bindingcollectionadapter2;
 
-import androidx.databinding.ViewDataBinding;
-import androidx.annotation.LayoutRes;
 import android.util.SparseArray;
+
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.databinding.ViewDataBinding;
 
 /**
  * Provides the necessary information to bind an item in a collection to a view. This includes the
@@ -23,6 +26,7 @@ public final class ItemBinding<T> {
     /**
      * Constructs an instance with the given variable id and layout.
      */
+    @NonNull
     public static <T> ItemBinding<T> of(int variableId, @LayoutRes int layoutRes) {
         return new ItemBinding<T>(null).set(variableId, layoutRes);
     }
@@ -33,20 +37,23 @@ public final class ItemBinding<T> {
      *
      * @see OnItemBind
      */
-    public static <T> ItemBinding<T> of(OnItemBind<T> onItemBind) {
+    @NonNull
+    public static <T> ItemBinding<T> of(@NonNull OnItemBind<T> onItemBind) {
+        //noinspection ConstantConditions
         if (onItemBind == null) {
             throw new NullPointerException("onItemBind == null");
         }
         return new ItemBinding<>(onItemBind);
     }
 
+    @Nullable
     private final OnItemBind<T> onItemBind;
     private int variableId;
     @LayoutRes
     private int layoutRes;
     private SparseArray<Object> extraBindings;
 
-    private ItemBinding(OnItemBind<T> onItemBind) {
+    private ItemBinding(@Nullable OnItemBind<T> onItemBind) {
         this.onItemBind = onItemBind;
     }
 
@@ -54,6 +61,7 @@ public final class ItemBinding<T> {
      * Set the variable id and layout. This is normally called in {@link
      * OnItemBind#onItemBind(ItemBinding, int, Object)}.
      */
+    @NonNull
     public final ItemBinding<T> set(int variableId, @LayoutRes int layoutRes) {
         this.variableId = variableId;
         this.layoutRes = layoutRes;
@@ -64,6 +72,7 @@ public final class ItemBinding<T> {
      * Set the variable id. This is normally called in {@link OnItemBind#onItemBind(ItemBinding,
      * int, Object)}.
      */
+    @NonNull
     public final ItemBinding<T> variableId(int variableId) {
         this.variableId = variableId;
         return this;
@@ -73,6 +82,7 @@ public final class ItemBinding<T> {
      * Set the layout. This is normally called in {@link OnItemBind#onItemBind(ItemBinding, int,
      * Object)}.
      */
+    @NonNull
     public final ItemBinding<T> layoutRes(@LayoutRes int layoutRes) {
         this.layoutRes = layoutRes;
         return this;
@@ -82,6 +92,7 @@ public final class ItemBinding<T> {
      * Bind an extra variable to the view with the given variable id. The same instance will be
      * provided to all views the binding is bound to.
      */
+    @NonNull
     public final ItemBinding<T> bindExtra(int variableId, Object value) {
         if (extraBindings == null) {
             extraBindings = new SparseArray<>(1);
@@ -94,6 +105,7 @@ public final class ItemBinding<T> {
      * Clear all extra variables. This is normally called in {@link
      * OnItemBind#onItemBind(ItemBinding, int, Object)}.
      */
+    @NonNull
     public final ItemBinding<T> clearExtras() {
         if (extraBindings != null) {
             extraBindings.clear();
@@ -105,6 +117,7 @@ public final class ItemBinding<T> {
      * Remove an extra variable with the given variable id. This is normally called in {@link
      * OnItemBind#onItemBind(ItemBinding, int, Object)}.
      */
+    @NonNull
     public ItemBinding<T> removeExtra(int variableId) {
         if (extraBindings != null) {
             extraBindings.remove(variableId);
@@ -130,6 +143,7 @@ public final class ItemBinding<T> {
     /**
      * Returns the current extra binding for the given variable id or null if one isn't present.
      */
+    @Nullable
     public final Object extraBinding(int variableId) {
         if (extraBindings == null) {
             return null;
@@ -161,7 +175,7 @@ public final class ItemBinding<T> {
      *
      * @throws IllegalStateException if the variable id isn't present in the layout.
      */
-    public boolean bind(ViewDataBinding binding, T item) {
+    public boolean bind(@NonNull ViewDataBinding binding, T item) {
         if (variableId == VAR_NONE) {
             return false;
         }

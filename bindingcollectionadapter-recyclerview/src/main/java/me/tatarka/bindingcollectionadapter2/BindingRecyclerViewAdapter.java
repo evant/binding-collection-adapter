@@ -32,7 +32,9 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<ViewHold
     private WeakReferenceOnListChangedCallback<T> callback;
     List<T> items;
     private LayoutInflater inflater;
+    @Nullable
     private ItemIds<? super T> itemIds;
+    @Nullable
     private ViewHolderFactory viewHolderFactory;
     // Currently attached recyclerview, we don't have to listen to notifications if null.
     @Nullable
@@ -41,7 +43,7 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<ViewHold
     private LifecycleOwner lifecycleOwner;
 
     @Override
-    public void setItemBinding(ItemBinding<T> itemBinding) {
+    public void setItemBinding(@NonNull ItemBinding<T> itemBinding) {
         this.itemBinding = itemBinding;
     }
 
@@ -63,8 +65,12 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<ViewHold
         }
     }
 
+    @NonNull
     @Override
     public ItemBinding<T> getItemBinding() {
+        if (itemBinding == null) {
+            throw new NullPointerException("itemBinding == null");
+        }
         return itemBinding;
     }
 
@@ -94,13 +100,14 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<ViewHold
         return items.get(position);
     }
 
+    @NonNull
     @Override
-    public ViewDataBinding onCreateBinding(LayoutInflater inflater, @LayoutRes int layoutId, ViewGroup viewGroup) {
+    public ViewDataBinding onCreateBinding(@NonNull LayoutInflater inflater, @LayoutRes int layoutId, @NonNull ViewGroup viewGroup) {
         return DataBindingUtil.inflate(inflater, layoutId, viewGroup, false);
     }
 
     @Override
-    public void onBindBinding(ViewDataBinding binding, int variableId, @LayoutRes int layoutRes, int position, T item) {
+    public void onBindBinding(@NonNull ViewDataBinding binding, int variableId, @LayoutRes int layoutRes, int position, T item) {
         if (itemBinding.bind(binding, item)) {
             binding.executePendingBindings();
         }
@@ -308,6 +315,7 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<ViewHold
     }
 
     public interface ViewHolderFactory {
-        RecyclerView.ViewHolder createViewHolder(ViewDataBinding binding);
+        @NonNull
+        RecyclerView.ViewHolder createViewHolder(@NonNull ViewDataBinding binding);
     }
 }

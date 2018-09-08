@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.ListIterator;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.databinding.ListChangeRegistry;
 import androidx.databinding.ObservableList;
 import androidx.recyclerview.widget.AsyncDifferConfig;
@@ -23,7 +24,7 @@ public class AsyncDiffObservableList<T> extends AbstractList<T> implements Obser
      *
      * @param callback The callback that controls the behavior of the DiffObservableList.
      */
-    public AsyncDiffObservableList(DiffUtil.ItemCallback<T> callback) {
+    public AsyncDiffObservableList(@NonNull DiffUtil.ItemCallback<T> callback) {
         this(new AsyncDifferConfig.Builder<>(callback).build());
     }
 
@@ -33,7 +34,7 @@ public class AsyncDiffObservableList<T> extends AbstractList<T> implements Obser
      *
      * @param config The config passed to {@code AsyncListDiffer}.
      */
-    public AsyncDiffObservableList(AsyncDifferConfig<T> config) {
+    public AsyncDiffObservableList(@NonNull AsyncDifferConfig<T> config) {
         differ = new AsyncListDiffer<>(new ObservableListUpdateCallback(), config);
     }
 
@@ -41,17 +42,17 @@ public class AsyncDiffObservableList<T> extends AbstractList<T> implements Obser
      * Updates the list to the given items. A diff will run in a background thread then this
      * collection will be updated.
      */
-    public void update(List<T> newItems) {
+    public void update(@Nullable List<T> newItems) {
         differ.submitList(newItems);
     }
 
     @Override
-    public void addOnListChangedCallback(OnListChangedCallback<? extends ObservableList<T>> callback) {
+    public void addOnListChangedCallback(@NonNull OnListChangedCallback<? extends ObservableList<T>> callback) {
         listeners.add(callback);
     }
 
     @Override
-    public void removeOnListChangedCallback(OnListChangedCallback<? extends ObservableList<T>> callback) {
+    public void removeOnListChangedCallback(@NonNull OnListChangedCallback<? extends ObservableList<T>> callback) {
         listeners.remove(callback);
     }
 
@@ -87,7 +88,7 @@ public class AsyncDiffObservableList<T> extends AbstractList<T> implements Obser
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (!(o instanceof AsyncDiffObservableList)) {
             return false;
         }

@@ -5,6 +5,7 @@ class name that doesn't rely on databinding.
 `DiffObservableList` as it handles running the diff in a background thread for you.
 - Added a `app:diffConfig` binding for `RecyclerView`. If set, changes to the list will 
 automatically be diffed using `DiffObservableList`. This works nicely with `LiveData<List<Item>>`.
+- Added `@Nullable/@NonNull` annotations for better kotlin interop.
 
 ### 3.0.0-beta3
 - Compile with AGP `3.2.0-rc02` for better compatibility.

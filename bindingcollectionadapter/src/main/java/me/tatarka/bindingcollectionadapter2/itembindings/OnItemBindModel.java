@@ -1,5 +1,6 @@
 package me.tatarka.bindingcollectionadapter2.itembindings;
 
+import androidx.annotation.NonNull;
 import me.tatarka.bindingcollectionadapter2.ItemBinding;
 import me.tatarka.bindingcollectionadapter2.OnItemBind;
 
@@ -10,7 +11,7 @@ import me.tatarka.bindingcollectionadapter2.OnItemBind;
 public class OnItemBindModel<T extends ItemBindingModel> implements OnItemBind<T> {
 
     @Override
-    public void onItemBind(ItemBinding itemBinding, int position, T item) {
+    public void onItemBind(@NonNull ItemBinding itemBinding, int position, T item) {
         item.onItemBind(itemBinding);
     }
 }

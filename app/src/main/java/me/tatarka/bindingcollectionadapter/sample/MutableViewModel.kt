@@ -4,10 +4,7 @@ import android.view.View
 import androidx.databinding.ObservableArrayList
 import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.RecyclerView
-import me.tatarka.bindingcollectionadapter2.BindingListViewAdapter
-import me.tatarka.bindingcollectionadapter2.BindingRecyclerViewAdapter
-import me.tatarka.bindingcollectionadapter2.BindingViewPagerAdapter
-import me.tatarka.bindingcollectionadapter2.ItemBinding
+import me.tatarka.bindingcollectionadapter2.*
 import me.tatarka.bindingcollectionadapter2.collections.MergeObservableList
 import me.tatarka.bindingcollectionadapter2.itembindings.OnItemBindClass
 
@@ -58,6 +55,13 @@ class MutableViewModel : ViewModel(), Listeners {
     val multipleItems = OnItemBindClass<Any>()
         .map(String::class.java, BR.item, R.layout.item_header_footer)
         .map(MutableItem::class.java, BR.item, R.layout.item)
+
+    val multipleItems2 = OnItemBind<Any> { itemBinding, _, item ->
+        when (item::class) {
+            String::class -> itemBinding.set(BR.item, R.layout.item_header_footer)
+            MutableItem::class -> itemBinding.set(BR.item, R.layout.item)
+        }
+    }
 
     /**
      * Define stable item ids. These are just based on position because the items happen to not

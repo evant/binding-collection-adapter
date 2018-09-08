@@ -9,6 +9,7 @@ import java.lang.ref.WeakReference;
 import java.util.List;
 
 import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ObservableList;
@@ -28,7 +29,9 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
     private List<T> items;
     private int[] layouts;
     private LayoutInflater inflater;
+    @Nullable
     private ItemIds<? super T> itemIds;
+    @Nullable
     private ItemIsEnabled<? super T> itemIsEnabled;
     @Nullable
     private LifecycleOwner lifecycleOwner;
@@ -42,7 +45,7 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
     }
 
     @Override
-    public void setItemBinding(ItemBinding<T> itemBinding) {
+    public void setItemBinding(@NonNull ItemBinding<T> itemBinding) {
         this.itemBinding = itemBinding;
     }
 
@@ -56,8 +59,12 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
         notifyDataSetChanged();
     }
 
+    @NonNull
     @Override
     public ItemBinding<T> getItemBinding() {
+        if (itemBinding == null) {
+            throw new NullPointerException("itemBinding == null");
+        }
         return itemBinding;
     }
 
@@ -91,13 +98,14 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
         return items.get(position);
     }
 
+    @NonNull
     @Override
-    public ViewDataBinding onCreateBinding(LayoutInflater inflater, @LayoutRes int layoutRes, ViewGroup viewGroup) {
+    public ViewDataBinding onCreateBinding(@NonNull LayoutInflater inflater, @LayoutRes int layoutRes, @NonNull ViewGroup viewGroup) {
         return DataBindingUtil.inflate(inflater, layoutRes, viewGroup, false);
     }
 
     @Override
-    public void onBindBinding(ViewDataBinding binding, int variableId, @LayoutRes int layoutRes, int position, T item) {
+    public void onBindBinding(@NonNull ViewDataBinding binding, int variableId, @LayoutRes int layoutRes, int position, T item) {
         if (itemBinding.bind(binding, item)) {
             binding.executePendingBindings();
         }
@@ -139,7 +147,7 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
     }
 
     @Override
-    public final View getView(int position, View convertView, ViewGroup parent) {
+    public final View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         if (inflater == null) {
             inflater = LayoutInflater.from(parent.getContext());
         }
@@ -152,6 +160,7 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
         ViewDataBinding binding;
         if (convertView == null) {
             binding = onCreateBinding(inflater, layoutRes, parent);
+            binding.getRoot();
         } else {
             binding = DataBindingUtil.getBinding(convertView);
         }
@@ -166,7 +175,7 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
     }
 
     @Override
-    public final View getDropDownView(int position, View convertView, ViewGroup parent) {
+    public final View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         if (inflater == null) {
             inflater = LayoutInflater.from(parent.getContext());
         }
