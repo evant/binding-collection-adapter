@@ -1,10 +1,13 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 
 repositories {
     maven {
         url 'https://oss.sonatype.org/content/repositories/snapshots'
     }
     mavenLocal()
+    mavenCentral()
 }
 
 android {
@@ -33,6 +36,10 @@ android {
 }
 
 dependencies {
+    implementation project(':bindingcollectionadapter-ktx')
+    implementation project(':bindingcollectionadapter-recyclerview')
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
     implementation 'androidx.appcompat:appcompat:1.0.0-rc02'
     implementation 'com.google.android.material:material:1.0.0-rc02'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0-rc02'
@@ -40,7 +47,7 @@ dependencies {
     implementation 'androidx.vectordrawable:vectordrawable-animated:1.0.0-rc02'
     implementation 'androidx.lifecycle:lifecycle-runtime:2.0.0-rc01'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0-rc01'
-    annotationProcessor "androidx.lifecycle:lifecycle-compiler:2.0.0-rc01"
-    implementation project(':bindingcollectionadapter')
-    implementation project(':bindingcollectionadapter-recyclerview')
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.0.0-rc01'
+
+    kapt "com.android.databinding:compiler:$agp_version"
 }

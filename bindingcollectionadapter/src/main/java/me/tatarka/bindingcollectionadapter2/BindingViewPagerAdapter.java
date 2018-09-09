@@ -27,6 +27,7 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter implements BindingC
     private WeakReferenceOnListChangedCallback<T> callback;
     private List<T> items;
     private LayoutInflater inflater;
+    @Nullable
     private PageTitles<T> pageTitles;
     @Nullable
     private LifecycleOwner lifecycleOwner;
@@ -34,7 +35,7 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter implements BindingC
     private List<View> views = new ArrayList<>();
 
     @Override
-    public void setItemBinding(ItemBinding<T> itemBinding) {
+    public void setItemBinding(@NonNull ItemBinding<T> itemBinding) {
         this.itemBinding = itemBinding;
     }
 
@@ -53,8 +54,12 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter implements BindingC
         }
     }
 
+    @NonNull
     @Override
     public ItemBinding<T> getItemBinding() {
+        if (itemBinding == null) {
+            throw new NullPointerException("itemBinding == null");
+        }
         return itemBinding;
     }
 
@@ -80,13 +85,14 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter implements BindingC
         return items.get(position);
     }
 
+    @NonNull
     @Override
-    public ViewDataBinding onCreateBinding(LayoutInflater inflater, @LayoutRes int layoutRes, ViewGroup viewGroup) {
+    public ViewDataBinding onCreateBinding(@NonNull LayoutInflater inflater, @LayoutRes int layoutRes, @NonNull ViewGroup viewGroup) {
         return DataBindingUtil.inflate(inflater, layoutRes, viewGroup, false);
     }
 
     @Override
-    public void onBindBinding(ViewDataBinding binding, int variableId, @LayoutRes int layoutRes, int position, T item) {
+    public void onBindBinding(@NonNull ViewDataBinding binding, int variableId, @LayoutRes int layoutRes, int position, T item) {
         if (itemBinding.bind(binding, item)) {
             binding.executePendingBindings();
         }
@@ -104,6 +110,7 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter implements BindingC
         return items == null ? 0 : items.size();
     }
 
+    @Nullable
     @Override
     public CharSequence getPageTitle(int position) {
         return pageTitles == null ? null : pageTitles.getPageTitle(position, items.get(position));
@@ -207,6 +214,7 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter implements BindingC
     }
 
     public interface PageTitles<T> {
+        @Nullable
         CharSequence getPageTitle(int position, T item);
     }
 }

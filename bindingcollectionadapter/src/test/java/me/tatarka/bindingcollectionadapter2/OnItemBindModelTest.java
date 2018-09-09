@@ -7,6 +7,7 @@ import org.junit.runners.JUnit4;
 import java.util.Arrays;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import me.tatarka.bindingcollectionadapter2.itembindings.ItemBindingModel;
 import me.tatarka.bindingcollectionadapter2.itembindings.OnItemBindModel;
 
@@ -32,14 +33,14 @@ public class OnItemBindModelTest {
 
     public static class ItemBindingModelOne implements ItemBindingModel {
         @Override
-        public void onItemBind(ItemBinding itemBinding) {
+        public void onItemBind(@NonNull ItemBinding itemBinding) {
             itemBinding.set(0, 1);
         }
     }
 
     public static class ItemBindingModelTwo implements ItemBindingModel {
         @Override
-        public void onItemBind(ItemBinding itemBinding) {
+        public void onItemBind(@NonNull ItemBinding itemBinding) {
             itemBinding.set(2, 3);
         }
     }

@@ -1,1 +1,4 @@
-include ':app', ':bindingcollectionadapter', ':bindingcollectionadapter-recyclerview'
+include ':app',
+        ':bindingcollectionadapter',
+        ':bindingcollectionadapter-ktx',
+        ':bindingcollectionadapter-recyclerview'

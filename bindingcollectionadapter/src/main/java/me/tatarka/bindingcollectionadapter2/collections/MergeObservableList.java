@@ -1,13 +1,13 @@
 package me.tatarka.bindingcollectionadapter2.collections;
 
-import androidx.databinding.ListChangeRegistry;
-import androidx.databinding.ObservableList;
-import androidx.annotation.NonNull;
-
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.databinding.ListChangeRegistry;
+import androidx.databinding.ObservableList;
 
 /**
  * An {@link ObservableList} that presents multiple lists and items as one contiguous source.
@@ -22,12 +22,12 @@ public class MergeObservableList<T> extends AbstractList<T> implements Observabl
     private final ListChangeRegistry listeners = new ListChangeRegistry();
 
     @Override
-    public void addOnListChangedCallback(OnListChangedCallback<? extends ObservableList<T>> listener) {
+    public void addOnListChangedCallback(@NonNull OnListChangedCallback<? extends ObservableList<T>> listener) {
         listeners.add(listener);
     }
 
     @Override
-    public void removeOnListChangedCallback(OnListChangedCallback<? extends ObservableList<T>> listener) {
+    public void removeOnListChangedCallback(@NonNull OnListChangedCallback<? extends ObservableList<T>> listener) {
         listeners.remove(listener);
     }
 
@@ -82,7 +82,7 @@ public class MergeObservableList<T> extends AbstractList<T> implements Observabl
      * Removes the given {@link ObservableList} from the merge list.
      */
     @SuppressWarnings("unchecked")
-    public boolean removeList(ObservableList<? extends T> listToRemove) {
+    public boolean removeList(@NonNull ObservableList<? extends T> listToRemove) {
         int size = 0;
         for (int i = 0, listsSize = lists.size(); i < listsSize; i++) {
             List<? extends T> list = lists.get(i);
@@ -123,7 +123,7 @@ public class MergeObservableList<T> extends AbstractList<T> implements Observabl
      * @throws IndexOutOfBoundsException for an invalid index.
      * @throws IllegalArgumentException  if the given list is not backing this merge list.
      */
-    public int mergeToBackingIndex(ObservableList<? extends T> backingList, int index) {
+    public int mergeToBackingIndex(@NonNull ObservableList<? extends T> backingList, int index) {
         if (index < 0) {
             throw new IndexOutOfBoundsException();
         }
@@ -148,7 +148,7 @@ public class MergeObservableList<T> extends AbstractList<T> implements Observabl
      * @throws IndexOutOfBoundsException for an invalid index.
      * @throws IllegalArgumentException  if the given list is not backing this merge list.
      */
-    public int backingIndexToMerge(ObservableList<? extends T> backingList, int index) {
+    public int backingIndexToMerge(@NonNull ObservableList<? extends T> backingList, int index) {
         if (index < 0) {
             throw new IndexOutOfBoundsException();
         }

@@ -35,7 +35,7 @@ public class DiffObservableList<T> extends AbstractList<T> implements Observable
      * though you may consider using {@link AsyncDiffObservableList} instead.
      */
     @Deprecated
-    public DiffObservableList(Callback<T> callback) {
+    public DiffObservableList(@NonNull Callback<T> callback) {
         this(new ItemCallbackAdapter<>(callback), true);
     }
 
@@ -48,7 +48,7 @@ public class DiffObservableList<T> extends AbstractList<T> implements Observable
      * though you may consider using {@link AsyncDiffObservableList} instead.
      */
     @Deprecated
-    public DiffObservableList(Callback<T> callback, boolean detectMoves) {
+    public DiffObservableList(@NonNull Callback<T> callback, boolean detectMoves) {
         this(new ItemCallbackAdapter<>(callback), detectMoves);
     }
 
@@ -57,7 +57,7 @@ public class DiffObservableList<T> extends AbstractList<T> implements Observable
      *
      * @param callback The callback that controls the behavior of the DiffObservableList.
      */
-    public DiffObservableList(DiffUtil.ItemCallback<T> callback) {
+    public DiffObservableList(@NonNull DiffUtil.ItemCallback<T> callback) {
         this(callback, true);
     }
 
@@ -67,7 +67,7 @@ public class DiffObservableList<T> extends AbstractList<T> implements Observable
      * @param callback    The callback that controls the behavior of the DiffObservableList.
      * @param detectMoves True if DiffUtil should try to detect moved items, false otherwise.
      */
-    public DiffObservableList(DiffUtil.ItemCallback<T> callback, boolean detectMoves) {
+    public DiffObservableList(@NonNull DiffUtil.ItemCallback<T> callback, boolean detectMoves) {
         this.callback = callback;
         this.detectMoves = detectMoves;
     }
@@ -79,7 +79,8 @@ public class DiffObservableList<T> extends AbstractList<T> implements Observable
      * @return A DiffResult that contains the information about the edit sequence to covert this
      * list into the given one.
      */
-    public DiffUtil.DiffResult calculateDiff(final List<T> newItems) {
+    @NonNull
+    public DiffUtil.DiffResult calculateDiff(@NonNull final List<T> newItems) {
         final ArrayList<T> frozenList;
         synchronized (LIST_LOCK) {
             frozenList = new ArrayList<>(list);
@@ -138,7 +139,7 @@ public class DiffObservableList<T> extends AbstractList<T> implements Observable
      * @param diffResult The diff results to dispatch change notifications.
      */
     @MainThread
-    public void update(List<T> newItems, DiffUtil.DiffResult diffResult) {
+    public void update(@NonNull List<T> newItems, @NonNull DiffUtil.DiffResult diffResult) {
         synchronized (LIST_LOCK) {
             list = newItems;
         }
@@ -156,7 +157,7 @@ public class DiffObservableList<T> extends AbstractList<T> implements Observable
      * @param newItems The items to set this list to.
      */
     @MainThread
-    public void update(List<T> newItems) {
+    public void update(@NonNull List<T> newItems) {
         DiffUtil.DiffResult diffResult = doCalculateDiff(list, newItems);
         list = newItems;
         diffResult.dispatchUpdatesTo(listCallback);
@@ -164,12 +165,12 @@ public class DiffObservableList<T> extends AbstractList<T> implements Observable
 
 
     @Override
-    public void addOnListChangedCallback(OnListChangedCallback<? extends ObservableList<T>> listener) {
+    public void addOnListChangedCallback(@NonNull OnListChangedCallback<? extends ObservableList<T>> listener) {
         listeners.add(listener);
     }
 
     @Override
-    public void removeOnListChangedCallback(OnListChangedCallback<? extends ObservableList<T>> listener) {
+    public void removeOnListChangedCallback(@NonNull OnListChangedCallback<? extends ObservableList<T>> listener) {
         listeners.remove(listener);
     }
 

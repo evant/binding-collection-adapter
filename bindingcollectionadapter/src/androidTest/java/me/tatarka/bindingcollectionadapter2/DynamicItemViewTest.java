@@ -1,5 +1,6 @@
 package me.tatarka.bindingcollectionadapter2;
 
+import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ObservableArrayList;
 import androidx.databinding.ObservableList;
@@ -88,7 +89,7 @@ public class DynamicItemViewTest {
         items.addAll(Arrays.asList("one", "two", "three"));
         ItemBinding<String> itemBinding = ItemBinding.of(new OnItemBind<String>() {
             @Override
-            public void onItemBind(ItemBinding itemBinding, int position, String item) {
+            public void onItemBind(@NonNull ItemBinding itemBinding, int position, String item) {
                 itemBinding.set(me.tatarka.bindingcollectionadapter2.BR.item, position);
             }
         });

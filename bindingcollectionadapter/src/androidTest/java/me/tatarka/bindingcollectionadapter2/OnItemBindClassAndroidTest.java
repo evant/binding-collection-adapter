@@ -1,5 +1,6 @@
 package me.tatarka.bindingcollectionadapter2;
 
+import androidx.annotation.NonNull;
 import androidx.test.runner.AndroidJUnit4;
 
 import org.junit.Test;
@@ -22,7 +23,7 @@ public class OnItemBindClassAndroidTest {
                 .map(C.class, 0, 1)
                 .map(A.class, new OnItemBind<A>() {
                     @Override
-                    public void onItemBind(ItemBinding itemBinding, int position, A item) {
+                    public void onItemBind(@NonNull ItemBinding itemBinding, int position, A item) {
                         itemBinding.set(2, 3);
                         itemBinding.clearExtras();
                         itemBinding.bindExtra(4, "extra1");

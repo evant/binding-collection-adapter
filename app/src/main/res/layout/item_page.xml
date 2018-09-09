@@ -6,7 +6,7 @@
 
         <variable
             name="item"
-            type="me.tatarka.bindingcollectionadapter.sample.Item" />
+            type="me.tatarka.bindingcollectionadapter.sample.MutableItem" />
 
         <import type="android.view.View" />
     </data>

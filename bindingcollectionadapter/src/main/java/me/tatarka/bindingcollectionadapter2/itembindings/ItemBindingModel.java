@@ -1,5 +1,6 @@
 package me.tatarka.bindingcollectionadapter2.itembindings;
 
+import androidx.annotation.NonNull;
 import me.tatarka.bindingcollectionadapter2.ItemBinding;
 
 /**
@@ -12,5 +13,5 @@ public interface ItemBindingModel {
      * onItemBind.set(BR.item, R.layout.item);
      * }</pre>
      */
-    void onItemBind(ItemBinding itemBinding);
+    void onItemBind(@NonNull ItemBinding itemBinding);
 }
