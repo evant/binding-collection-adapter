@@ -33,8 +33,8 @@ android {
 }
 
 dependencies {
-    api project(':bindingcollectionadapter')
-    api 'androidx.recyclerview:recyclerview:1.0.0-rc02'
+    implementation project(':bindingcollectionadapter-recyclerview')
+    implementation 'androidx.paging:paging-runtime:2.0.0-rc01'
 
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.assertj:assertj-core:3.6.2'

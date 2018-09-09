@@ -4,7 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import androidx.paging.DataSource
+import androidx.paging.LivePagedListBuilder
+import androidx.paging.PagedList
+import androidx.paging.PositionalDataSource
 import androidx.recyclerview.widget.DiffUtil
+import me.tatarka.bindingcollectionadapter2.itemBindingOf
 import me.tatarka.bindingcollectionadapter2.itembindings.OnItemBindClass
 import me.tatarka.bindingcollectionadapter2.map
 import me.tatarka.bindingcollectionadapter2.toItemBinding
@@ -24,6 +29,47 @@ class ImmutableViewModel : ViewModel(), ImmutableListeners {
             list
         }
     val list: LiveData<List<Any>> = headerFooterList
+
+    val pagedList: LiveData<PagedList<Any>> =
+        LivePagedListBuilder(object : DataSource.Factory<Int, Any>() {
+            override fun create(): DataSource<Int, Any> =
+                object : PositionalDataSource<Any>() {
+
+                    override fun loadInitial(
+                        params: LoadInitialParams,
+                        callback: LoadInitialCallback<Any>
+                    ) {
+                        val list =
+                            (0 until params.requestedLoadSize).map {
+                                ImmutableItem(
+                                    index = it + params.requestedStartPosition,
+                                    checked = false
+                                )
+                            }
+                        // Pretend we are slow
+                        Thread.sleep(1000)
+                        callback.onResult(list, params.requestedStartPosition, 200)
+                    }
+
+                    override fun loadRange(
+                        params: LoadRangeParams,
+                        callback: LoadRangeCallback<Any>
+                    ) {
+                        val list =
+                            (0 until params.loadSize).map {
+                                ImmutableItem(
+                                    index = it + params.startPosition,
+                                    checked = false
+                                )
+                            }
+                        // Pretend we are slow
+                        Thread.sleep(1000)
+                        callback.onResult(list)
+                    }
+                }
+        }, 20).build()
+
+    val items = itemBindingOf<Any>(BR.item, R.layout.item_immutable)
 
     val multipleItems = OnItemBindClass<Any>().apply {
         map<String>(BR.item, R.layout.item_header_footer)

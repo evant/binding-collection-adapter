@@ -1,25 +1,22 @@
 package me.tatarka.bindingcollectionadapter2;
 
-import java.util.List;
-
 import androidx.databinding.BindingAdapter;
-import androidx.databinding.BindingConversion;
+import androidx.paging.PagedList;
 import androidx.recyclerview.widget.AsyncDifferConfig;
-import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
-import me.tatarka.bindingcollectionadapter2.collections.AsyncDiffObservableList;
-import me.tatarka.bindingcollectionadapter2.recyclerview.R;
+import me.tatarka.bindingcollectionadapter2.collections.AsyncDiffPagedObservableList;
+import me.tatarka.bindingcollectionadapter2.paging.R;
 
 /**
  * @see {@link BindingCollectionAdapters}
  */
-public class BindingRecyclerViewAdapters {
+public class PagedBindingRecyclerViewAdapters {
     // RecyclerView
     @SuppressWarnings("unchecked")
     @BindingAdapter(value = {"itemBinding", "items", "adapter", "itemIds", "viewHolder", "diffConfig"}, requireAll = false)
     public static <T> void setAdapter(RecyclerView recyclerView,
                                       ItemBinding<T> itemBinding,
-                                      List<T> items,
+                                      PagedList<T> items,
                                       BindingRecyclerViewAdapter<T> adapter,
                                       BindingRecyclerViewAdapter.ItemIds<? super T> itemIds,
                                       BindingRecyclerViewAdapter.ViewHolderFactory viewHolderFactory,
@@ -38,9 +35,9 @@ public class BindingRecyclerViewAdapters {
         adapter.setItemBinding(itemBinding);
 
         if (diffConfig != null && items != null) {
-            AsyncDiffObservableList<T> list = (AsyncDiffObservableList<T>) recyclerView.getTag(R.id.bindingcollectiondapter_list_id);
+            AsyncDiffPagedObservableList<T> list = (AsyncDiffPagedObservableList<T>) recyclerView.getTag(R.id.bindingcollectiondapter_list_id);
             if (list == null) {
-                list = new AsyncDiffObservableList<>(diffConfig);
+                list = new AsyncDiffPagedObservableList<>(diffConfig);
                 recyclerView.setTag(R.id.bindingcollectiondapter_list_id, list);
                 adapter.setItems(list);
             }
@@ -55,10 +52,5 @@ public class BindingRecyclerViewAdapters {
         if (oldAdapter != adapter) {
             recyclerView.setAdapter(adapter);
         }
-    }
-
-    @BindingConversion
-    public static <T> AsyncDifferConfig<T> toAsyncDifferConfig(DiffUtil.ItemCallback<T> callback) {
-        return new AsyncDifferConfig.Builder<>(callback).build();
     }
 }

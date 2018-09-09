@@ -57,12 +57,12 @@ class MutableViewModel : ViewModel(), Listeners {
         map<MutableItem>(BR.item, R.layout.item)
     }
 
-    val multipleItems2 = itemBindingOf<Any> { itemBinding, _, item ->
+    val multipleItems2 = itemBindingOf<String> { itemBinding, _, item ->
         when (item::class) {
             String::class -> itemBinding.set(BR.item, R.layout.item_header_footer)
             MutableItem::class -> itemBinding.set(BR.item, R.layout.item)
         }
-    }
+    }.bindExtra(BR.item, this)
 
     /**
      * Define stable item ids. These are just based on position because the items happen to not

@@ -38,6 +38,7 @@ android {
 dependencies {
     implementation project(':bindingcollectionadapter-ktx')
     implementation project(':bindingcollectionadapter-recyclerview')
+    implementation project(':bindingcollectionadapter-paging')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
     implementation 'androidx.appcompat:appcompat:1.0.0-rc02'
@@ -48,6 +49,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-runtime:2.0.0-rc01'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0-rc01'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.0.0-rc01'
+    implementation "androidx.paging:paging-runtime:2.0.0-rc01"
 
     kapt "com.android.databinding:compiler:$agp_version"
 }

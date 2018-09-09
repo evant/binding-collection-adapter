@@ -7,6 +7,8 @@ class name that doesn't rely on databinding.
 automatically be diffed using `DiffObservableList`. This works nicely with `LiveData<List<Item>>`.
 - Added `@Nullable/@NonNull` annotations for better kotlin interop.
 - Added `bindingcollectionadapter-ktx` with a few extensions to make item bindings a bit nicer.
+- Added `bindingcollectionadapter-paging` with paging equivalents to `AsyncDIffObservableList` and
+the `RecyclerView` bindings.
 
 ### 3.0.0-beta3
 - Compile with AGP `3.2.0-rc02` for better compatibility.

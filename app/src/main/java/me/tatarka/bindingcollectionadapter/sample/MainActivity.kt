@@ -39,6 +39,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.action_listview -> FragmentListView()
                 R.id.action_recyclerview -> FragmentRecyclerView()
                 R.id.action_diff_recyclerview -> FragmentDiffRecyclerView()
+                R.id.action_paged_recyclerview -> FragmentPagedRecyclerView()
                 R.id.action_viewpager -> FragmentViewPagerView()
                 R.id.action_spinner -> FragmentSpinnerView()
                 else -> {
