@@ -7,9 +7,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.get
-import me.tatarka.bindingcollectionadapter.sample.databinding.DiffRecyclerViewBinding
+import me.tatarka.bindingcollectionadapter.sample.databinding.PagedRecyclerViewBinding
 
-class FragmentDiffRecyclerView : Fragment() {
+class FragmentPagedRecyclerView : Fragment() {
     private lateinit var viewModel: ImmutableViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,7 +22,7 @@ class FragmentDiffRecyclerView : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return DiffRecyclerViewBinding.inflate(inflater, container, false).also {
+        return PagedRecyclerViewBinding.inflate(inflater, container, false).also {
             it.setLifecycleOwner(this)
             it.viewModel = viewModel
             it.listeners = viewModel
