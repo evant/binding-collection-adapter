@@ -108,7 +108,9 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<ViewHold
 
     @Override
     public void onBindBinding(@NonNull ViewDataBinding binding, int variableId, @LayoutRes int layoutRes, int position, T item) {
-        if (itemBinding.bind(binding, item)) {
+        boolean bound = itemBinding.bind(binding, item);
+        binding.setLifecycleOwner(lifecycleOwner);
+        if (bound) {
             binding.executePendingBindings();
         }
     }
@@ -195,8 +197,6 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<ViewHold
         if (isForDataBinding(payloads)) {
             binding.executePendingBindings();
         } else {
-            binding.setLifecycleOwner(lifecycleOwner);
-
             T item = items.get(position);
             onBindBinding(binding, itemBinding.variableId(), itemBinding.layoutRes(), position, item);
         }
