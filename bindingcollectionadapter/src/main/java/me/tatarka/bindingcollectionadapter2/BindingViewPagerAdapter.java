@@ -88,6 +88,7 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter implements BindingC
     public void onBindBinding(ViewDataBinding binding, int variableId, @LayoutRes int layoutRes, int position, T item) {
         if (itemBinding.bind(binding, item)) {
             binding.executePendingBindings();
+            binding.setLifecycleOwner(lifecycleOwner);
         }
     }
 
@@ -122,7 +123,6 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter implements BindingC
 
         ViewDataBinding binding = onCreateBinding(inflater, itemBinding.layoutRes(), container);
         View view = binding.getRoot();
-        binding.setLifecycleOwner(lifecycleOwner);
 
         onBindBinding(binding, itemBinding.variableId(), itemBinding.layoutRes(), position, item);
 
