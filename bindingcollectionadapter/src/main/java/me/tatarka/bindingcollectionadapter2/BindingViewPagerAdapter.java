@@ -93,7 +93,9 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter implements BindingC
 
     @Override
     public void onBindBinding(@NonNull ViewDataBinding binding, int variableId, @LayoutRes int layoutRes, int position, T item) {
-        if (itemBinding.bind(binding, item)) {
+        boolean bound = itemBinding.bind(binding, item);
+        binding.setLifecycleOwner(lifecycleOwner);
+        if (bound) {
             binding.executePendingBindings();
         }
     }
