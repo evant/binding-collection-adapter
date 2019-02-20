@@ -2,7 +2,7 @@
 
 buildscript {
     ext.kotlin_version = '1.2.61'
-    ext.agp_version = '3.2.0-rc02'
+    ext.agp_version = '3.2.0'
     repositories {
         google()
         jcenter()
