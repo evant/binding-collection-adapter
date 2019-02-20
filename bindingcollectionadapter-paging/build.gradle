@@ -1,6 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.github.dcendents.android-maven'
-apply plugin: 'com.jfrog.bintray'
 apply plugin: 'signing'
 
 android {
@@ -34,17 +32,17 @@ android {
 
 dependencies {
     implementation project(':bindingcollectionadapter-recyclerview')
-    implementation 'androidx.paging:paging-runtime:2.0.0-rc01'
+    implementation 'androidx.paging:paging-runtime:2.0.0'
 
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.assertj:assertj-core:3.6.2'
     testImplementation 'org.mockito:mockito-core:2.19.0'
 
-    androidTestImplementation 'androidx.test:runner:1.1.0-alpha4'
-    androidTestImplementation 'androidx.test:rules:1.1.0-alpha4'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-alpha4'
+    androidTestImplementation 'androidx.test:runner:1.1.0'
+    androidTestImplementation 'androidx.test:rules:1.1.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
     androidTestImplementation 'com.squareup.assertj:assertj-android:1.1.0'
-    androidTestImplementation 'androidx.core:core:1.0.0-rc02'
+    androidTestImplementation 'androidx.core:core:1.0.0'
 }
 
 apply from: '../publish.gradle'

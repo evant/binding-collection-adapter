@@ -1,7 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.github.dcendents.android-maven'
-apply plugin: 'com.jfrog.bintray'
-apply plugin: 'signing'
 apply plugin: 'kotlin-android'
 
 android {
