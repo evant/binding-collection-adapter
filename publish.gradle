@@ -1,97 +1,68 @@
+apply plugin: 'signing'
+apply plugin: 'digital.wup.android-maven-publish'
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from(android.sourceSets.main.java.srcDirs)
+}
+
 task androidJavadocs(type: Javadoc) {
     source = android.sourceSets.main.java.srcDirs
+    failOnError = false
 }
 
-task androidJavadocsJar(type: Jar) {
+task javadocsJar(type: Jar) {
     classifier = 'javadoc'
-    from androidJavadocs.destinationDir
-}
-task androidSourcesJar(type: Jar) {
-    classifier = 'sources'
-    from android.sourceSets.main.java.srcDirs
+    from(androidJavadocs)
 }
 
-artifacts {
-    archives androidSourcesJar
-    archives androidJavadocsJar
-}
+def siteUrl = 'https://github.com/evant/binding-collection-adapter'
+def gitUrl = 'https://github.com/evantlemaddaluno/binding-collection-adapter.git'
 
-if (project.hasProperty('sonatype.username') || project.hasProperty('bintray.username')) {
+publishing {
+    publications {
+        lib(MavenPublication) {
+            from components.android
+            artifact sourcesJar
+            artifact javadocsJar
 
-    signing {
-        sign configurations.archives
-    }
-
-    def siteUrl = 'https://github.com/evant/binding-collection-adapter'
-    def gitUrl = 'https://github.com/evantlemaddaluno/binding-collection-adapter.git'
-
-    uploadArchives {
-        repositories {
-            mavenDeployer {
-                beforeDeployment { deployment -> signing.signPom(deployment) }
-
-                def repoUrl
-                if (project.version.endsWith("SNAPSHOT")) {
-                    repoUrl = "https://oss.sonatype.org/content/repositories/snapshots"
-                } else {
-                    repoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+            pom {
+                name = project.name
+                description = 'Easy way to bind collections to listviews and recyclerviews with the new Android Data Binding framework'
+                url = siteUrl
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
                 }
-
-                repository(url: repoUrl) {
-                    authentication(
-                            userName: project.getProperty('sonatype.username'),
-                            password: project.getProperty('sonatype.password'))
+                developers {
+                    developer {
+                        id = 'evant'
+                        name = 'Evan Tatarka'
+                    }
                 }
-
-                pom.project {
-                    name project.name
-                    packaging 'aar'
-                    description 'Easy way to bind collections to listviews and recyclerviews with the new Android Data Binding framework'
-                    url siteUrl
-
-                    scm {
-                        url siteUrl
-                        connection gitUrl
-                        developerConnection gitUrl
-                    }
-
-                    licenses {
-                        license {
-                            name 'The Apache Software License, Version 2.0'
-                            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                            distribution 'repo'
-                        }
-                    }
-
-                    developers {
-                        developer {
-                            id 'evant'
-                            name 'Evan Tatarka'
-                        }
-                    }
+                scm {
+                    connection = gitUrl
+                    developerConnection = gitUrl
+                    url = siteUrl
                 }
             }
         }
     }
-
-    if (project.hasProperty('bintray.username')) {
-        bintray {
-            user = project.property('bintray.username')
-            key = project.property('bintray.apikey')
-            configurations = ['archives']
-            pkg {
-                repo = 'maven'
-                name = 'binding-collection-adapter'
-                websiteUrl = siteUrl
-                vcsUrl = gitUrl
-                licenses = ["Apache-2.0"]
-                version {
-                    gpg {
-                        sign = true
-                        passphrase = project.getProperty('signing.password')
-                    }
-                }
+    repositories {
+        maven {
+            def releasesRepoUrl = 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
+            def snapshotsRepoUrl = 'https://oss.sonatype.org/content/repositories/snapshots'
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+            credentials {
+                username project.findProperty('sonatype.username')
+                password project.findProperty('sonatype.password')
             }
         }
     }
+}
+
+signing {
+    sign publishing.publications.lib
 }
