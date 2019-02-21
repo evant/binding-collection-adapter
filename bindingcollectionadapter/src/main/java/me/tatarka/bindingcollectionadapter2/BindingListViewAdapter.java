@@ -106,7 +106,9 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
 
     @Override
     public void onBindBinding(@NonNull ViewDataBinding binding, int variableId, @LayoutRes int layoutRes, int position, T item) {
-        if (itemBinding.bind(binding, item)) {
+        boolean bound = itemBinding.bind(binding, item);
+        binding.setLifecycleOwner(lifecycleOwner);
+        if (bound) {
             binding.executePendingBindings();
         }
     }
@@ -166,7 +168,6 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
         }
 
         View view = binding.getRoot();
-        binding.setLifecycleOwner(lifecycleOwner);
 
         T item = items.get(position);
         onBindBinding(binding, itemBinding.variableId(), layoutRes, position, item);
@@ -194,7 +195,6 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
             }
 
             View view = binding.getRoot();
-            binding.setLifecycleOwner(lifecycleOwner);
 
             T item = items.get(position);
             onBindBinding(binding, itemBinding.variableId(), layoutRes, position, item);
