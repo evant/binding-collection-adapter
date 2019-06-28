@@ -5,25 +5,26 @@ Easy way to bind collections to listviews and recyclerviews with the new [Androi
 
 ## Download
 
-```groovy
-compile 'me.tatarka.bindingcollectionadapter2:bindingcollectionadapter:2.2.0'
-compile 'me.tatarka.bindingcollectionadapter2:bindingcollectionadapter-recyclerview:2.2.0'
-```
-requires at least android gradle plugin `2.3.0`.
+If you are using androidx use version `3.0.0`, this also uses databinding v2
 
-If you want to try out [databinding v2](https://developer.android.com/topic/libraries/data-binding/start#preview-compiler) 
-you can use version `2.3.0-beta3`
+```groovy
+compile 'me.tatarka.bindingcollectionadapter2:bindingcollectionadapter:3.0.0'
+compile 'me.tatarka.bindingcollectionadapter2:bindingcollectionadapter-recyclerview:3.0.0'
+```
+
+otherwise, you can try out [databinding v2](https://developer.android.com/topic/libraries/data-binding/start#preview-compiler)
+with version `2.3.0-beta3`
 
 ```groovy
 compile 'me.tatarka.bindingcollectionadapter2:bindingcollectionadapter:2.3.0-beta3'
 compile 'me.tatarka.bindingcollectionadapter2:bindingcollectionadapter-recyclerview:2.3.0-beta3'
 ```
 
-If you are using androidx use version `3.0.0-beta3`, this also uses databinding v2
+or use the previous stable version
 
 ```groovy
-compile 'me.tatarka.bindingcollectionadapter2:bindingcollectionadapter:3.0.0-beta3'
-compile 'me.tatarka.bindingcollectionadapter2:bindingcollectionadapter-recyclerview:3.0.0-beta3'
+compile 'me.tatarka.bindingcollectionadapter2:bindingcollectionadapter:2.2.0'
+compile 'me.tatarka.bindingcollectionadapter2:bindingcollectionadapter-recyclerview:2.2.0'
 ```
 
 ## Usage

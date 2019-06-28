@@ -1,4 +1,4 @@
-### Unreleased
+### 3.0.0
 - Removed `LayoutManagers`. RecyclerView has support setting the LayoutManager in xml using it's
 class name that doesn't rely on databinding.
 - Added `AsyncDiffObservableList` which is based on `AsyncListDiffer`. You should prefer this over
