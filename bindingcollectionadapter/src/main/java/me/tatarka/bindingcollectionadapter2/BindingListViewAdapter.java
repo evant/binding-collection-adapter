@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ObservableList;
 import androidx.databinding.ViewDataBinding;
+import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
 
 /**
@@ -35,7 +36,6 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
     private ItemIsEnabled<? super T> itemIsEnabled;
     @Nullable
     private LifecycleOwner lifecycleOwner;
-    private boolean failedToGetLifecycleOwner;
 
     /**
      * Constructs a new instance with the given item count.
@@ -106,10 +106,11 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
 
     @Override
     public void onBindBinding(@NonNull ViewDataBinding binding, int variableId, @LayoutRes int layoutRes, int position, T item) {
-        boolean bound = itemBinding.bind(binding, item);
-        binding.setLifecycleOwner(lifecycleOwner);
-        if (bound) {
+        if (itemBinding.bind(binding, item)) {
             binding.executePendingBindings();
+            if (lifecycleOwner != null) {
+                binding.setLifecycleOwner(lifecycleOwner);
+            }
         }
     }
 
@@ -203,12 +204,9 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
         }
     }
 
-    private void tryGetLifecycleOwner(ViewGroup parent) {
-        if (!failedToGetLifecycleOwner && lifecycleOwner == null) {
-            lifecycleOwner = Utils.findLifecycleOwner(parent);
-            if (lifecycleOwner == null) {
-                failedToGetLifecycleOwner = true;
-            }
+    private void tryGetLifecycleOwner(View view) {
+        if (lifecycleOwner == null || lifecycleOwner.getLifecycle().getCurrentState() == Lifecycle.State.DESTROYED) {
+            lifecycleOwner = Utils.findLifecycleOwner(view);
         }
     }
 

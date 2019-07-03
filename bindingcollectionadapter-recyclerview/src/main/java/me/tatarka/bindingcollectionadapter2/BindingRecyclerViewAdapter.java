@@ -16,6 +16,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ObservableList;
 import androidx.databinding.OnRebindCallback;
 import androidx.databinding.ViewDataBinding;
+import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
@@ -108,10 +109,12 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<ViewHold
 
     @Override
     public void onBindBinding(@NonNull ViewDataBinding binding, int variableId, @LayoutRes int layoutRes, int position, T item) {
-        boolean bound = itemBinding.bind(binding, item);
-        binding.setLifecycleOwner(lifecycleOwner);
-        if (bound) {
+        tryGetLifecycleOwner();
+        if (itemBinding.bind(binding, item)) {
             binding.executePendingBindings();
+            if (lifecycleOwner != null) {
+                binding.setLifecycleOwner(lifecycleOwner);
+            }
         }
     }
 
@@ -122,9 +125,6 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<ViewHold
             ((ObservableList<T>) items).addOnListChangedCallback(callback);
         }
         this.recyclerView = recyclerView;
-        if (lifecycleOwner == null) {
-            lifecycleOwner = Utils.findLifecycleOwner(recyclerView);
-        }
     }
 
     @Override
@@ -248,6 +248,12 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<ViewHold
     @Override
     public long getItemId(int position) {
         return itemIds == null ? position : itemIds.getItemId(position, items.get(position));
+    }
+
+    private void tryGetLifecycleOwner() {
+        if (lifecycleOwner == null || lifecycleOwner.getLifecycle().getCurrentState() == Lifecycle.State.DESTROYED) {
+            lifecycleOwner = Utils.findLifecycleOwner(recyclerView);
+        }
     }
 
     private static class WeakReferenceOnListChangedCallback<T> extends ObservableList.OnListChangedCallback<ObservableList<T>> {
