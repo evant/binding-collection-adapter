@@ -1,3 +1,7 @@
+### 3.1.0
+- Bumped android gradle plugin verison to 3.4.1
+- Fixed crashes caused by lifecycle owner usage  
+
 ### 3.0.0
 - Removed `LayoutManagers`. RecyclerView has support setting the LayoutManager in xml using it's
 class name that doesn't rely on databinding.
