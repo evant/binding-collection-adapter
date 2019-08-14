@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ObservableList;
 import androidx.databinding.ViewDataBinding;
+import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.viewpager.widget.PagerAdapter;
 
@@ -31,7 +32,6 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter implements BindingC
     private PageTitles<T> pageTitles;
     @Nullable
     private LifecycleOwner lifecycleOwner;
-    private boolean failedToGetLifecycleOwner;
     private List<View> views = new ArrayList<>();
 
     @Override
@@ -93,11 +93,11 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter implements BindingC
 
     @Override
     public void onBindBinding(@NonNull ViewDataBinding binding, int variableId, @LayoutRes int layoutRes, int position, T item) {
-        boolean bound = itemBinding.bind(binding, item);
-        binding.setLifecycleOwner(lifecycleOwner);
-        if (bound) {
+        if (itemBinding.bind(binding, item)) {
             binding.executePendingBindings();
-            binding.setLifecycleOwner(lifecycleOwner);
+            if (lifecycleOwner != null) {
+                binding.setLifecycleOwner(lifecycleOwner);
+            }
         }
     }
 
@@ -142,12 +142,9 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter implements BindingC
         return view;
     }
 
-    private void tryGetLifecycleOwner(ViewGroup parent) {
-        if (!failedToGetLifecycleOwner && lifecycleOwner == null) {
-            lifecycleOwner = Utils.findLifecycleOwner(parent);
-            if (lifecycleOwner == null) {
-                failedToGetLifecycleOwner = true;
-            }
+    private void tryGetLifecycleOwner(View view) {
+        if (lifecycleOwner == null || lifecycleOwner.getLifecycle().getCurrentState() == Lifecycle.State.DESTROYED) {
+            lifecycleOwner = Utils.findLifecycleOwner(view);
         }
     }
 

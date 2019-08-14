@@ -6,8 +6,6 @@ import android.content.res.Resources;
 import androidx.annotation.MainThread;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
-import androidx.databinding.Observable;
-import androidx.databinding.OnRebindCallback;
 import androidx.databinding.ViewDataBinding;
 
 import android.os.Looper;
@@ -16,20 +14,12 @@ import android.view.View;
 import androidx.annotation.LayoutRes;
 import androidx.lifecycle.LifecycleOwner;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-
 /**
  * Helper databinding utilities. May be made public some time in the future if they prove to be
  * useful.
  */
 class Utils {
     private static final String TAG = "BCAdapters";
-
-    @Nullable
-    private static Field lifecycleOwnerField;
-    private static boolean fieldFaild;
 
     /**
      * Helper to throw an exception when {@link androidx.databinding.ViewDataBinding#setVariable(int,
@@ -44,43 +34,22 @@ class Utils {
     }
 
     /**
-     * Returns the lifecycle owner associated with the given view. This currently requires the view
-     * to use databinding and uses reflection. This will hopefully be replaced with a better
-     * implementation once https://issuetracker.google.com/issues/112929938 gets implemented.
+     * Returns the lifecycle owner associated with the given view. Tries to get lifecycle owner first
+     * from ViewDataBinding, else from View Context if view is not data-bound.
      */
     @Nullable
     @MainThread
     static LifecycleOwner findLifecycleOwner(View view) {
         ViewDataBinding binding = DataBindingUtil.findBinding(view);
-        if (binding == null) {
-            return null;
+        LifecycleOwner lifecycleOwner = null;
+        if (binding != null) {
+            lifecycleOwner = binding.getLifecycleOwner();
         }
-        return getLifecycleOwner(binding);
-    }
-
-    /**
-     * Returns the lifecycle owner from a {@code ViewDataBinding} using reflection.
-     */
-    @Nullable
-    @MainThread
-    private static LifecycleOwner getLifecycleOwner(ViewDataBinding binding) {
-        if (!fieldFaild && lifecycleOwnerField == null) {
-            try {
-                lifecycleOwnerField = ViewDataBinding.class.getDeclaredField("mLifecycleOwner");
-                lifecycleOwnerField.setAccessible(true);
-            } catch (NoSuchFieldException e) {
-                fieldFaild = true;
-                return null;
-            }
+        Context ctx = view.getContext();
+        if (lifecycleOwner == null && ctx instanceof LifecycleOwner) {
+            lifecycleOwner = (LifecycleOwner) ctx;
         }
-        if (lifecycleOwnerField == null) {
-            return null;
-        }
-        try {
-            return (LifecycleOwner) lifecycleOwnerField.get(binding);
-        } catch (IllegalAccessException e) {
-            return null;
-        }
+        return lifecycleOwner;
     }
 
     /**
@@ -93,15 +62,4 @@ class Utils {
         }
     }
 
-    /**
-     * Constructs a binding adapter class from it's class name using reflection.
-     */
-    @SuppressWarnings("unchecked")
-    static <T, A extends BindingCollectionAdapter<T>> A createClass(Class<? extends BindingCollectionAdapter> adapterClass, ItemBinding<T> itemBinding) {
-        try {
-            return (A) adapterClass.getConstructor(ItemBinding.class).newInstance(itemBinding);
-        } catch (Exception e1) {
-            throw new RuntimeException(e1);
-        }
-    }
 }
