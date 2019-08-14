@@ -64,7 +64,7 @@ Then bind it to the collection view with `app:items` and `app:itemBinding`.
       app:items="@{viewModel.items}"
       app:itemBinding="@{viewModel.itemBinding}"/>
 
-    <android.support.v4.view.ViewPager
+    <androidx.viewpager.widget.ViewPager
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       app:items="@{viewModel.items}"
