@@ -1,3 +1,6 @@
+### 3.1.1
+- Add try-catch around notifying data changes to work around crash (#162)
+
 ### 3.1.0
 - Bumped android gradle plugin verison to 3.4.1
 - Fixed crashes caused by lifecycle owner usage  
