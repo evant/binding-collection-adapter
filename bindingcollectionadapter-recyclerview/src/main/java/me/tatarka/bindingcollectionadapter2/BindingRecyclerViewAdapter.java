@@ -29,7 +29,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<ViewHolder> implements BindingCollectionAdapter<T> {
     private static final Object DATA_INVALIDATION = new Object();
 
-    private ItemBinding<T> itemBinding;
+    private ItemBinding<? super T> itemBinding;
     private WeakReferenceOnListChangedCallback<T> callback;
     private List<T> items;
     private LayoutInflater inflater;
@@ -44,7 +44,7 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<ViewHold
     private LifecycleOwner lifecycleOwner;
 
     @Override
-    public void setItemBinding(@NonNull ItemBinding<T> itemBinding) {
+    public void setItemBinding(@NonNull ItemBinding<? super T> itemBinding) {
         this.itemBinding = itemBinding;
     }
 
@@ -68,7 +68,7 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<ViewHold
 
     @NonNull
     @Override
-    public ItemBinding<T> getItemBinding() {
+    public ItemBinding<? super T> getItemBinding() {
         if (itemBinding == null) {
             throw new NullPointerException("itemBinding == null");
         }
