@@ -343,6 +343,31 @@ DiffUtil.DiffResult diffResult = list.calculateDiff(newItems);
 list.update(newItems, diffResult);
 ```
 
+## Paging
+
+Paging is supported through the `bindingcollectionadapter-paging` artifact. First add it to your project
+
+```groovy
+implementation 'me.tatarka.bindingcollectionadapter2:bindingcollectionadapter-paging:3.1.1'
+```
+
+Then bind a `PagedList` and `DiffUtil.ItemCallback`.
+
+```java
+LiveData<PagedList<Item>> pagedList = new LivePagedListBuilder<>(..., 20);
+DiffUtil.ItemCallback<Item> diff = ...;
+```
+
+```xml
+<androidx.recyclerview.widget.RecyclerView
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+  app:items="@{pagedList}"
+  app:itemBinding="@{itemBinding}"
+  app:diffConfig="@{diff}" />
+```
+
 ## Known Issues
 
 ### Cannot Resolve the libraries `@BindingAdapter`'s
