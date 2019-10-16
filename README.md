@@ -12,14 +12,6 @@ implementation 'me.tatarka.bindingcollectionadapter2:bindingcollectionadapter:3.
 implementation 'me.tatarka.bindingcollectionadapter2:bindingcollectionadapter-recyclerview:3.1.1'
 ```
 
-otherwise, you can try out [databinding v2](https://developer.android.com/topic/libraries/data-binding/start#preview-compiler)
-with version `2.3.0-beta3`
-
-```groovy
-implementation 'me.tatarka.bindingcollectionadapter2:bindingcollectionadapter:2.3.0-beta3'
-implementation 'me.tatarka.bindingcollectionadapter2:bindingcollectionadapter-recyclerview:2.3.0-beta3'
-```
-
 or use the previous stable version
 
 ```groovy
