@@ -103,9 +103,6 @@ public class MergeObservableList<T> extends AbstractList<T> implements Observabl
      */
     public void removeAll() {
         int size = size();
-        if (size == 0) {
-            return;
-        }
         for (int i = 0, listSize = lists.size(); i < listSize; i++) {
             List<? extends T> list = lists.get(i);
             if (list instanceof ObservableList) {
@@ -114,7 +111,9 @@ public class MergeObservableList<T> extends AbstractList<T> implements Observabl
         }
         lists.clear();
         modCount += 1;
-        listeners.notifyRemoved(this, 0, size);
+        if (size > 0) {
+            listeners.notifyRemoved(this, 0, size);
+        }
     }
 
     /**
