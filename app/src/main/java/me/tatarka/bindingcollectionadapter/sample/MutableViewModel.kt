@@ -66,7 +66,7 @@ class MutableViewModel : ViewModel(), Listeners {
 
     /**
      * Define stable item ids. These are just based on position because the items happen to not
-     * every move around.
+     * ever move around.
      */
     val itemIds =
         BindingListViewAdapter.ItemIds<Any> { position, _ -> position.toLong() }
