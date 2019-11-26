@@ -12,7 +12,10 @@ import java.util.Arrays;
 import me.tatarka.bindingcollectionadapter2.collections.MergeObservableList;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -187,5 +190,19 @@ public class MergeObservableTest {
 
         assertThat(list).isEmpty();
         verify(callback).onItemRangeRemoved(list, 0, 2);
+    }
+
+    @Test
+    public void removingAllRemovesEmptyListsFromTheList() {
+        MergeObservableList<String> list = new MergeObservableList<>();
+        ObservableArrayList<String> backingList = new ObservableArrayList<>();
+        list.insertList(backingList);
+        ObservableList.OnListChangedCallback callback = mock(ObservableList.OnListChangedCallback.class);
+        list.addOnListChangedCallback(callback);
+        list.removeAll();
+        backingList.add("test");
+
+        assertThat(list).isEmpty();
+        verify(callback, never()).onItemRangeRemoved(any(MergeObservableList.class), anyInt(), anyInt());
     }
 }

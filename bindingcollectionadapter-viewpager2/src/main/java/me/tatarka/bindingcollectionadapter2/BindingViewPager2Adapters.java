@@ -1,22 +1,22 @@
 package me.tatarka.bindingcollectionadapter2;
 
+import java.util.List;
+
 import androidx.databinding.BindingAdapter;
-import androidx.paging.PagedList;
 import androidx.recyclerview.widget.AsyncDifferConfig;
-import androidx.recyclerview.widget.RecyclerView;
-import me.tatarka.bindingcollectionadapter2.collections.AsyncDiffPagedObservableList;
-import me.tatarka.bindingcollectionadapter2.paging.R;
+import androidx.viewpager2.widget.ViewPager2;
+import me.tatarka.bindingcollectionadapter2.collections.AsyncDiffObservableList;
 
 /**
  * @see {@link BindingCollectionAdapters}
  */
-public class PagedBindingRecyclerViewAdapters {
+public class BindingViewPager2Adapters {
     // RecyclerView
     @SuppressWarnings("unchecked")
     @BindingAdapter(value = {"itemBinding", "items", "adapter", "itemIds", "viewHolder", "diffConfig"}, requireAll = false)
-    public static <T> void setAdapter(RecyclerView recyclerView,
-                                      ItemBinding<? super T> itemBinding,
-                                      PagedList<T> items,
+    public static <T> void setAdapter(ViewPager2 viewPager,
+                                      ItemBinding<T> itemBinding,
+                                      List<T> items,
                                       BindingRecyclerViewAdapter<T> adapter,
                                       BindingRecyclerViewAdapter.ItemIds<? super T> itemIds,
                                       BindingRecyclerViewAdapter.ViewHolderFactory viewHolderFactory,
@@ -24,7 +24,7 @@ public class PagedBindingRecyclerViewAdapters {
         if (itemBinding == null) {
             throw new IllegalArgumentException("itemBinding must not be null");
         }
-        BindingRecyclerViewAdapter oldAdapter = (BindingRecyclerViewAdapter) recyclerView.getAdapter();
+        BindingRecyclerViewAdapter oldAdapter = (BindingRecyclerViewAdapter) viewPager.getAdapter();
         if (adapter == null) {
             if (oldAdapter == null) {
                 adapter = new BindingRecyclerViewAdapter<>();
@@ -35,10 +35,10 @@ public class PagedBindingRecyclerViewAdapters {
         adapter.setItemBinding(itemBinding);
 
         if (diffConfig != null && items != null) {
-            AsyncDiffPagedObservableList<T> list = (AsyncDiffPagedObservableList<T>) recyclerView.getTag(R.id.bindingcollectiondapter_list_id);
+            AsyncDiffObservableList<T> list = (AsyncDiffObservableList<T>) viewPager.getTag(me.tatarka.bindingcollectionadapter2.recyclerview.R.id.bindingcollectiondapter_list_id);
             if (list == null) {
-                list = new AsyncDiffPagedObservableList<>(diffConfig);
-                recyclerView.setTag(R.id.bindingcollectiondapter_list_id, list);
+                list = new AsyncDiffObservableList<>(diffConfig);
+                viewPager.setTag(me.tatarka.bindingcollectionadapter2.recyclerview.R.id.bindingcollectiondapter_list_id, list);
                 adapter.setItems(list);
             }
             list.update(items);
@@ -50,7 +50,7 @@ public class PagedBindingRecyclerViewAdapters {
         adapter.setViewHolderFactory(viewHolderFactory);
 
         if (oldAdapter != adapter) {
-            recyclerView.setAdapter(adapter);
+            viewPager.setAdapter(adapter);
         }
     }
 }

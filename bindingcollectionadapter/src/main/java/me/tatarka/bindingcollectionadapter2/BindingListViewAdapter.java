@@ -23,7 +23,7 @@ import androidx.lifecycle.LifecycleOwner;
  */
 public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCollectionAdapter<T> {
     private final int itemTypeCount;
-    private ItemBinding<T> itemBinding;
+    private ItemBinding<? super T> itemBinding;
     @LayoutRes
     private int dropDownItemLayout;
     private WeakReferenceOnListChangedCallback<T> callback;
@@ -45,7 +45,7 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
     }
 
     @Override
-    public void setItemBinding(@NonNull ItemBinding<T> itemBinding) {
+    public void setItemBinding(@NonNull ItemBinding<? super T> itemBinding) {
         this.itemBinding = itemBinding;
     }
 
@@ -61,7 +61,7 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
 
     @NonNull
     @Override
-    public ItemBinding<T> getItemBinding() {
+    public ItemBinding<? super T> getItemBinding() {
         if (itemBinding == null) {
             throw new NullPointerException("itemBinding == null");
         }

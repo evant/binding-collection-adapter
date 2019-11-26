@@ -22,7 +22,7 @@ public interface BindingCollectionAdapter<T> {
     /**
      * Sets the item biding for the adapter.
      */
-    void setItemBinding(@NonNull ItemBinding<T> itemBinding);
+    void setItemBinding(@NonNull ItemBinding<? super T> itemBinding);
 
     /**
      * Returns the {@link ItemBinding} that the adapter that was set.
@@ -30,7 +30,7 @@ public interface BindingCollectionAdapter<T> {
      * @throws NullPointerException if the item binding was not set.
      */
     @NonNull
-    ItemBinding<T> getItemBinding();
+    ItemBinding<? super T> getItemBinding();
 
     /**
      * Sets the adapter's items. These items will be displayed based on the {@link ItemBinding}. If

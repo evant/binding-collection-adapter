@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="me.tatarka.bindingcollectionadapter.sample.MutableViewModel" />
+
+        <variable
+            name="listeners"
+            type="me.tatarka.bindingcollectionadapter.sample.Listeners" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tabMode="scrollable" />
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/pager"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            app:itemBinding="@{viewModel.pageItem}"
+            app:items="@{viewModel.items}" />
+
+        <LinearLayout
+            style="?buttonBarStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/add"
+                style="?buttonBarButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClickListener="@{() -> listeners.onAddItem()}"
+                android:text="Add Item" />
+
+            <Button
+                android:id="@+id/remove"
+                style="?buttonBarButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClickListener="@{() -> listeners.onRemoveItem()}"
+                android:text="Remove Item" />
+        </LinearLayout>
+    </LinearLayout>
+</layout>
