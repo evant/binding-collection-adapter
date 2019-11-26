@@ -22,6 +22,10 @@
         android:title="ViewPager" />
 
     <item
+        android:id="@+id/action_viewpager2"
+        android:title="ViewPager2" />
+
+    <item
         android:id="@+id/action_spinner"
         android:title="Spinner" />
 </menu>

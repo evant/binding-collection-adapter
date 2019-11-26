@@ -39,17 +39,18 @@ dependencies {
     implementation project(':bindingcollectionadapter-ktx')
     implementation project(':bindingcollectionadapter-recyclerview')
     implementation project(':bindingcollectionadapter-paging')
+    implementation project(':bindingcollectionadapter-viewpager2')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
-    implementation 'androidx.appcompat:appcompat:1.0.0-rc02'
-    implementation 'com.google.android.material:material:1.0.0-rc02'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0-rc02'
-    implementation 'androidx.recyclerview:recyclerview:1.0.0-rc02'
-    implementation 'androidx.vectordrawable:vectordrawable-animated:1.0.0-rc02'
-    implementation 'androidx.lifecycle:lifecycle-runtime:2.0.0-rc01'
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0-rc01'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.0.0-rc01'
-    implementation "androidx.paging:paging-runtime:2.0.0-rc01"
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'com.google.android.material:material:1.2.0-alpha01'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.recyclerview:recyclerview:1.0.0'
+    implementation 'androidx.vectordrawable:vectordrawable-animated:1.0.0'
+    implementation 'androidx.lifecycle:lifecycle-runtime:2.0.0'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.0.0'
+    implementation 'androidx.paging:paging-runtime:2.0.0'
 
     kapt "com.android.databinding:compiler:$agp_version"
 }
