@@ -18,7 +18,7 @@ public class BindingRecyclerViewAdapters {
     @SuppressWarnings("unchecked")
     @BindingAdapter(value = {"itemBinding", "items", "adapter", "itemIds", "viewHolder", "diffConfig"}, requireAll = false)
     public static <T> void setAdapter(RecyclerView recyclerView,
-                                      ItemBinding<T> itemBinding,
+                                      ItemBinding<? super T> itemBinding,
                                       List<T> items,
                                       BindingRecyclerViewAdapter<T> adapter,
                                       BindingRecyclerViewAdapter.ItemIds<? super T> itemIds,

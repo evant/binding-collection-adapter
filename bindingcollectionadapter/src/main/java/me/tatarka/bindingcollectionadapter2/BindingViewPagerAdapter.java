@@ -24,7 +24,7 @@ import androidx.viewpager.widget.PagerAdapter;
  * changes to that list.
  */
 public class BindingViewPagerAdapter<T> extends PagerAdapter implements BindingCollectionAdapter<T> {
-    private ItemBinding<T> itemBinding;
+    private ItemBinding<? super T> itemBinding;
     private WeakReferenceOnListChangedCallback<T> callback;
     private List<T> items;
     private LayoutInflater inflater;
@@ -35,7 +35,7 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter implements BindingC
     private List<View> views = new ArrayList<>();
 
     @Override
-    public void setItemBinding(@NonNull ItemBinding<T> itemBinding) {
+    public void setItemBinding(@NonNull ItemBinding<? super T> itemBinding) {
         this.itemBinding = itemBinding;
     }
 
@@ -56,7 +56,7 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter implements BindingC
 
     @NonNull
     @Override
-    public ItemBinding<T> getItemBinding() {
+    public ItemBinding<? super T> getItemBinding() {
         if (itemBinding == null) {
             throw new NullPointerException("itemBinding == null");
         }

@@ -9,8 +9,6 @@ import java.util.List;
 import androidx.annotation.LayoutRes;
 import androidx.databinding.BindingAdapter;
 import androidx.databinding.BindingConversion;
-import androidx.databinding.DataBindingUtil;
-import androidx.databinding.ViewDataBinding;
 import androidx.viewpager.widget.ViewPager;
 
 /**
@@ -20,7 +18,7 @@ public class BindingCollectionAdapters {
     // AdapterView
     @SuppressWarnings("unchecked")
     @BindingAdapter(value = {"itemBinding", "itemTypeCount", "items", "adapter", "itemDropDownLayout", "itemIds", "itemIsEnabled"}, requireAll = false)
-    public static <T> void setAdapter(AdapterView adapterView, ItemBinding<T> itemBinding, Integer itemTypeCount, List items, BindingListViewAdapter<T> adapter, @LayoutRes int itemDropDownLayout, BindingListViewAdapter.ItemIds<? super T> itemIds, BindingListViewAdapter.ItemIsEnabled<? super T> itemIsEnabled) {
+    public static <T> void setAdapter(AdapterView adapterView, ItemBinding<? super T> itemBinding, Integer itemTypeCount, List items, BindingListViewAdapter<T> adapter, @LayoutRes int itemDropDownLayout, BindingListViewAdapter.ItemIds<? super T> itemIds, BindingListViewAdapter.ItemIsEnabled<? super T> itemIsEnabled) {
         if (itemBinding == null) {
             throw new IllegalArgumentException("onItemBind must not be null");
         }
@@ -57,7 +55,7 @@ public class BindingCollectionAdapters {
     // ViewPager
     @SuppressWarnings("unchecked")
     @BindingAdapter(value = {"itemBinding", "items", "adapter", "pageTitles"}, requireAll = false)
-    public static <T> void setAdapter(ViewPager viewPager, ItemBinding<T> itemBinding, List items, BindingViewPagerAdapter<T> adapter, BindingViewPagerAdapter.PageTitles<T> pageTitles) {
+    public static <T> void setAdapter(ViewPager viewPager, ItemBinding<? super T> itemBinding, List items, BindingViewPagerAdapter<T> adapter, BindingViewPagerAdapter.PageTitles<T> pageTitles) {
         if (itemBinding == null) {
             throw new IllegalArgumentException("onItemBind must not be null");
         }
