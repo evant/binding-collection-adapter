@@ -1,3 +1,7 @@
+### 3.2.0
+- Add viewpager2 support with bindingcollectionadapter-viewpager2
+- Fix bug where empty observable lists weren't being removed from a MergeObservaleList (#168)
+
 ### 3.1.1
 - Add try-catch around notifying data changes to work around crash (#162)
 
