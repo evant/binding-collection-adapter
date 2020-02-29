@@ -34,6 +34,16 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter implements BindingC
     private LifecycleOwner lifecycleOwner;
     private List<View> views = new ArrayList<>();
 
+    public BindingViewPagerAdapter() {
+    }
+
+    /**
+     * Constructs a new instance with the given item binding.
+     */
+    public BindingViewPagerAdapter(@NonNull ItemBinding<? super T> itemBinding) {
+        this.itemBinding = itemBinding;
+    }
+
     @Override
     public void setItemBinding(@NonNull ItemBinding<? super T> itemBinding) {
         this.itemBinding = itemBinding;

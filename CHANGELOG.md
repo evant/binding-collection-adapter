@@ -1,3 +1,9 @@
+### [Unreleased]
+- Not having an itemBinding in xml will cause the adapter to be cleared instead of throwing an
+exception (#179)
+- Added convenience constructors to `BindingListViewAdapter`, `BindingViewPagerAdapter`, and
+`BindingRecyclerViewAdapter` which takes the itemBinding.
+
 ### 3.2.0
 - Add viewpager2 support with bindingcollectionadapter-viewpager2
 - Fix bug where empty observable lists weren't being removed from a MergeObservaleList (#168)

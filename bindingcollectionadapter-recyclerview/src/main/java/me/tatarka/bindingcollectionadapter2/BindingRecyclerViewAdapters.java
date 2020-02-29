@@ -24,36 +24,37 @@ public class BindingRecyclerViewAdapters {
                                       BindingRecyclerViewAdapter.ItemIds<? super T> itemIds,
                                       BindingRecyclerViewAdapter.ViewHolderFactory viewHolderFactory,
                                       AsyncDifferConfig<T> diffConfig) {
-        if (itemBinding == null) {
-            throw new IllegalArgumentException("itemBinding must not be null");
-        }
-        BindingRecyclerViewAdapter oldAdapter = (BindingRecyclerViewAdapter) recyclerView.getAdapter();
-        if (adapter == null) {
-            if (oldAdapter == null) {
-                adapter = new BindingRecyclerViewAdapter<>();
+        if (itemBinding != null) {
+            BindingRecyclerViewAdapter oldAdapter = (BindingRecyclerViewAdapter) recyclerView.getAdapter();
+            if (adapter == null) {
+                if (oldAdapter == null) {
+                    adapter = new BindingRecyclerViewAdapter<>();
+                } else {
+                    adapter = oldAdapter;
+                }
+            }
+            adapter.setItemBinding(itemBinding);
+
+            if (diffConfig != null && items != null) {
+                AsyncDiffObservableList<T> list = (AsyncDiffObservableList<T>) recyclerView.getTag(R.id.bindingcollectiondapter_list_id);
+                if (list == null) {
+                    list = new AsyncDiffObservableList<>(diffConfig);
+                    recyclerView.setTag(R.id.bindingcollectiondapter_list_id, list);
+                    adapter.setItems(list);
+                }
+                list.update(items);
             } else {
-                adapter = oldAdapter;
+                adapter.setItems(items);
             }
-        }
-        adapter.setItemBinding(itemBinding);
 
-        if (diffConfig != null && items != null) {
-            AsyncDiffObservableList<T> list = (AsyncDiffObservableList<T>) recyclerView.getTag(R.id.bindingcollectiondapter_list_id);
-            if (list == null) {
-                list = new AsyncDiffObservableList<>(diffConfig);
-                recyclerView.setTag(R.id.bindingcollectiondapter_list_id, list);
-                adapter.setItems(list);
+            adapter.setItemIds(itemIds);
+            adapter.setViewHolderFactory(viewHolderFactory);
+
+            if (oldAdapter != adapter) {
+                recyclerView.setAdapter(adapter);
             }
-            list.update(items);
         } else {
-            adapter.setItems(items);
-        }
-
-        adapter.setItemIds(itemIds);
-        adapter.setViewHolderFactory(viewHolderFactory);
-
-        if (oldAdapter != adapter) {
-            recyclerView.setAdapter(adapter);
+            recyclerView.setAdapter(null);
         }
     }
 
