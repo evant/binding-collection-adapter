@@ -44,6 +44,14 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
         this.itemTypeCount = itemTypeCount;
     }
 
+    /**
+     * Constructs a new instance with the given item count and item binding.
+     */
+    public BindingListViewAdapter(int itemTypeCount, @NonNull ItemBinding<? super T> itemBinding) {
+        this.itemTypeCount = itemTypeCount;
+        this.itemBinding = itemBinding;
+    }
+
     @Override
     public void setItemBinding(@NonNull ItemBinding<? super T> itemBinding) {
         this.itemBinding = itemBinding;

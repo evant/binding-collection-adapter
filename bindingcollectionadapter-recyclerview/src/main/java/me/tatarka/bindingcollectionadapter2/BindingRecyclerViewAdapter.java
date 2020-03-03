@@ -43,6 +43,16 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<ViewHold
     @Nullable
     private LifecycleOwner lifecycleOwner;
 
+    public BindingRecyclerViewAdapter() {
+    }
+
+    /**
+     * Constructs a new instance with the given item binding.
+     */
+    public BindingRecyclerViewAdapter(@NonNull ItemBinding<? super T> itemBinding) {
+        this.itemBinding = itemBinding;
+    }
+
     @Override
     public void setItemBinding(@NonNull ItemBinding<? super T> itemBinding) {
         this.itemBinding = itemBinding;
