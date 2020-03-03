@@ -1,8 +1,12 @@
-### [Unreleased]
+### [4.0.0]
 - Not having an itemBinding in xml will cause the adapter to be cleared instead of throwing an
 exception (#179)
 - Added convenience constructors to `BindingListViewAdapter`, `BindingViewPagerAdapter`, and
 `BindingRecyclerViewAdapter` which takes the itemBinding.
+- Bumped android gradle plugin to 3.5.2
+- Allow itemBindings to be contravariant in adapters. This should not break any use-sites, but may
+be a source-breaking change if you have overriden `setItemBinding` or `getItemBinding` in your
+custom adapter. If so, you can change `T` to `? super T` (or `in T` in kotlin) to fix it.
 
 ### 3.2.0
 - Add viewpager2 support with bindingcollectionadapter-viewpager2
