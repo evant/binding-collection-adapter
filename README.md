@@ -5,12 +5,12 @@ Easy way to bind collections to listviews and recyclerviews with the new [Androi
 
 ## Download
 
-If you are using androidx use version `3.2.0`, this also uses databinding v2
+If you are using androidx use version `4.0.0`, this also uses databinding v2
 
 ```groovy
-implementation 'me.tatarka.bindingcollectionadapter2:bindingcollectionadapter:3.2.0'
-implementation 'me.tatarka.bindingcollectionadapter2:bindingcollectionadapter-recyclerview:3.2.0'
-implementation 'me.tatarka.bindingcollectionadapter2:bindingcollectionadapter-viewpager2:3.2.0'
+implementation 'me.tatarka.bindingcollectionadapter2:bindingcollectionadapter:4.0.0'
+implementation 'me.tatarka.bindingcollectionadapter2:bindingcollectionadapter-recyclerview:4.0.0'
+implementation 'me.tatarka.bindingcollectionadapter2:bindingcollectionadapter-viewpager2:4.0.0'
 ```
 
 or use the previous stable version
@@ -90,6 +90,10 @@ name you passed into the `ItemBinding`.
       android:text="@{item}"/>
 </layout>
 ```
+
+Note: if `app:itemBinding` is null, then the adapter will be set to null. This is useful if you
+don't have an `itemBinding` right away (ex: need to wait till you load data). If you aren't seeing
+any views, make sure you have `itemBinding` defined!
 
 ## Multiple View Types
 
