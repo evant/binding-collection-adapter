@@ -16,6 +16,7 @@ import androidx.databinding.ObservableList;
 import androidx.databinding.ViewDataBinding;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.ViewTreeLifecycleOwner;
 import androidx.viewpager.widget.PagerAdapter;
 
 /**
@@ -53,15 +54,11 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter implements BindingC
      * Sets the lifecycle owner of this adapter to work with {@link androidx.lifecycle.LiveData}.
      * This is normally not necessary, but due to an androidx limitation, you need to set this if
      * the containing view is <em>not</em> using databinding.
+     *
+     * @deprecated No longer needs to be called. Is a no-op
      */
+    @Deprecated
     public void setLifecycleOwner(@Nullable LifecycleOwner lifecycleOwner) {
-        this.lifecycleOwner = lifecycleOwner;
-        for (View view : views) {
-            ViewDataBinding binding = DataBindingUtil.getBinding(view);
-            if (binding != null) {
-                binding.setLifecycleOwner(lifecycleOwner);
-            }
-        }
     }
 
     @NonNull
@@ -105,9 +102,6 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter implements BindingC
     public void onBindBinding(@NonNull ViewDataBinding binding, int variableId, @LayoutRes int layoutRes, int position, T item) {
         if (itemBinding.bind(binding, item)) {
             binding.executePendingBindings();
-            if (lifecycleOwner != null) {
-                binding.setLifecycleOwner(lifecycleOwner);
-            }
         }
     }
 
@@ -154,7 +148,7 @@ public class BindingViewPagerAdapter<T> extends PagerAdapter implements BindingC
 
     private void tryGetLifecycleOwner(View view) {
         if (lifecycleOwner == null || lifecycleOwner.getLifecycle().getCurrentState() == Lifecycle.State.DESTROYED) {
-            lifecycleOwner = Utils.findLifecycleOwner(view);
+            lifecycleOwner = ViewTreeLifecycleOwner.get(view);
         }
     }
 

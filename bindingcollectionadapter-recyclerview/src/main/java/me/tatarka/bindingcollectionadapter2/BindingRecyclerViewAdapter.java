@@ -18,6 +18,7 @@ import androidx.databinding.OnRebindCallback;
 import androidx.databinding.ViewDataBinding;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.ViewTreeLifecycleOwner;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
@@ -62,18 +63,11 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<ViewHold
      * Sets the lifecycle owner of this adapter to work with {@link androidx.lifecycle.LiveData}.
      * This is normally not necessary, but due to an androidx limitation, you need to set this if
      * the containing view is <em>not</em> using databinding.
+     *
+     * @deprecated This is no longer needed. Calling it is a no-op.
      */
+    @Deprecated
     public void setLifecycleOwner(@Nullable LifecycleOwner lifecycleOwner) {
-        this.lifecycleOwner = lifecycleOwner;
-        if (recyclerView != null) {
-            for (int i = 0; i < recyclerView.getChildCount(); i++) {
-                View child = recyclerView.getChildAt(i);
-                ViewDataBinding binding = DataBindingUtil.getBinding(child);
-                if (binding != null) {
-                    binding.setLifecycleOwner(lifecycleOwner);
-                }
-            }
-        }
     }
 
     @NonNull
@@ -266,7 +260,7 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<ViewHold
 
     private void tryGetLifecycleOwner() {
         if (lifecycleOwner == null || lifecycleOwner.getLifecycle().getCurrentState() == Lifecycle.State.DESTROYED) {
-            lifecycleOwner = Utils.findLifecycleOwner(recyclerView);
+            lifecycleOwner = ViewTreeLifecycleOwner.get(recyclerView);
         }
     }
 

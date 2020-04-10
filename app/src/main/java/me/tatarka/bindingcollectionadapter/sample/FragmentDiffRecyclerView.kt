@@ -23,7 +23,7 @@ class FragmentDiffRecyclerView : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         return DiffRecyclerViewBinding.inflate(inflater, container, false).also {
-            it.setLifecycleOwner(this)
+            it.lifecycleOwner = this
             it.viewModel = viewModel
             it.listeners = viewModel
             it.executePendingBindings()

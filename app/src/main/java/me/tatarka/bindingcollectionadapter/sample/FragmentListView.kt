@@ -24,7 +24,7 @@ class FragmentListView : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         return ListViewBinding.inflate(inflater, container, false).also {
-            it.setLifecycleOwner(this)
+            it.lifecycleOwner = this
             it.viewModel = viewModel
             it.listeners = viewModel
             it.executePendingBindings()

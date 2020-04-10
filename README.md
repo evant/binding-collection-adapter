@@ -379,13 +379,6 @@ If you attempt to retrieve an adapter from a view right after binding it you may
 This is because databinding waits for the next draw pass to run to batch up changes. You can force
 it to run immediately by calling `binding.executePendingBindings()`.
 
-### LiveData not working
-
-Live data support has been added in `2.3.0-beta3` and `3.0.0-beta3` (androidx). For most cases it
-should 'just work'. However, it uses a bit of reflection under the hood and you'll have to call
-`adapter.setLifecycleOwner(owner)` if your containing view does not use databinding. This will be
-fixed whenever [this issue](https://issuetracker.google.com/issues/112929938) gets resolved.
-
 ## License
 
     Copyright 2015 Evan Tatarka

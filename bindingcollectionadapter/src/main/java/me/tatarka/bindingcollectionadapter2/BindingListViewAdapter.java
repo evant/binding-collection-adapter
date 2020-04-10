@@ -16,6 +16,7 @@ import androidx.databinding.ObservableList;
 import androidx.databinding.ViewDataBinding;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.ViewTreeLifecycleOwner;
 
 /**
  * A {@link BaseAdapter} that binds items to layouts using the given {@link ItemBinding} If you give
@@ -61,10 +62,11 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
      * Sets the lifecycle owner of this adapter to work with {@link androidx.lifecycle.LiveData}.
      * This is normally not necessary, but due to an androidx limitation, you need to set this if
      * the containing view is <em>not</em> using databinding.
+     *
+     * @deprecated No longer needed. Calling is a no-op.
      */
+    @Deprecated
     public void setLifecycleOwner(@Nullable LifecycleOwner lifecycleOwner) {
-        this.lifecycleOwner = lifecycleOwner;
-        notifyDataSetChanged();
     }
 
     @NonNull
@@ -214,7 +216,7 @@ public class BindingListViewAdapter<T> extends BaseAdapter implements BindingCol
 
     private void tryGetLifecycleOwner(View view) {
         if (lifecycleOwner == null || lifecycleOwner.getLifecycle().getCurrentState() == Lifecycle.State.DESTROYED) {
-            lifecycleOwner = Utils.findLifecycleOwner(view);
+            lifecycleOwner = ViewTreeLifecycleOwner.get(view);
         }
     }
 

@@ -27,7 +27,7 @@ class FragmentViewPager2View : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         return Viewpager2ViewBinding.inflate(inflater, container, false).also {
-            it.setLifecycleOwner(this)
+            it.lifecycleOwner = this
             it.viewModel = viewModel
             it.listeners = PagerListeners(viewModel)
             it.executePendingBindings()
