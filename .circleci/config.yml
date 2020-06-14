@@ -30,7 +30,7 @@ jobs:
           path: app/build/test-results
       - deploy:
           command: |
-            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+            if [ "${CIRCLE_BRANCH}" == "main" ]; then
               echo "$MAVEN_CENTRAL_SEC_RING" | base64 -d > $HOME/secring.gpg
               gpg --import --batch $HOME/secring.gpg
               ./gradlew publish -Psonatype.username="$SONATYPE_USERNAME" -Psonatype.password="$SONATYPE_PASSWORD" -Psigning.keyId=34BCD878 -Psigning.password="$MAVEN_CENTRAL_KEY_PASSPHRASE" -Psigning.secretKeyRingFile=$HOME/secring.gpg -Porg.gradle.parallel=false
