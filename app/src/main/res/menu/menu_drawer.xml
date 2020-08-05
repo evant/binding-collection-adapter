@@ -18,6 +18,11 @@
         android:title="Paged RecyclerView" />
 
     <item
+        android:id="@+id/action_paged_v3_recyclerview"
+        android:title="Paged V3 RecyclerView" />
+
+
+    <item
         android:id="@+id/action_viewpager"
         android:title="ViewPager" />
 

@@ -1,14 +1,9 @@
 package me.tatarka.bindingcollectionadapter.sample
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
-import androidx.paging.DataSource
-import androidx.paging.LivePagedListBuilder
-import androidx.paging.PagedList
-import androidx.paging.PositionalDataSource
+import androidx.lifecycle.*
+import androidx.paging.*
 import androidx.recyclerview.widget.DiffUtil
+import kotlinx.coroutines.delay
 import me.tatarka.bindingcollectionadapter2.itemBindingOf
 import me.tatarka.bindingcollectionadapter2.itembindings.OnItemBindClass
 import me.tatarka.bindingcollectionadapter2.map
@@ -68,6 +63,29 @@ class ImmutableViewModel : ViewModel(), ImmutableListeners {
                     }
                 }
         }, 20).build()
+
+    val pagedListV3: LiveData<PagingData<Any>> = Pager<Int, Any>(PagingConfig(pageSize = 20)) {
+        object : PagingSource<Int, Any>() {
+            override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Any> {
+                val safeKey = params.key ?: 0
+                val list =
+                        (0 until params.loadSize).map {
+                            ImmutableItem(
+                                    index = it + safeKey,
+                                    checked = false
+                            )
+                        }
+                // Pretend we are slow
+                delay(1000)
+
+                return LoadResult.Page(
+                        data = list,
+                        prevKey = if (params.key == 0) null else (safeKey - params.loadSize),
+                        nextKey = if (safeKey >= 200 - params.loadSize) null else (safeKey - params.loadSize)
+                )
+            }
+        }
+    }.flow.asLiveData()
 
     val items = itemBindingOf<Any>(BR.item, R.layout.item_immutable)
 
