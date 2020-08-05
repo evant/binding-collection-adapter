@@ -64,7 +64,7 @@ class ImmutableViewModel : ViewModel(), ImmutableListeners {
                 }
         }, 20).build()
 
-    val pagedListV3: LiveData<PagingData<Any>> = Pager<Int, Any>(PagingConfig(pageSize = 20)) {
+    val pagedListV3: LiveData<PagingData<Any>> = Pager<Int, Any>(PagingConfig(pageSize = 20, maxSize = 100)) {
         object : PagingSource<Int, Any>() {
             override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Any> {
                 val safeKey = params.key ?: 0
@@ -86,6 +86,10 @@ class ImmutableViewModel : ViewModel(), ImmutableListeners {
             }
         }
     }.flow.asLiveData()
+
+    val headerLoadStateAdapter = PostsLoadStateAdapter {
+        //TODO retry
+    }
 
     val footerLoadStateAdapter = PostsLoadStateAdapter {
         //TODO retry

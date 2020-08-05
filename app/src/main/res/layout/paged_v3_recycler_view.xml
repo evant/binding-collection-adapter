@@ -29,6 +29,7 @@
             app:itemBinding="@{viewModel.items}"
             app:items="@{viewModel.pagedListV3}"
             app:footerLoadStateAdapter="@{viewModel.footerLoadStateAdapter}"
+            app:headerLoadStateAdapter="@{viewModel.headerLoadStateAdapter}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
     </LinearLayout>
 </layout>
