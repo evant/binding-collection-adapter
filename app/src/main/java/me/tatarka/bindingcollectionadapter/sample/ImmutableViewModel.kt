@@ -80,8 +80,8 @@ class ImmutableViewModel : ViewModel(), ImmutableListeners {
 
                 return LoadResult.Page(
                         data = list,
-                        prevKey = if (params.key == 0) null else (safeKey - params.loadSize),
-                        nextKey = if (safeKey >= 200 - params.loadSize) null else (safeKey - params.loadSize)
+                        prevKey = if (safeKey == 0) null else (safeKey - params.loadSize),
+                        nextKey = if (safeKey >= 200 - params.loadSize) null else (safeKey + params.loadSize)
                 )
             }
         }
