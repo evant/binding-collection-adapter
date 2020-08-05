@@ -6,6 +6,7 @@ import androidx.databinding.ListChangeRegistry;
 import androidx.databinding.ObservableList;
 import androidx.lifecycle.Lifecycle;
 import androidx.paging.AsyncPagingDataDiffer;
+import androidx.paging.CombinedLoadStates;
 import androidx.paging.PagingData;
 import androidx.recyclerview.widget.AsyncDifferConfig;
 import androidx.recyclerview.widget.AsyncListDiffer;
@@ -15,6 +16,9 @@ import androidx.recyclerview.widget.ListUpdateCallback;
 import java.util.AbstractList;
 import java.util.List;
 import java.util.ListIterator;
+
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
 
 public class AsyncDiffPagedObservableListV3<T> extends AbstractList<T> implements ObservableList<T> {
 
@@ -39,6 +43,41 @@ public class AsyncDiffPagedObservableListV3<T> extends AbstractList<T> implement
      */
     public AsyncDiffPagedObservableListV3(@NonNull AsyncDifferConfig<T> config) {
         differ = new AsyncPagingDataDiffer<>(config.getDiffCallback(), new ObservableListUpdateCallback());
+    }
+
+    /**
+     * Retry the underlying paging
+     */
+    public void retry() {
+        differ.retry();
+    }
+
+    /**
+     * Refresh the underlying paging
+     */
+    public void refresh() {
+        differ.refresh();
+    }
+
+    /**
+     * Add a [CombinedLoadStates] listener to observe the loading state of the current [PagingData].
+     *
+     * As new [PagingData] generations are submitted and displayed, the listener will be notified to
+     * reflect the current [CombinedLoadStates].
+     *
+     * @param listener [LoadStates] listener to receive updates.
+     *
+     * @see removeLoadStateListener
+     * @sample androidx.paging.samples.addLoadStateListenerSample
+     */
+    public void addLoadStateListener(@NonNull final Function1<CombinedLoadStates, Unit> listener) {
+        differ.addLoadStateListener(new Function1<CombinedLoadStates, Unit>() {
+            @Override
+            public Unit invoke(CombinedLoadStates combinedLoadStates) {
+                listener.invoke(combinedLoadStates);
+                return Unit.INSTANCE;
+            }
+        });
     }
 
     /**

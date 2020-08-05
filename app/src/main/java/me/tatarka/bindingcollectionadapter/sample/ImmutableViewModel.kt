@@ -87,6 +87,10 @@ class ImmutableViewModel : ViewModel(), ImmutableListeners {
         }
     }.flow.asLiveData()
 
+    val footerLoadStateAdapter = PostsLoadStateAdapter {
+        //TODO retry
+    }
+
     val items = itemBindingOf<Any>(BR.item, R.layout.item_immutable)
 
     val multipleItems = OnItemBindClass<Any>().apply {
