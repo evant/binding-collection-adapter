@@ -4,7 +4,7 @@ import android.view.ViewGroup
 import androidx.paging.LoadState
 import androidx.paging.LoadStateAdapter
 
-class PostsLoadStateAdapter(
+class HeaderFooterLoadStateAdapter(
         private val retryCallback: () -> Unit
 ) : LoadStateAdapter<NetworkStateItemViewHolder>() {
     override fun onBindViewHolder(holder: NetworkStateItemViewHolder, loadState: LoadState) {

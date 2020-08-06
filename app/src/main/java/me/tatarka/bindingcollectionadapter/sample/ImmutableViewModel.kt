@@ -87,11 +87,11 @@ class ImmutableViewModel : ViewModel(), ImmutableListeners {
         }
     }.flow.asLiveData()
 
-    val headerLoadStateAdapter = PostsLoadStateAdapter {
+    val headerLoadStateAdapter = HeaderFooterLoadStateAdapter {
         //TODO retry
     }
 
-    val footerLoadStateAdapter = PostsLoadStateAdapter {
+    val footerLoadStateAdapter = HeaderFooterLoadStateAdapter {
         //TODO retry
     }
 
