@@ -114,7 +114,7 @@ public class PagedBindingRecyclerViewAdapters {
                     diffConfig = new AsyncDifferConfig.Builder(new DiffUtil.ItemCallback() {
                         @Override
                         public boolean areItemsTheSame(@NonNull Object oldItem, @NonNull Object newItem) {
-                            return false;
+                            return oldItem == newItem;
                         }
 
                         @Override
