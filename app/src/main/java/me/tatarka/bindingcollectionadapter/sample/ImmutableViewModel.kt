@@ -16,55 +16,59 @@ class ImmutableViewModel : ViewModel(), ImmutableListeners {
         value = (0 until 3).map { i -> ImmutableItem(index = i, checked = false) }
     }
     private val headerFooterList =
-        Transformations.map<List<ImmutableItem>, List<Any>>(mutList) { input ->
-            val list = ArrayList<Any>(input.size + 2)
-            list.add("Header")
-            list.addAll(input)
-            list.add("Footer")
-            list
-        }
+            Transformations.map<List<ImmutableItem>, List<Any>>(mutList) { input ->
+                val list = ArrayList<Any>(input.size + 2)
+                list.add("Header")
+                list.addAll(input)
+                list.add("Footer")
+                list
+            }
     val list: LiveData<List<Any>> = headerFooterList
 
     val pagedList: LiveData<PagedList<Any>> =
-        LivePagedListBuilder(object : DataSource.Factory<Int, Any>() {
-            override fun create(): DataSource<Int, Any> =
-                object : PositionalDataSource<Any>() {
+            LivePagedListBuilder(object : DataSource.Factory<Int, Any>() {
+                override fun create(): DataSource<Int, Any> =
+                        object : PositionalDataSource<Any>() {
 
-                    override fun loadInitial(
-                        params: LoadInitialParams,
-                        callback: LoadInitialCallback<Any>
-                    ) {
-                        val list =
-                            (0 until params.requestedLoadSize).map {
-                                ImmutableItem(
-                                    index = it + params.requestedStartPosition,
-                                    checked = false
-                                )
+                            override fun loadInitial(
+                                    params: LoadInitialParams,
+                                    callback: LoadInitialCallback<Any>
+                            ) {
+                                val list =
+                                        (0 until params.requestedLoadSize).map {
+                                            ImmutableItem(
+                                                    index = it + params.requestedStartPosition,
+                                                    checked = false
+                                            )
+                                        }
+                                // Pretend we are slow
+                                Thread.sleep(1000)
+                                callback.onResult(list, params.requestedStartPosition, TOTAL_COUNT)
                             }
-                        // Pretend we are slow
-                        Thread.sleep(1000)
-                        callback.onResult(list, params.requestedStartPosition, 200)
-                    }
 
-                    override fun loadRange(
-                        params: LoadRangeParams,
-                        callback: LoadRangeCallback<Any>
-                    ) {
-                        val list =
-                            (0 until params.loadSize).map {
-                                ImmutableItem(
-                                    index = it + params.startPosition,
-                                    checked = false
-                                )
+                            override fun loadRange(
+                                    params: LoadRangeParams,
+                                    callback: LoadRangeCallback<Any>
+                            ) {
+                                val list =
+                                        (0 until params.loadSize).map {
+                                            ImmutableItem(
+                                                    index = it + params.startPosition,
+                                                    checked = false
+                                            )
+                                        }
+                                // Pretend we are slow
+                                Thread.sleep(1000)
+                                callback.onResult(list)
                             }
-                        // Pretend we are slow
-                        Thread.sleep(1000)
-                        callback.onResult(list)
-                    }
-                }
-        }, 20).build()
+                        }
+            }, PAGE_SIZE).build()
 
-    val pagedListV3: LiveData<PagingData<Any>> = Pager<Int, Any>(PagingConfig(pageSize = 20, maxSize = 100)) {
+    val pagedListV3: LiveData<PagingData<Any>> = Pager<Int, Any>(PagingConfig(
+            pageSize = PAGE_SIZE,
+            maxSize = 100,
+            prefetchDistance = PAGE_SIZE * 2,
+            enablePlaceholders = false)) {
         object : PagingSource<Int, Any>() {
             override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Any> {
                 val safeKey = params.key ?: 0
@@ -81,7 +85,9 @@ class ImmutableViewModel : ViewModel(), ImmutableListeners {
                 return LoadResult.Page(
                         data = list,
                         prevKey = if (safeKey == 0) null else (safeKey - params.loadSize),
-                        nextKey = if (safeKey >= 200 - params.loadSize) null else (safeKey + params.loadSize)
+                        nextKey = if (safeKey >= 200 - params.loadSize) null else (safeKey + params.loadSize),
+                        itemsBefore = safeKey,
+                        itemsAfter = TOTAL_COUNT - params.loadSize - safeKey
                 )
             }
         }
@@ -133,5 +139,10 @@ class ImmutableViewModel : ViewModel(), ImmutableListeners {
                 mutList.value = list.dropLast(1)
             }
         }
+    }
+
+    companion object {
+        private val TOTAL_COUNT = 200
+        private val PAGE_SIZE = 20
     }
 }
