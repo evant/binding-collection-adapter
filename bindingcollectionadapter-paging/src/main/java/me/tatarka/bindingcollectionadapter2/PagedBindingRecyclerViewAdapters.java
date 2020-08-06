@@ -90,6 +90,7 @@ public class PagedBindingRecyclerViewAdapters {
             for (RecyclerView.Adapter childAdapter : concatAdapter.getAdapters()) {
                 if (childAdapter instanceof BindingRecyclerViewAdapter) {
                     oldAdapter = (BindingRecyclerViewAdapter<T>) childAdapter;
+                    break;
                 }
             }
         } else if (rootAdapter instanceof BindingRecyclerViewAdapter) {
