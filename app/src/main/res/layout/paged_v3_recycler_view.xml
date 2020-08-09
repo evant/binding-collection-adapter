@@ -28,8 +28,8 @@
             app:diffConfig="@{viewModel.diff}"
             app:itemBinding="@{viewModel.items}"
             app:items="@{viewModel.pagedListV3}"
-            app:footerLoadStateItemBinding="@{viewModel.footerItemBinding}"
-            app:headerLoadStateAdapter="@{viewModel.headerLoadStateAdapter}"
+            app:footerLoadStateItemBinding="@{viewModel.loadStateItemBinding}"
+            app:headerLoadStateItemBinding="@{viewModel.loadStateItemBinding}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
     </LinearLayout>
 </layout>

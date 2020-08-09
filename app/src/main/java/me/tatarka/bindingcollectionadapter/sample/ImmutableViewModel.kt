@@ -4,11 +4,10 @@ import androidx.lifecycle.*
 import androidx.paging.*
 import androidx.recyclerview.widget.DiffUtil
 import kotlinx.coroutines.delay
-import me.tatarka.bindingcollectionadapter2.itemBindingOf
+import me.tatarka.bindingcollectionadapter2.*
 import me.tatarka.bindingcollectionadapter2.itembindings.OnItemBindClass
-import me.tatarka.bindingcollectionadapter2.map
-import me.tatarka.bindingcollectionadapter2.toItemBinding
 import java.util.*
+import kotlin.random.Random
 
 class ImmutableViewModel : ViewModel(), ImmutableListeners {
 
@@ -70,6 +69,8 @@ class ImmutableViewModel : ViewModel(), ImmutableListeners {
             prefetchDistance = PAGE_SIZE * 2,
             enablePlaceholders = false)) {
         object : PagingSource<Int, Any>() {
+            private val random = Random(TOTAL_COUNT)
+
             override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Any> {
                 val safeKey = params.key ?: 0
                 val list =
@@ -82,6 +83,10 @@ class ImmutableViewModel : ViewModel(), ImmutableListeners {
                 // Pretend we are slow
                 delay(1000)
 
+                if (random.nextBoolean()) {
+                    return LoadResult.Error(IllegalAccessError("Error plz try again"))
+                }
+
                 return LoadResult.Page(
                         data = list,
                         prevKey = if (safeKey == 0) null else (safeKey - params.loadSize),
@@ -93,14 +98,12 @@ class ImmutableViewModel : ViewModel(), ImmutableListeners {
         }
     }.flow.asLiveData()
 
-    val headerLoadStateAdapter = HeaderFooterLoadStateAdapter {
-        //TODO retry
+    val loadStateItemBinding = LoadStateItemBindingFactory { callback: PagedListCallback ->
+        OnItemBindClass<LoadState>().apply {
+            map<LoadState.Error>(BR.item, R.layout.network_state_item_error)
+            map<LoadState.Loading>(BR.item, R.layout.network_state_item_progress)
+        }.toItemBinding().bindExtra(BR.callback, callback)
     }
-
-    val footerItemBinding = OnItemBindClass<LoadState>().apply {
-        map<LoadState.Error>(BR.item, R.layout.network_state_item_error)
-        map<LoadState.Loading>(BR.item, R.layout.network_state_item_progress)
-    }.toItemBinding()
 
     val items = itemBindingOf<Any>(BR.item, R.layout.item_immutable)
 

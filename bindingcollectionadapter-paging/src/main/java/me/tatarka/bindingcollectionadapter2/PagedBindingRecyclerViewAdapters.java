@@ -84,8 +84,8 @@ public class PagedBindingRecyclerViewAdapters {
                                       PagingData<T> items,
                                       LoadStateAdapter headerLoadStateAdapter,
                                       LoadStateAdapter footerLoadStateAdapter,
-                                      ItemBinding<? super LoadState> headerLoadStateItemBinding,
-                                      ItemBinding<? super LoadState> footerLoadStateItemBinding,
+                                      LoadStateItemBindingFactory headerLoadStateItemBinding,
+                                      LoadStateItemBindingFactory footerLoadStateItemBinding,
                                       BindingRecyclerViewAdapter<T> adapter,
                                       BindingRecyclerViewAdapter.ItemIds<? super T> itemIds,
                                       BindingRecyclerViewAdapter.ViewHolderFactory viewHolderFactory,
@@ -124,26 +124,6 @@ public class PagedBindingRecyclerViewAdapters {
             }
         }
 
-        if (headerLoadStateAdapter == null) {
-            if (oldHeaderAdapter == null) {
-                if (headerLoadStateItemBinding != null) {
-                    headerLoadStateAdapter = new BindingLoadStateAdapter(headerLoadStateItemBinding);
-                }
-            } else {
-                headerLoadStateAdapter = oldHeaderAdapter;
-            }
-        }
-
-        if (footerLoadStateAdapter == null) {
-            if (oldFooterAdapter == null) {
-                if (footerLoadStateItemBinding != null) {
-                    footerLoadStateAdapter = new BindingLoadStateAdapter(footerLoadStateItemBinding);
-                }
-            } else {
-                footerLoadStateAdapter = oldFooterAdapter;
-            }
-        }
-
         adapter.setItemBinding(itemBinding);
 
         AsyncDiffPagedObservableListV3<T> list = (AsyncDiffPagedObservableListV3<T>) recyclerView.getTag(R.id.bindingcollectiondapter_list_id);
@@ -172,6 +152,28 @@ public class PagedBindingRecyclerViewAdapters {
 
         adapter.setItemIds(itemIds);
         adapter.setViewHolderFactory(viewHolderFactory);
+
+        if (headerLoadStateAdapter == null) {
+            if (oldHeaderAdapter == null) {
+                if (headerLoadStateItemBinding != null) {
+                    headerLoadStateAdapter = new BindingLoadStateAdapter(
+                            headerLoadStateItemBinding.create(list));
+                }
+            } else {
+                headerLoadStateAdapter = oldHeaderAdapter;
+            }
+        }
+
+        if (footerLoadStateAdapter == null) {
+            if (oldFooterAdapter == null) {
+                if (footerLoadStateItemBinding != null) {
+                    footerLoadStateAdapter = new BindingLoadStateAdapter(
+                            footerLoadStateItemBinding.create(list));
+                }
+            } else {
+                footerLoadStateAdapter = oldFooterAdapter;
+            }
+        }
 
         if (oldAdapter != adapter ||
             oldHeaderAdapter != headerLoadStateAdapter ||

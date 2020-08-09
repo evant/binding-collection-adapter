@@ -19,8 +19,13 @@
     <data>
 
         <variable
-            name="error"
+            name="item"
             type="androidx.paging.LoadState.Error" />
+
+        <variable
+            name="callback"
+            type="me.tatarka.bindingcollectionadapter2.PagedListCallback" />
+
     </data>
 
     <LinearLayout
@@ -34,7 +39,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="@{error.error.message}"/>
+            android:text="@{item.error.message}"/>
 
         <Button
             android:id="@+id/retry_button"
@@ -42,7 +47,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="@string/retry" />
+            android:text="@string/retry"
+            android:onClick="@{() -> callback.retry()}"/>
     </LinearLayout>
 
 </layout>
