@@ -16,6 +16,15 @@
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="load"
+            type="me.tatarka.bindingcollectionadapter2.itembindings.Load" />
+    </data>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -26,14 +35,17 @@
             android:id="@+id/error_msg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal" />
+            android:layout_gravity="center_horizontal"
+            android:text="@{load.error.message}"
+            android:visibility="@{load.isError() ? View.VISIBLE : View.GONE}" />
 
         <ProgressBar
             android:id="@+id/progress_bar"
             style="?android:attr/progressBarStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center" />
+            android:layout_gravity="center"
+            android:visibility="@{load.isLoading() ? View.VISIBLE : View.GONE}" />
 
         <Button
             android:id="@+id/retry_button"
@@ -41,7 +53,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="@string/retry" />
+            android:text="@string/retry"
+            android:visibility="@{load.isError() ? View.VISIBLE : View.GONE}" />
     </LinearLayout>
 
 </layout>

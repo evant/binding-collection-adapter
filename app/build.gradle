@@ -50,7 +50,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-runtime:2.0.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.0.0'
-    implementation 'androidx.paging:paging-runtime:2.0.0'
+    implementation 'androidx.paging:paging-runtime-ktx:3.0.0-alpha04'
 
     kapt "com.android.databinding:compiler:$agp_version"
 }

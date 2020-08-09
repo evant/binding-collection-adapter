@@ -26,10 +26,8 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             app:diffConfig="@{viewModel.diff}"
-            app:itemBinding="@{viewModel.items}"
+            app:itemBinding="@{viewModel.loadStateItems}"
             app:items="@{viewModel.pagedListV3}"
-            app:footerLoadStateAdapter="@{viewModel.footerLoadStateAdapter}"
-            app:headerLoadStateAdapter="@{viewModel.headerLoadStateAdapter}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
     </LinearLayout>
 </layout>
