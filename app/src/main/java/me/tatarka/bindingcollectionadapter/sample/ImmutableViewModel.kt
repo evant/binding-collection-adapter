@@ -97,9 +97,10 @@ class ImmutableViewModel : ViewModel(), ImmutableListeners {
         //TODO retry
     }
 
-    val footerLoadStateAdapter = HeaderFooterLoadStateAdapter {
-        //TODO retry
-    }
+    val footerItemBinding = OnItemBindClass<LoadState>().apply {
+        map<LoadState.Error>(BR.item, R.layout.network_state_item_error)
+        map<LoadState.Loading>(BR.item, R.layout.network_state_item_progress)
+    }.toItemBinding()
 
     val items = itemBindingOf<Any>(BR.item, R.layout.item_immutable)
 

@@ -67,7 +67,7 @@ public class AsyncDiffPagedObservableListV3<T> extends AbstractList<T> implement
      *
      * @param listener [LoadStates] listener to receive updates.
      *
-     * @see removeLoadStateListener
+     * @see #removeLoadStateListener
      * @sample androidx.paging.samples.addLoadStateListenerSample
      */
     public void addLoadStateListener(@NonNull final Function1<CombinedLoadStates, Unit> listener) {
@@ -78,6 +78,16 @@ public class AsyncDiffPagedObservableListV3<T> extends AbstractList<T> implement
                 return Unit.INSTANCE;
             }
         });
+    }
+
+    /**
+     * Remove a previously registered [CombinedLoadStates] listener.
+     *
+     * @param listener Previously registered listener.
+     * @see #addLoadStateListener
+     */
+    public void removeLoadStateListener(@NonNull final Function1<CombinedLoadStates, Unit> listener) {
+        differ.removeLoadStateListener(listener);
     }
 
     /**
