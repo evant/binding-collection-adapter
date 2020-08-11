@@ -5,15 +5,23 @@ import androidx.annotation.NonNull;
 
 import me.tatarka.bindingcollectionadapter2.ItemBinding;
 import me.tatarka.bindingcollectionadapter2.OnItemBind;
+import me.tatarka.bindingcollectionadapter2.PagedDataCallback;
 
 public class OnItemBindLoadState<T> implements OnItemBind<Object> {
 
     private final OnItemBind<T> itemBind;
     private final OnItemBind<Load> combinedLoadStatesItemBind;
+    private final int pagingCallbackVariableId;
+    private PagedDataCallback pagedDataCallback;
 
-    OnItemBindLoadState(OnItemBind<T> itemBind, OnItemBind<Load> loadStateOnItemBind) {
+    OnItemBindLoadState(OnItemBind<T> itemBind, OnItemBind<Load> loadStateOnItemBind, int pagingCallbackVariableId) {
         this.itemBind = itemBind;
         this.combinedLoadStatesItemBind = loadStateOnItemBind;
+        this.pagingCallbackVariableId = pagingCallbackVariableId;
+    }
+
+    public void setPagedDataCallback(PagedDataCallback pagedDataCallback) {
+        this.pagedDataCallback = pagedDataCallback;
     }
 
     public static class Builder<T> {
@@ -21,6 +29,7 @@ public class OnItemBindLoadState<T> implements OnItemBind<Object> {
         private OnItemBind<Load> loadState;
         private OnItemBind<androidx.paging.LoadState> headerLoadState;
         private OnItemBind<androidx.paging.LoadState> footerLoadState;
+        private int pagingCallbackVariableId;
 
         public OnItemBindLoadState<T> build() {
             if (itemBind == null) {
@@ -47,7 +56,7 @@ public class OnItemBindLoadState<T> implements OnItemBind<Object> {
                     }
                 };
             }
-            return new OnItemBindLoadState<>(itemBind, loadState);
+            return new OnItemBindLoadState<>(itemBind, loadState, pagingCallbackVariableId);
         }
 
         public Builder<T> item(int variableId, @LayoutRes int layoutRes) {
@@ -80,6 +89,11 @@ public class OnItemBindLoadState<T> implements OnItemBind<Object> {
             return this;
         }
 
+        public Builder<T> pagingCallbackVariableId(int pagingCallbackVariableId) {
+            this.pagingCallbackVariableId = pagingCallbackVariableId;
+            return this;
+        }
+
         @NonNull
         private static <T> OnItemBind<T> itemBind(final int variableId, @LayoutRes final int layoutRes) {
             return new OnItemBind<T>() {
@@ -95,6 +109,7 @@ public class OnItemBindLoadState<T> implements OnItemBind<Object> {
     @SuppressWarnings("unchecked")
     public void onItemBind(@NonNull ItemBinding itemBinding, int position, Object item) {
         if (item instanceof Load) {
+            itemBinding.bindExtra(pagingCallbackVariableId, pagedDataCallback);
             combinedLoadStatesItemBind.onItemBind(itemBinding, position, (Load) item);
         } else {
             itemBind.onItemBind(itemBinding, position, (T) item);

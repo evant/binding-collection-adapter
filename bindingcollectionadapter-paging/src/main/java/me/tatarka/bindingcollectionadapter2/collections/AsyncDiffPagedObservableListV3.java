@@ -17,7 +17,9 @@ import java.util.AbstractList;
 import java.util.List;
 import java.util.ListIterator;
 
-public class AsyncDiffPagedObservableListV3<T> extends AbstractList<T> implements ObservableList<T> {
+import me.tatarka.bindingcollectionadapter2.PagedDataCallback;
+
+public class AsyncDiffPagedObservableListV3<T> extends AbstractList<T> implements ObservableList<T>, PagedDataCallback {
 
     private final AsyncPagingDataDiffer<T> differ;
     private final ListChangeRegistry listeners = new ListChangeRegistry();
@@ -45,6 +47,7 @@ public class AsyncDiffPagedObservableListV3<T> extends AbstractList<T> implement
     /**
      * Retry the underlying paging
      */
+    @Override
     public void retry() {
         differ.retry();
     }
@@ -52,6 +55,7 @@ public class AsyncDiffPagedObservableListV3<T> extends AbstractList<T> implement
     /**
      * Refresh the underlying paging
      */
+    @Override
     public void refresh() {
         differ.refresh();
     }
