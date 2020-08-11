@@ -4,12 +4,13 @@ import androidx.lifecycle.*
 import androidx.paging.*
 import androidx.recyclerview.widget.DiffUtil
 import kotlinx.coroutines.delay
+import me.tatarka.bindingcollectionadapter2.ItemBinding
 import me.tatarka.bindingcollectionadapter2.itembindings.OnItemBindLoadState
 import me.tatarka.bindingcollectionadapter2.itemBindingOf
 import me.tatarka.bindingcollectionadapter2.itembindings.OnItemBindClass
 import me.tatarka.bindingcollectionadapter2.map
 import me.tatarka.bindingcollectionadapter2.toItemBinding
-import java.util.*
+import kotlin.random.Random
 
 class ImmutableViewModel : ViewModel(), ImmutableListeners {
 
@@ -71,6 +72,8 @@ class ImmutableViewModel : ViewModel(), ImmutableListeners {
             prefetchDistance = PAGE_SIZE * 2,
             enablePlaceholders = false)) {
         object : PagingSource<Int, Any>() {
+            private val random = Random(TOTAL_COUNT)
+
             override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Any> {
                 val safeKey = params.key ?: 0
                 val list =
@@ -82,6 +85,10 @@ class ImmutableViewModel : ViewModel(), ImmutableListeners {
                         }
                 // Pretend we are slow
                 delay(1000)
+
+                if (random.nextBoolean()) {
+                    return LoadResult.Error(IllegalAccessError("Error plz try again"))
+                }
 
                 return LoadResult.Page(
                         data = list,
@@ -98,8 +105,15 @@ class ImmutableViewModel : ViewModel(), ImmutableListeners {
 
     val loadStateItems = OnItemBindLoadState.Builder<Any>()
             .item(BR.item, R.layout.item_immutable)
-            .headerLoadState(BR.load, R.layout.network_state_item)
-            .footerLoadState(BR.load, R.layout.network_state_item)
+            .headerLoadState(OnItemBindClass<LoadState>().apply {
+                map<LoadState.Loading>(ItemBinding.VAR_NONE, R.layout.network_state_item_progress)
+                map<LoadState.Error>(BR.item, R.layout.network_state_item_error)
+            })
+            .footerLoadState(OnItemBindClass<LoadState>().apply {
+                map<LoadState.Loading>(ItemBinding.VAR_NONE, R.layout.network_state_item_progress)
+                map<LoadState.Error>(BR.item, R.layout.network_state_item_error)
+            })
+            .pagingCallbackVariableId(BR.callback)
             .build()
 
     val multipleItems = OnItemBindClass<Any>().apply {

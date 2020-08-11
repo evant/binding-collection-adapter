@@ -98,6 +98,7 @@ public class PagedBindingRecyclerViewAdapters {
                         mergeList.setLoadStates(loadStates);
                     }
                 });
+                itemBinding.setPagedDataCallback(list);
                 adapter.setItems(mergeList);
             }
             list.update(Utils.findLifecycleOwner(recyclerView).getLifecycle(), items);
