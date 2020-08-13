@@ -10,12 +10,13 @@ import java.util.List;
 import me.tatarka.bindingcollectionadapter2.itembindings.OnItemBindClass;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.fail;
 
 @RunWith(JUnit4.class)
 public class OnItemBindClassTest {
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void selectsBasedOnClass() {
         OnItemBindClass<Object> onItemBind = new OnItemBindClass<>()
                 .map(String.class, 0, 1)
@@ -31,13 +32,7 @@ public class OnItemBindClassTest {
 
         assertThat(itemBinding.variableId()).isEqualTo(2);
         assertThat(itemBinding.layoutRes()).isEqualTo(3);
-
-        try {
-            itemBinding.onItemBind(3, new Object());
-            fail();
-        } catch (IllegalArgumentException e) {
-            // pass
-        }
+        itemBinding.onItemBind(3, new Object());
     }
 
     @Test
