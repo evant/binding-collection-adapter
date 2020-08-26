@@ -25,7 +25,7 @@ class FragmentSpinnerView : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         return SpinnerViewBinding.inflate(inflater, container, false).also {
-            it.setLifecycleOwner(this)
+            it.lifecycleOwner = this
             it.viewModel = viewModel
             it.listeners = viewModel
             it.executePendingBindings()
