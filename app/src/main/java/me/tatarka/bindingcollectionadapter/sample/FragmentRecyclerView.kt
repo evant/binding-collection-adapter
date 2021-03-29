@@ -5,8 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProviders
-import androidx.lifecycle.get
+import androidx.lifecycle.ViewModelProvider
 import me.tatarka.bindingcollectionadapter.sample.databinding.RecyclerViewBinding
 
 class FragmentRecyclerView : Fragment() {
@@ -14,7 +13,7 @@ class FragmentRecyclerView : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get()
+        viewModel = ViewModelProvider(this).get(MutableViewModel::class.java)
         viewModel.setCheckable(true)
     }
 
@@ -22,9 +21,9 @@ class FragmentRecyclerView : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         return RecyclerViewBinding.inflate(inflater, container, false).also {
-            it.setLifecycleOwner(this)
+            it.lifecycleOwner = this
             it.viewModel = viewModel
             it.listeners = viewModel
             it.executePendingBindings()
