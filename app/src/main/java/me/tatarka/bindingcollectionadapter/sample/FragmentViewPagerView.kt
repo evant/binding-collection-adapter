@@ -5,8 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProviders
-import androidx.lifecycle.get
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.tabs.TabLayout
 import me.tatarka.bindingcollectionadapter.sample.databinding.ViewpagerViewBinding
 
@@ -15,7 +14,7 @@ class FragmentViewPagerView : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get()
+        viewModel = ViewModelProvider(this).get(MutableViewModel::class.java)
         viewModel.setCheckable(true)
     }
 
@@ -23,9 +22,9 @@ class FragmentViewPagerView : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         return ViewpagerViewBinding.inflate(inflater, container, false).also {
-            it.setLifecycleOwner(this)
+            it.lifecycleOwner = this
             it.viewModel = viewModel
             it.listeners = PagerListeners(it, viewModel)
             it.executePendingBindings()
