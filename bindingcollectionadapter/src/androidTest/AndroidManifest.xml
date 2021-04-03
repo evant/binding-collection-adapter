@@ -1,6 +1,8 @@
 <manifest package="me.tatarka.bindingcollectionadapter2"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <uses-sdk android:targetSdkVersion="30" />
+
     <application>
         <activity android:name="me.tatarka.bindingcollectionadapter2.EmptyActivity" />
     </application>

@@ -2,7 +2,6 @@ package me.tatarka.bindingcollectionadapter2.recyclerview;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
-import androidx.test.espresso.core.internal.deps.dagger.internal.Factory;
 import androidx.test.espresso.core.internal.deps.guava.base.Joiner;
 
 import java.util.Iterator;
@@ -56,7 +55,7 @@ public class TestHelpers {
 
     public static <T> Iterable<T> iterable(final BindingRecyclerViewAdapter<T> adapter) {
         if (adapter == null) return null;
-        return new IndexIterable<>(new Factory<IndexIterator<T>>() {
+        return new IndexIterable<>(new IndexIterable.Factory<IndexIterator<T>>() {
             @Override
             public IndexIterator<T> get() {
                 return new IndexIterator<T>() {
@@ -89,6 +88,10 @@ public class TestHelpers {
         @Override
         public String toString() {
             return iterator().toString();
+        }
+
+        interface Factory<T> {
+            T get();
         }
     }
 
