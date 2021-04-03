@@ -5,19 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProviders
-import androidx.lifecycle.get
-import com.google.android.material.tabs.TabLayout
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.tabs.TabLayoutMediator
 import me.tatarka.bindingcollectionadapter.sample.databinding.Viewpager2ViewBinding
-import me.tatarka.bindingcollectionadapter.sample.databinding.ViewpagerViewBinding
 
 class FragmentViewPager2View : Fragment() {
-    private lateinit var viewModel: MutableViewModel
+    private val viewModel: MutableViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get()
         viewModel.setCheckable(true)
     }
 
@@ -25,17 +22,17 @@ class FragmentViewPager2View : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         return Viewpager2ViewBinding.inflate(inflater, container, false).also {
-            it.setLifecycleOwner(this)
+            it.lifecycleOwner = this
             it.viewModel = viewModel
             it.listeners = PagerListeners(viewModel)
             it.executePendingBindings()
 
-            TabLayoutMediator(it.tabs, it.pager, TabLayoutMediator.TabConfigurationStrategy { tab, position ->
+            TabLayoutMediator(it.tabs, it.pager) { tab, position ->
                 val item = viewModel.items[position]
                 tab.text = viewModel.pageTitles.getPageTitle(position, item)
-            }).attach()
+            }.attach()
         }.root
     }
 

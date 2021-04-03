@@ -1,3 +1,8 @@
+### [4.0.1]
+- Remove Jetifier
+- Bumped android gradle plugin to 4.1.2
+- Bump compileSdkVersion to 30
+
 ### [4.0.0]
 - Not having an itemBinding in xml will cause the adapter to be cleared instead of throwing an
 exception (#179)
