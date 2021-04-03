@@ -5,16 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import me.tatarka.bindingcollectionadapter.sample.databinding.DiffRecyclerViewBinding
 
 class FragmentDiffRecyclerView : Fragment() {
-    private lateinit var viewModel: ImmutableViewModel
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(ImmutableViewModel::class.java)
-    }
+    private val viewModel: ImmutableViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
