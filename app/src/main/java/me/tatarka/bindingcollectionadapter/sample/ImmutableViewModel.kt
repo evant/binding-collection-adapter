@@ -98,6 +98,8 @@ class ImmutableViewModel : ViewModel(), ImmutableListeners {
                         itemsAfter = TOTAL_COUNT - params.loadSize - safeKey
                 )
             }
+
+            override fun getRefreshKey(state: PagingState<Int, Any>): Int = 0
         }
     }.flow.asLiveData()
 
