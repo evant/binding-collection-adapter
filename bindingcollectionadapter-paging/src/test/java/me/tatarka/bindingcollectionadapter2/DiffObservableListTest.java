@@ -11,6 +11,7 @@ import java.util.Arrays;
 import me.tatarka.bindingcollectionadapter2.collections.DiffObservableList;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.clearInvocations;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -54,7 +55,7 @@ public class DiffObservableListTest {
         assertThat(list)
                 .hasSize(2)
                 .containsExactly(new Item("2", "b"), new Item("1", "a"));
-        verify(callback).onItemRangeMoved(list, 1, 0, 1);
+        verify(callback).onItemRangeMoved(list, 0, 1, 1);
     }
 
     @Test

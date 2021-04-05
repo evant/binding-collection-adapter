@@ -1,19 +1,16 @@
 package me.tatarka.bindingcollectionadapter.sample
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
-import androidx.paging.DataSource
-import androidx.paging.LivePagedListBuilder
-import androidx.paging.PagedList
-import androidx.paging.PositionalDataSource
+import androidx.lifecycle.*
+import androidx.paging.*
 import androidx.recyclerview.widget.DiffUtil
+import kotlinx.coroutines.delay
+import me.tatarka.bindingcollectionadapter2.ItemBinding
+import me.tatarka.bindingcollectionadapter2.itembindings.OnItemBindLoadState
 import me.tatarka.bindingcollectionadapter2.itemBindingOf
 import me.tatarka.bindingcollectionadapter2.itembindings.OnItemBindClass
 import me.tatarka.bindingcollectionadapter2.map
 import me.tatarka.bindingcollectionadapter2.toItemBinding
-import java.util.*
+import kotlin.random.Random
 
 class ImmutableViewModel : ViewModel(), ImmutableListeners {
 
@@ -21,55 +18,105 @@ class ImmutableViewModel : ViewModel(), ImmutableListeners {
         value = (0 until 3).map { i -> ImmutableItem(index = i, checked = false) }
     }
     private val headerFooterList =
-        Transformations.map<List<ImmutableItem>, List<Any>>(mutList) { input ->
-            val list = ArrayList<Any>(input.size + 2)
-            list.add("Header")
-            list.addAll(input)
-            list.add("Footer")
-            list
-        }
+            Transformations.map<List<ImmutableItem>, List<Any>>(mutList) { input ->
+                val list = ArrayList<Any>(input.size + 2)
+                list.add("Header")
+                list.addAll(input)
+                list.add("Footer")
+                list
+            }
     val list: LiveData<List<Any>> = headerFooterList
 
     val pagedList: LiveData<PagedList<Any>> =
-        LivePagedListBuilder(object : DataSource.Factory<Int, Any>() {
-            override fun create(): DataSource<Int, Any> =
-                object : PositionalDataSource<Any>() {
+            LivePagedListBuilder(object : DataSource.Factory<Int, Any>() {
+                override fun create(): DataSource<Int, Any> =
+                        object : PositionalDataSource<Any>() {
 
-                    override fun loadInitial(
-                        params: LoadInitialParams,
-                        callback: LoadInitialCallback<Any>
-                    ) {
-                        val list =
-                            (0 until params.requestedLoadSize).map {
-                                ImmutableItem(
-                                    index = it + params.requestedStartPosition,
-                                    checked = false
-                                )
+                            override fun loadInitial(
+                                    params: LoadInitialParams,
+                                    callback: LoadInitialCallback<Any>
+                            ) {
+                                val list =
+                                        (0 until params.requestedLoadSize).map {
+                                            ImmutableItem(
+                                                    index = it + params.requestedStartPosition,
+                                                    checked = false
+                                            )
+                                        }
+                                // Pretend we are slow
+                                Thread.sleep(1000)
+                                callback.onResult(list, params.requestedStartPosition, 200)
                             }
-                        // Pretend we are slow
-                        Thread.sleep(1000)
-                        callback.onResult(list, params.requestedStartPosition, 200)
-                    }
 
-                    override fun loadRange(
-                        params: LoadRangeParams,
-                        callback: LoadRangeCallback<Any>
-                    ) {
-                        val list =
-                            (0 until params.loadSize).map {
-                                ImmutableItem(
-                                    index = it + params.startPosition,
-                                    checked = false
-                                )
+                            override fun loadRange(
+                                    params: LoadRangeParams,
+                                    callback: LoadRangeCallback<Any>
+                            ) {
+                                val list =
+                                        (0 until params.loadSize).map {
+                                            ImmutableItem(
+                                                    index = it + params.startPosition,
+                                                    checked = false
+                                            )
+                                        }
+                                // Pretend we are slow
+                                Thread.sleep(1000)
+                                callback.onResult(list)
                             }
-                        // Pretend we are slow
-                        Thread.sleep(1000)
-                        callback.onResult(list)
-                    }
+                        }
+            }, PAGE_SIZE).build()
+
+    val pagedListV3: LiveData<PagingData<Any>> = Pager<Int, Any>(PagingConfig(
+            pageSize = PAGE_SIZE,
+            maxSize = 100,
+            prefetchDistance = PAGE_SIZE * 2,
+            enablePlaceholders = false)) {
+        object : PagingSource<Int, Any>() {
+            private val random = Random(TOTAL_COUNT)
+
+            override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Any> {
+                val safeKey = params.key ?: 0
+                val list =
+                        (0 until params.loadSize).map {
+                            ImmutableItem(
+                                    index = it + safeKey,
+                                    checked = false
+                            )
+                        }
+                // Pretend we are slow
+                delay(1000)
+
+                if (random.nextBoolean()) {
+                    return LoadResult.Error(IllegalAccessError("Error plz try again"))
                 }
-        }, 20).build()
+
+                return LoadResult.Page(
+                        data = list,
+                        prevKey = if (safeKey == 0) null else (safeKey - params.loadSize),
+                        nextKey = if (safeKey >= TOTAL_COUNT - params.loadSize) null else (safeKey + params.loadSize),
+                        itemsBefore = safeKey,
+                        itemsAfter = TOTAL_COUNT - params.loadSize - safeKey
+                )
+            }
+
+            override fun getRefreshKey(state: PagingState<Int, Any>): Int = 0
+        }
+    }.flow.asLiveData()
 
     val items = itemBindingOf<Any>(BR.item, R.layout.item_immutable)
+
+    val loadStateItems = OnItemBindLoadState.Builder<Any>()
+            .item(BR.item, R.layout.item_immutable)
+            .headerLoadState(OnItemBindClass<LoadState>().apply {
+                map<LoadState.Loading>(ItemBinding.VAR_NONE, R.layout.network_state_item_progress)
+                map<LoadState.Error>(BR.item, R.layout.network_state_item_error)
+            })
+            .footerLoadState(OnItemBindClass<LoadState>().apply {
+                map<LoadState.Loading>(ItemBinding.VAR_NONE, R.layout.network_state_item_progress)
+                map<LoadState.Error>(BR.item, R.layout.network_state_item_error)
+            })
+            .pagingCallbackVariableId(BR.callback)
+            .build()
 
     val multipleItems = OnItemBindClass<Any>().apply {
         map<String>(BR.item, R.layout.item_header_footer)
@@ -107,5 +154,10 @@ class ImmutableViewModel : ViewModel(), ImmutableListeners {
                 mutList.value = list.dropLast(1)
             }
         }
+    }
+
+    companion object {
+        private val TOTAL_COUNT = 200
+        private val PAGE_SIZE = 20
     }
 }

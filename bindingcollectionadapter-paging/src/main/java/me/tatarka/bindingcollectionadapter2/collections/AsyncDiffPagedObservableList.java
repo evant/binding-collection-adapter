@@ -10,6 +10,7 @@ import androidx.databinding.ListChangeRegistry;
 import androidx.databinding.ObservableList;
 import androidx.paging.AsyncPagedListDiffer;
 import androidx.paging.PagedList;
+import androidx.paging.PagingData;
 import androidx.recyclerview.widget.AsyncDifferConfig;
 import androidx.recyclerview.widget.AsyncListDiffer;
 import androidx.recyclerview.widget.DiffUtil;
