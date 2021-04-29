@@ -103,7 +103,7 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<ViewHold
             }
         }
         this.items = items;
-        notifyDataSetChanged();
+        onDistinctItems(items);
     }
 
     @Override
@@ -189,6 +189,14 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<ViewHold
         } else {
             return new BindingViewHolder(binding);
         }
+    }
+
+    /**
+     * Allows an overridden notification behavior when distinct items are set such as when the items
+     * are set for the first time.
+     */
+    protected void onDistinctItems(@Nullable List<T> items) {
+        notifyDataSetChanged();
     }
 
     private static class BindingViewHolder extends ViewHolder {
